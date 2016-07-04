@@ -1,0 +1,47 @@
+PODS:
+  - AFNetworking (3.1.0):
+    - AFNetworking/NSURLSession (= 3.1.0)
+    - AFNetworking/Reachability (= 3.1.0)
+    - AFNetworking/Security (= 3.1.0)
+    - AFNetworking/Serialization (= 3.1.0)
+    - AFNetworking/UIKit (= 3.1.0)
+  - AFNetworking/NSURLSession (3.1.0):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (3.1.0)
+  - AFNetworking/Security (3.1.0)
+  - AFNetworking/Serialization (3.1.0)
+  - AFNetworking/UIKit (3.1.0):
+    - AFNetworking/NSURLSession
+  - Better-JTSImageViewController (1.5.3)
+  - MGSwipeTableCell (1.5.5)
+  - PPComLib (0.1.0):
+    - AFNetworking (~> 3.0)
+    - Better-JTSImageViewController
+    - MGSwipeTableCell
+    - SDWebImage (~> 3.7)
+    - SocketRocket
+  - SDWebImage (3.8.1):
+    - SDWebImage/Core (= 3.8.1)
+  - SDWebImage/Core (3.8.1)
+  - SocketRocket (0.5.1)
+
+DEPENDENCIES:
+  - PPComLib (from `../`)
+
+EXTERNAL SOURCES:
+  PPComLib:
+    :path: ../
+
+SPEC CHECKSUMS:
+  AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
+  Better-JTSImageViewController: d1cd3b46361ed22f47737a458474def9837f72cf
+  MGSwipeTableCell: bafeb5f351124544c9364ecbdf24c7b06a37d340
+  PPComLib: 8a0e578ee1559caf4a2eea548191f808d1ebfeb8
+  SDWebImage: 35f9627a3e44b4f292a8a8ce6a531fa488239b91
+  SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
+
+PODFILE CHECKSUM: 1339e3f12eed989c3272897348356fda105deff5
+
+COCOAPODS: 1.0.0.rc.2

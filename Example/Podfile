@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'PPComLib_Example' do
+  pod 'PPComLib', :path => '../'
+
+  target 'PPComLib_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
