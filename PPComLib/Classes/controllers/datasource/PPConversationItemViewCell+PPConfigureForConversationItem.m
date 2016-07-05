@@ -15,7 +15,7 @@
 
 #import "PPMessageUtils.h"
 #import "PPSDKUtils.h"
-#import "PPImageUtils.h"
+#import "UIImage+PPSDK.h"
 
 #import "MGSwipeTableCell.h"
 
@@ -61,7 +61,8 @@
     
     self.displayNameLabel.text = displayName;
     self.msgTimestampLabel.text = messageTimestamp;
-    [self.avatarView.imageView loadWithUrl:[[NSURL alloc] initWithString:avatarUrl] placeHolderImage:PPDefaultAvatar() completionHandler:nil];
+    
+    [self.avatarView.imageView loadWithUrl:[[NSURL alloc] initWithString:avatarUrl] placeHolderImage:[UIImage pp_defaultAvatarImage] completionHandler:nil];
 
 }
 

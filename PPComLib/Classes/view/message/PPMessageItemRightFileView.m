@@ -11,7 +11,7 @@
 #import "PPLayoutConstraintsUtils.h"
 #import "PPSquareImageView.h"
 #import "PPLog.h"
-#import "PPImageUtils.h"
+#import "UIImage+PPSDK.h"
 #import "PPMessageUtils.h"
 
 @interface PPMessageItemRightFileView ()
@@ -59,7 +59,7 @@ static CGFloat const kPPMessageItemRightFileViewPadding = 10;
         
         _leftFileViewImageView = [PPSquareImageView new];
         _leftFileViewImageView.translatesAutoresizingMaskIntoConstraints = NO;
-        _leftFileViewImageView.image = [UIImage imageNamed:@"File-50"];
+        _leftFileViewImageView.image = [UIImage pp_defaultMessgaeFileImage];
         [_innerView addSubview:_leftFileViewImageView];
         
         _leftFileNameLabel = [UILabel new];

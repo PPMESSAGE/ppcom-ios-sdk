@@ -60,4 +60,5 @@ NSString* PPFormatFileSize(NSUInteger fileSizeInBytes);
  */
 UIImage* PPImageFromAssets(NSString* imagePathWithOutSuffix);
 UIImage* PPDefaultAvatarImage();
+UIImage* PPImageFromBundle(NSString* imagePathWithOutSuffix);
 

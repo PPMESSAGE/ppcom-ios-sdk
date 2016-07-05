@@ -30,6 +30,8 @@
 #import "PPConversationsViewControllerDataSource.h"
 #import "PPConversationItemViewCell+PPConfigureForConversationItem.h"
 
+#import "PPTestData.h"
+
 @interface PPConversationsViewController ()
 
 @property (nonatomic) BOOL inRequesting;
@@ -110,6 +112,7 @@
 }
 
 - (void)onPageVisible:(BOOL)forceRefresh {
+    [self.conversationsDataSource updateItemsWithConversations:[[PPTestData sharedInstance] getConversations]];
 }
 
 #pragma mark - UITableView delegates
@@ -167,19 +170,5 @@
     [self.conversationsDataSource updateItemsWithConversations:conversations];
     [self.tableView reloadData];
 }
-
-//#pragma mark - conversations datasource
-//
-//- (NSMutableArray*)testConversations {
-//    NSUInteger count = 10;
-//    NSMutableArray *conversations = [NSMutableArray arrayWithCapacity:count];
-//    
-//    for (int i=0; i<count; ++i) {
-//        PPConversationItem *conversationItem = [[PPConversationItem alloc] init];
-//        conversations add
-//    }
-//    
-//    return conversations;
-//}
 
 @end

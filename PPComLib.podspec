@@ -32,9 +32,9 @@ TODO: Add long description of the pod here.
 
   s.source_files = 'PPComLib/Classes/**/*'
   
-  # s.resource_bundles = {
-  #   'PPComLib' => ['PPComLib/Assets/*.png']
-  # }
+  s.resource_bundles = {
+     'PPComLibAssets' => ['PPComLib/Assets/*.png']
+  }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'

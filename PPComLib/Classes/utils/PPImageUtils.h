@@ -10,4 +10,3 @@
 #import <UIKit/UIKit.h>
 
 extern UIImage* PPImageWithColor(UIColor *color);
-extern UIImage* PPDefaultAvatar();

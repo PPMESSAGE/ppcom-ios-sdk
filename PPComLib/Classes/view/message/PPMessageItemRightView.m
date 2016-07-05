@@ -9,7 +9,7 @@
 #import "PPMessageItemRightView.h"
 
 #import "PPLayoutConstraintsUtils.h"
-#import "PPImageUtils.h"
+#import "UIImage+PPSDK.h"
 #import "PPMessageUtils.h"
 #import "PPLog.h"
 #import "PPConstants.h"
@@ -17,7 +17,6 @@
 #import "PPUser.h"
 
 static CGFloat const kPPMessageItemRightViewStatusViewWidth = 18;
-static NSString *const kPPMessageItemRightViewStatusErrorImageName = @"Error-50";
 CGFloat const PPMessageItemRightViewDefaultBubbleCornerRadius = 17.0f;
 
 @interface PPMessageItemRightView ()
@@ -118,7 +117,7 @@ CGFloat const PPMessageItemRightViewDefaultBubbleCornerRadius = 17.0f;
     NSString *userName = message.fromUser.userName;
     NSURL *userUrl = [NSURL URLWithString:message.fromUser.userIcon];
     
-    [self.avatarImageView loadWithUrl:userUrl placeHolderImage:PPDefaultAvatar() completionHandler:nil];
+    [self.avatarImageView loadWithUrl:userUrl placeHolderImage:[UIImage pp_defaultAvatarImage] completionHandler:nil];
     self.nameLabel.text = userName;
     
     [self pp_presentMessage:message forStatus:message.status];
@@ -182,7 +181,7 @@ CGFloat const PPMessageItemRightViewDefaultBubbleCornerRadius = 17.0f;
     }
     if (_msgStatusErrorView) {
         _msgStatusErrorView.hidden = NO;
-        _msgStatusErrorView.image = [UIImage imageNamed:kPPMessageItemRightViewStatusErrorImageName];
+        _msgStatusErrorView.image = [UIImage pp_defaultMessageErrorImage];
     }
 }
 

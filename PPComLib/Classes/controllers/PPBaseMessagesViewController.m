@@ -31,6 +31,7 @@
 #import "PPReceiver.h"
 #import "PPMessageUtils.h"
 #import "PPImageUtils.h"
+#import "UIImage+PPSDK.h"
 
 #import "PPMessage.h"
 #import "PPConversationItem.h"
@@ -50,6 +51,8 @@
 #import "PPMessageControllerKeyboardDelegate.h"
 
 #import "PPBaseMessagesViewControllerDataSource.h"
+
+#import "PPTestData.h"
 
 // scroll Y值小于这个之后，触发下拉刷新操作
 static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
@@ -118,6 +121,10 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
         [self.messagesDataSource updateWithMessages:[[PPMemoryCache sharedInstance].messageCache messagesInConversation:self.conversationUUID]];
         [self.keyboardDelegate keepTableViewContentAtBottomQuickly];
     }
+    
+    // Show test data
+    [self.messagesDataSource updateWithMessages:[[PPTestData sharedInstance] getMessages]];
+    [self.keyboardDelegate keepTableViewContentAtBottomQuickly];
     
 }
 
@@ -354,7 +361,7 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
 
 - (UIImage*)imagePlaceholder {
     if (!_imagePlaceholder) {
-        _imagePlaceholder = PPDefaultAvatar();
+        _imagePlaceholder = [UIImage pp_defaultAvatarImage];
     }
     return _imagePlaceholder;
 }

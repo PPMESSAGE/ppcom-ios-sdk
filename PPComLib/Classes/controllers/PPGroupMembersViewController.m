@@ -17,6 +17,8 @@
 #import "PPGroupMembersDataSource.h"
 #import "PPGroupMemberViewCell.h"
 
+#import "PPTestData.h"
+
 @interface PPGroupMembersViewController ()
 
 @property (nonatomic) PPSDK *sdk;
@@ -68,6 +70,12 @@
     [self updateTitleWithGroupMembersCount:(cachedGroupMembers ? cachedGroupMembers.count : 0)];
     
     self.collectionView.dataSource = self.groupMemberDataSource;
+    
+    // Test data
+    NSMutableArray *testGroupMembers = [[PPTestData sharedInstance] getGroupMembers];
+    [self updateTitleWithGroupMembersCount:testGroupMembers.count];
+    [self.groupMemberDataSource updateGroupMembers:testGroupMembers];
+    [self.collectionView reloadData];
 
     // TODO reload data
 //    self.animating = YES;

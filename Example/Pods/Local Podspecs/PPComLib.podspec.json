@@ -19,6 +19,11 @@
     "ios": "8.0"
   },
   "source_files": "PPComLib/Classes/**/*",
+  "resource_bundles": {
+    "PPComLibAssets": [
+      "PPComLib/Assets/*.png"
+    ]
+  },
   "dependencies": {
     "AFNetworking": [
       "~> 3.0"

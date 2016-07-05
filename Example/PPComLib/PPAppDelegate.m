@@ -18,8 +18,8 @@
     
     PPViewController *viewController = [[PPViewController alloc] init];
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+    navController.view.backgroundColor = [UIColor whiteColor];
     self.window.rootViewController = navController;
-    [self.window makeKeyAndVisible];
     
     return YES;
 }
