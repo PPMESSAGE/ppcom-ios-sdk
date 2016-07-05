@@ -12,3 +12,11 @@
 
 #import "PPConversationItem.h"
 #import "PPMessage.h"
+
+// =====================
+// Controllers
+// =====================
+
+#import "PPConversationsViewController.h"
+#import "PPComMessagesViewController.h"
+#import "PPGroupMembersViewController.h"

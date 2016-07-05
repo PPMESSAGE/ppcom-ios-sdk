@@ -7,8 +7,9 @@
 //
 
 @import UIKit;
+
 #import <PPComLib/PPComLib.h>
 
-@interface PPViewController : UIViewController
+@interface PPViewController : PPConversationsViewController
 
 @end
