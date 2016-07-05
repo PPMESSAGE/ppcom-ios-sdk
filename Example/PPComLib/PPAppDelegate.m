@@ -8,11 +8,19 @@
 
 #import "PPAppDelegate.h"
 
+#import "PPViewController.h"
+
 @implementation PPAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    
+    PPViewController *viewController = [[PPViewController alloc] init];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+    navController.view.backgroundColor = [UIColor whiteColor];
+    self.window.rootViewController = navController;
+    
     return YES;
 }
 

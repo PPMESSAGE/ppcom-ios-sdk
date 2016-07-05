@@ -207,3 +207,17 @@ NSString* PPFormatFileSize(NSUInteger fileSizeInBytes) {
     }
     return [NSString stringWithFormat:@"%4.2f%@", convertedValue, [tokens objectAtIndex:multiplyFactor]];
 }
+
+UIImage* PPImageFromAssets(NSString* imagePathWithOutSuffix) {
+    return [UIImage imageNamed:[NSString stringWithFormat:@"PPComLib.bundle/%@", imagePathWithOutSuffix]];
+}
+
+UIImage* PPDefaultAvatarImage() {
+    return PPImageFromAssets(@"pp_icon_avatar");
+}
+
+UIImage* PPImageFromBundle(NSString* imagePathWithOutSuffix) {
+    NSBundle* bundle = [NSBundle bundleWithURL:[[NSBundle mainBundle]URLForResource:@"PPComLib" withExtension:@"bundle"]];
+    NSString *imagePath = [bundle pathForResource:imagePathWithOutSuffix ofType:@"png"];
+    UIImage* image = [UIImage imageWithContentsOfFile:imagePath];
+}

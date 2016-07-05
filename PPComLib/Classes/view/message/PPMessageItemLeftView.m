@@ -10,9 +10,9 @@
 
 #import "PPLayoutConstraintsUtils.h"
 #import "PPMessageUtils.h"
-#import "PPImageUtils.h"
 #import "PPLog.h"
 #import "PPConstants.h"
+#import "UIImage+PPSDK.h"
 
 #import "PPUser.h"
 
@@ -109,7 +109,7 @@ CGFloat const PPMessageItemLeftViewDefaultBubbleCornerRadius = 17.0f;
     NSString *userName = message.fromUser.userName;
     NSURL *userUrl = [NSURL URLWithString:message.fromUser.userIcon];
     
-    [self.avatarImageView loadWithUrl:userUrl placeHolderImage:PPDefaultAvatar() completionHandler:nil];
+    [self.avatarImageView loadWithUrl:userUrl placeHolderImage:[UIImage pp_defaultAvatarImage] completionHandler:nil];
     self.nameLabel.text = userName;
 }
 

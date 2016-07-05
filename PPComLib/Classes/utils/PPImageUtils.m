@@ -8,8 +8,6 @@
 
 #import "PPImageUtils.h"
 
-static NSString *const PPDefaultImageName = @"User-Icon-Default";
-
 UIImage* PPImageWithColor(UIColor *color) {
     CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
     UIGraphicsBeginImageContext(rect.size);
@@ -22,8 +20,4 @@ UIImage* PPImageWithColor(UIColor *color) {
     UIGraphicsEndImageContext();
     
     return image;
-}
-
-UIImage* PPDefaultAvatar() {
-    return [UIImage imageNamed:PPDefaultImageName];
 }

@@ -1,6 +1,0 @@
-framework module Better_JTSImageViewController {
-  umbrella header "Better-JTSImageViewController-umbrella.h"
-
-  export *
-  module * { export * }
-}

@@ -52,3 +52,13 @@ NSString* PPDataToString(NSData *data);
 NSString* PPLocalizedString(NSString* key);
 
 NSString* PPFormatFileSize(NSUInteger fileSizeInBytes);
+
+/**
+ * Fetch image by path
+ *
+ * @imagePathWithOutSuffix you should provided `aa` instead of `aa.png` when you want to get `aa.png` image
+ */
+UIImage* PPImageFromAssets(NSString* imagePathWithOutSuffix);
+UIImage* PPDefaultAvatarImage();
+UIImage* PPImageFromBundle(NSString* imagePathWithOutSuffix);
+

@@ -1,6 +1,0 @@
-framework module PPComLib {
-  umbrella header "PPComLib-umbrella.h"
-
-  export *
-  module * { export * }
-}
