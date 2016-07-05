@@ -130,6 +130,8 @@
 		70B0F7B3BAED17F0BF0898C6C3DF7B44 /* UIImageView+WebCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DC3E0E0DE81048FD39520CA24590098 /* UIImageView+WebCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7332F15718920917F544F35CE2C038AA /* AFURLResponseSerialization.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B4DE181568E2C6B920CD1238C87066A /* AFURLResponseSerialization.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		75C3D8AC302870E4B2F3EC2927E10FB9 /* SDWebImageOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 38D38600258DA82A229080576448F925 /* SDWebImageOperation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		77B3E5051D2B6B8E0021F360 /* PPGetConversationFromHTTP.h in Headers */ = {isa = PBXBuildFile; fileRef = 77B3E5031D2B6B8E0021F360 /* PPGetConversationFromHTTP.h */; };
+		77B3E5061D2B6B8E0021F360 /* PPGetConversationFromHTTP.m in Sources */ = {isa = PBXBuildFile; fileRef = 77B3E5041D2B6B8E0021F360 /* PPGetConversationFromHTTP.m */; };
 		782A574F97F9DA76B59058BE6E0F0B2C /* PPMessageUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6DA74710E08C7A88997B3D698B61A7 /* PPMessageUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		799EE5CA3B63474E7B2F232DBCBE1E0E /* PPLayoutConstraintsUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 92C1534CC4AA79E2936BB825E5841F49 /* PPLayoutConstraintsUtils.m */; };
 		79BB953D303B1ED6A44A423F1D21A3F1 /* PPReceiverProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = B475A9262129EE50B202FF010F9B6DEE /* PPReceiverProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -519,6 +521,8 @@
 		75168E144FFDF0590983B6A3EDDD4813 /* PPChattingView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PPChattingView.m; sourceTree = "<group>"; };
 		7676A23349A25C7431CFEC285031DFF3 /* MGSwipeTableCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MGSwipeTableCell.m; path = MGSwipeTableCell/MGSwipeTableCell.m; sourceTree = "<group>"; };
 		767967121AF8209A918F469BD1842AD2 /* SDWebImageDownloaderOperation.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SDWebImageDownloaderOperation.m; path = SDWebImage/SDWebImageDownloaderOperation.m; sourceTree = "<group>"; };
+		77B3E5031D2B6B8E0021F360 /* PPGetConversationFromHTTP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPGetConversationFromHTTP.h; sourceTree = "<group>"; };
+		77B3E5041D2B6B8E0021F360 /* PPGetConversationFromHTTP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPGetConversationFromHTTP.m; sourceTree = "<group>"; };
 		782FD7D25B5C9990D41CC455E3C8D97B /* UIView+PPBorder.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "UIView+PPBorder.h"; sourceTree = "<group>"; };
 		79537371E9B1CE0C899738EE871C5D77 /* PPSDKUtils.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PPSDKUtils.m; sourceTree = "<group>"; };
 		79AE31D63C921640065746204FCFBF52 /* PPImageView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = PPImageView.h; sourceTree = "<group>"; };
@@ -874,6 +878,8 @@
 			children = (
 				8DE8C0BE0A9F6691EB1EDAF5FBB2F079 /* PPGetConversationsFromHTTP.h */,
 				55808012A72138F75F88BBA5970B8996 /* PPGetConversationsFromHTTP.m */,
+				77B3E5031D2B6B8E0021F360 /* PPGetConversationFromHTTP.h */,
+				77B3E5041D2B6B8E0021F360 /* PPGetConversationFromHTTP.m */,
 			);
 			path = conversation;
 			sourceTree = "<group>";
@@ -1589,6 +1595,7 @@
 				07F12B8CBCD59A8F3505378A367F5BFE /* PPMessageItemRightImageView.h in Headers */,
 				EA361917EABBCE8468AF68CCD7505C03 /* PPMessageItemRightLargeTxtView.h in Headers */,
 				0E8AC93CEB5E0E6974227666DFB2B768 /* PPMessageItemRightTextView.h in Headers */,
+				77B3E5051D2B6B8E0021F360 /* PPGetConversationFromHTTP.h in Headers */,
 				DA099E7F8DEA53CC3AB976204614DAA5 /* PPMessageItemRightUnknownView.h in Headers */,
 				D38684B99A9C28A9754A6A1EF0A5BBB9 /* PPMessageItemRightView.h in Headers */,
 				E4EB095410463F1E6C74223909936F6B /* PPMessageMediaPart.h in Headers */,
@@ -1828,7 +1835,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0700;
 			};
 			buildConfigurationList = 2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1997,6 +2004,7 @@
 				497DADC3AD14A79E19C36EB3DCC99C8B /* PPMessageItemRightUnknownView.m in Sources */,
 				55BDC0B3883D5BD0A868355A59DC25BB /* PPMessageItemRightView.m in Sources */,
 				BF9277F196D8EA12BCF2594ED266A1E5 /* PPMessageMemoryCache.m in Sources */,
+				77B3E5061D2B6B8E0021F360 /* PPGetConversationFromHTTP.m in Sources */,
 				D907D88875CD5AF944CAC52795D17ECE /* PPMessageReceiver.m in Sources */,
 				1F5BCAA903D94D16DD327EA75D044E7E /* PPMessageSendManager.m in Sources */,
 				99D15F2AEB7E58A7085582D902A9D1CD /* PPMessageTxtMediaPart.m in Sources */,
@@ -2164,7 +2172,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/AFNetworking/AFNetworking.modulemap";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "${PRODUCT_BUNDLE_IDENTIFIER}";
 				PRODUCT_NAME = AFNetworking;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -2194,7 +2201,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/Better-JTSImageViewController/Better-JTSImageViewController.modulemap";
 				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "${PRODUCT_BUNDLE_IDENTIFIER}";
 				PRODUCT_NAME = Better_JTSImageViewController;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -2224,7 +2230,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/SocketRocket/SocketRocket.modulemap";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "${PRODUCT_BUNDLE_IDENTIFIER}";
 				PRODUCT_NAME = SocketRocket;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -2254,7 +2259,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/MGSwipeTableCell/MGSwipeTableCell.modulemap";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "${PRODUCT_BUNDLE_IDENTIFIER}";
 				PRODUCT_NAME = MGSwipeTableCell;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -2383,7 +2387,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/SDWebImage/SDWebImage.modulemap";
 				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "${PRODUCT_BUNDLE_IDENTIFIER}";
 				PRODUCT_NAME = SDWebImage;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -2413,7 +2416,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/SDWebImage/SDWebImage.modulemap";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "${PRODUCT_BUNDLE_IDENTIFIER}";
 				PRODUCT_NAME = SDWebImage;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -2476,7 +2478,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/AFNetworking/AFNetworking.modulemap";
 				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "${PRODUCT_BUNDLE_IDENTIFIER}";
 				PRODUCT_NAME = AFNetworking;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -2506,7 +2507,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/PPComLib/PPComLib.modulemap";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "${PRODUCT_BUNDLE_IDENTIFIER}";
 				PRODUCT_NAME = PPComLib;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -2578,7 +2578,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/PPComLib/PPComLib.modulemap";
 				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "${PRODUCT_BUNDLE_IDENTIFIER}";
 				PRODUCT_NAME = PPComLib;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -2608,7 +2607,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/Better-JTSImageViewController/Better-JTSImageViewController.modulemap";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "${PRODUCT_BUNDLE_IDENTIFIER}";
 				PRODUCT_NAME = Better_JTSImageViewController;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -2638,7 +2636,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/MGSwipeTableCell/MGSwipeTableCell.modulemap";
 				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "${PRODUCT_BUNDLE_IDENTIFIER}";
 				PRODUCT_NAME = MGSwipeTableCell;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -2668,7 +2665,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/SocketRocket/SocketRocket.modulemap";
 				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "${PRODUCT_BUNDLE_IDENTIFIER}";
 				PRODUCT_NAME = SocketRocket;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;

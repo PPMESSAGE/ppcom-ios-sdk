@@ -13,6 +13,8 @@
 #import "PPServiceUser.h"
 #import "PPApp.h"
 
+typedef void (^PPHttpServiceCompletedBlock)(id obj);
+
 @interface PPBaseHttpService : NSObject
 
 @property (nonatomic) PPSDK *sdk;
