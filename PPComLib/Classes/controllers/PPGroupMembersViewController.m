@@ -108,7 +108,7 @@
         if (success) {
             [self moveToMessagesViewControllerWithConversation:conversationItem];
         } else {
-            PPMakeWarningAlert(@"Can not find conversation");
+            PPMakeWarningAlert(PPLocalizedString(@"Create Conversation Error"));
         }
         
         [self pp_stopAnimating];
@@ -160,9 +160,9 @@
 
 - (void)updateTitleWithGroupMembersCount:(NSInteger)count {
     if (count > 0) {
-        self.title = [NSString stringWithFormat:@"Group(%@)", [NSNumber numberWithInteger:count]];
+        self.title = [NSString stringWithFormat:PPLocalizedString(@"Group Member Controller Title With Number"), [NSNumber numberWithInteger:count]];
     } else {
-        self.title = @"Group";
+        self.title = PPLocalizedString(@"Group Member Controller Title");
     }
 }
 

@@ -201,7 +201,7 @@ BOOL PPIsApiResponseError(NSDictionary* apiResponse) {
 }
 
 UIAlertView* PPMakeWarningAlert(NSString *message) {
-    UIAlertView *warnAlertView = [[UIAlertView alloc] initWithTitle:@"错误" message:message delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil];
+    UIAlertView *warnAlertView = [[UIAlertView alloc] initWithTitle:PPLocalizedString(@"Error") message:message delegate:nil cancelButtonTitle:PPLocalizedString(@"OK") otherButtonTitles:nil];
     return warnAlertView;
 }
 

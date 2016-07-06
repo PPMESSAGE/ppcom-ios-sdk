@@ -25,36 +25,12 @@ typedef NS_ENUM(NSInteger, PPMessageCustomErrorCode) {
 // API
 // ------------
 
-/**
- * 登陆成功，`sdk.api` 和 `sdk.user` 都将会根据返回结果进行初始化
- */
 - (void)login:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
 
-/**
- * @params {
- *     from_uuid
- *     device_uuid
- *     session_uuid
- * }
- */
 - (void)logout:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
 
-/**
- * @params {
- *     page_offset: 0 ~ +Infinity,
- *     page_size: 0 ~ +Infinity,
- *     user_uuid: xxx,
- *     app_uuid: xxx
- * }
- */
 - (void)getConversationList:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
 
-/**
- * 得到所有客服人员列表
- * @param params: {
- *     app_uuid
- * }
- */
 - (void)getServiceUserList:(NSDictionary*)params completionHandler:(void (^)(NSDictionary *response, NSDictionary *error))completionHandler;
 
 - (void)getMessageHistory:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;

@@ -10,7 +10,7 @@
 
 #import "PPSDK.h"
 #import "PPAPI.h"
-#import "PPUser.h"
+#import "PPServiceUser.h"
 
 #import "PPSDKUtils.h"
 
@@ -38,7 +38,7 @@
         
         PPUser *user = nil;
         if (!error && !PPIsApiResponseError(response)) {
-            user = [PPUser userWithDictionary:response];
+            user = [PPServiceUser userWithDictionary:response];
         }
         
         if (aBlock) {

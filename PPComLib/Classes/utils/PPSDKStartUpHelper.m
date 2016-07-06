@@ -17,6 +17,10 @@
 #import "PPWebSocketPool.h"
 #import "PPSDKUtils.h"
 #import "PPSDK.h"
+#import "PPLog.h"
+
+#import "PPAPI.h"
+#import "PPServiceUser.h"
 
 #define START_STATUS_INITIAL    @"initial"
 #define START_STATUS_STARTING   @"starting"
@@ -168,6 +172,7 @@
 }
 
 - (void)socket {
+    self.sdk.user.accessToken = self.sdk.api.accessToken;
     self.sdk.webSocket = [[PPWebSocketPool alloc] initWithPPSDK:self.sdk];
     [self.sdk.webSocket open];
     [self onStartSuccess];

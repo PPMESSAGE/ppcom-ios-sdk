@@ -33,7 +33,7 @@
     NSString *avatarUrl = PPIsNotNull(conversation.conversationIcon) ? conversation.conversationIcon : @"";
     
     if (messageSummary) {
-        self.msgSummaryLabel.text = messageSummary;
+        self.msgSummaryLabel.text = [self fixSummary:messageSummary];
     } else {
         if (latestMessage && latestMessage.type == PPMessageTypeTxt) {
             PPMessageTxtMediaPart *txtMediaPart = latestMessage.mediaPart;
@@ -43,8 +43,10 @@
                     self.msgSummaryLabel.text = text != nil ? text : messageSummary;
                 }];
             } else {
-                self.msgSummaryLabel.text = latestMessage.body;
+                self.msgSummaryLabel.text = [self fixSummary:latestMessage.body];
             }
+        } else {
+            self.msgSummaryLabel.text = [self fixSummary:messageSummary];
         }
     }
     
@@ -77,6 +79,12 @@
         messageSummary = [PPMessage summaryInMessage:message];
     }
     
+    return messageSummary;
+}
+
+- (NSString*)fixSummary:(NSString*)messageSummary {
+    if (!messageSummary) return @" ";
+    if ([messageSummary length] == 0) return @" ";
     return messageSummary;
 }
 

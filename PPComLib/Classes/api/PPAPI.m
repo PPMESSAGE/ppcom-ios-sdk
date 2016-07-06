@@ -96,19 +96,7 @@ static NSString *const kPPHeaderTypePPCom = @"PPCOM";
             }
             
             NSDictionary *result = (NSDictionary *)responseObject;
-            if ([result[@"error_code"] integerValue] != 0) { // apiError
-                
-                if (ignoreApiError) {
-                    if (completionHandler) completionHandler(result, nil);
-                } else {
-                    if (completionHandler) completionHandler(nil, result);
-                }
-                
-            } else {
-                if (completionHandler) {
-                    completionHandler(result, nil);
-                }
-            }
+            if (completionHandler) completionHandler(result, nil);
             
         } else {
             if (PPAPI_DEBUG_ENABLE) {
@@ -137,7 +125,8 @@ static NSString *const kPPHeaderTypePPCom = @"PPCOM";
                 self.accessToken = response[@"access_token"];
             }
             // The make a http request again after we get the accesstoken
-            [self baseRequest:url with:params configuration:@{ @"headerType": kPPHeaderTypePPCom } completionHandler:completionHandler];
+            [self baseRequest:url with:params configuration:@{ @"headerType": kPPHeaderTypePPCom,
+                                                               @"ignoreApiError": @(YES) } completionHandler:completionHandler];
         }];
     }
     

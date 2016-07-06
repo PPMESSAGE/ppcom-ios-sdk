@@ -48,6 +48,7 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 }
 
 - (void)start {
+    if ([self.startUpHelper started] || [self.startUpHelper starting]) return;
     [self.startUpHelper start];
 }
 
@@ -61,6 +62,14 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
     if (_app) {
         _app = nil;
     }
+}
+
+- (BOOL)isStarted {
+    return [self.startUpHelper started];
+}
+
+- (BOOL)isStarting {
+    return [self.startUpHelper starting];
 }
 
 // ==============================

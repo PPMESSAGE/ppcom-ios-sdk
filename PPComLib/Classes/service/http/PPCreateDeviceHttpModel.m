@@ -33,7 +33,7 @@
                              withBlock:(PPHttpModelCompletedBlock)aBlock {
     
     NSDictionary *params = @{ @"app_uuid": self.sdk.configuration.appUUID,
-                              @"device_id": PPDeviceUUID(),
+                              @"device_id": mobileDeviceUUID,
                               @"device_ostype": @"IOS",
                               @"user_uuid":self.sdk.user.userUuid };
     [self.sdk.api createDevice:params completionHandler:^(NSDictionary *response, NSDictionary *error) {

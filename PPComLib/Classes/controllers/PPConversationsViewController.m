@@ -81,12 +81,9 @@
     [self addPPSDKObservers];
     [self addApplicationObservers];
     
-    [self showActivityIndicatorViewLoading];
-    
-    // TEST
-    [PPSDK sharedSDK].app = [[PPTestData sharedInstance] getApp];
-    [PPSDK sharedSDK].user = [[PPTestData sharedInstance] getServiceUser];
-    [self didPPSDKStartUpSucceded:[PPSDK sharedSDK]];
+    if (![[PPSDK sharedSDK] isStarted]) {
+        [self showActivityIndicatorViewLoading];
+    }
     
 }
 
@@ -191,7 +188,7 @@
 }
 
 - (void)didPPSDKStartUpFailed:(PPSDK*)sdk errorInfo:(id)errorInfo {
-    
+    PPFastLog(@"StartUpError:%@", errorInfo);
 }
 
 // ================================================================================================
@@ -239,10 +236,6 @@
                 [self dismissLoadingView];
                 return;
             }
-            [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
-                NSString *loadingText = [NSString stringWithFormat:PPLocalizedString(@"Conversations Waiting Queue Length"), [waitingQueueLength intValue]];
-                wself.loadingView.loadingText = loadingText;
-            }];
         }];
     }];
 }

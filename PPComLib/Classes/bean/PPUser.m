@@ -14,6 +14,9 @@
 
 + (instancetype)userWithDictionary:(NSDictionary*)userDictionary {
     NSString *userUUID = userDictionary[@"uuid"];
+    if (!userUUID) {
+        userUUID = userDictionary[@"user_uuid"];
+    }
     NSString *userIcon = userDictionary[@"user_icon"];
     NSString *userName = userDictionary[@"user_fullname"];
     NSString *userEmail = userDictionary[@"user_email"];

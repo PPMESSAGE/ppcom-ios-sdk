@@ -51,6 +51,8 @@ FOUNDATION_EXPORT NSString *const PPSDKMessageSendFailed;
 - (void)configure:(PPSDKConfiguration*)configuration;
 - (void)start;
 - (void)reset;
+- (BOOL)isStarted;
+- (BOOL)isStarting;
 
 // Call this method when the app enter foreground
 - (void)applicationEnterForeground:(UIApplication *)application;
