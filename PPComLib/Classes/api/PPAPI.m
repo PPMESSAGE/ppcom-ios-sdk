@@ -149,16 +149,17 @@ static NSString *const kPPHeaderTypePPCom = @"PPCOM";
 }
 
 - (NSString*)getApiUrl:(NSString*)urlSegment {
-    return [PPApiHost stringByAppendingString:urlSegment];
+    return [self.sdk.configuration.apiUrl stringByAppendingString:urlSegment];
 }
 
 - (NSString*)getApiTokenUrl {
-    return [NSString stringWithFormat:@"%@/token", PPAuthHost];
+    return [NSString stringWithFormat:@"%@/token", self.sdk.configuration.authUrl];
 }
 
 - (NSString*)getApiTokenDataWithUserEmail:(NSString*)userEmail
                          withUserPassword:(NSString*)userPassword {
-    NSString *clientID = PPApiKey;
+    // TODO this should be ppkefu api key
+    NSString *clientID = self.sdk.configuration.apiKey;
     return [NSString stringWithFormat:@"grant_type=password&user_email=%@&user_password=%@&client_id=%@", userEmail, userPassword, clientID];
 }
 
@@ -256,6 +257,50 @@ static NSString *const kPPHeaderTypePPCom = @"PPCOM";
 
 - (void)getPPComConversationList:(NSDictionary *)params completionHandler:(PPAPICompletedBlock)completionHandler {
     [self basePPComRequest:@"/PP_GET_USER_CONVERSATION_LIST" with:params completionHandler:completionHandler];
+}
+
+- (void)getWaitingQueueLength:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
+    [self basePPComRequest:@"/PP_GET_AMD_QUEUE_LENGTH" with:params completionHandler:completionHandler];
+}
+
+- (void)getPPComDefaultConversation:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
+    [self basePPComRequest:@"/PPCOM_GET_DEFAULT_CONVERSATION" with:params completionHandler:completionHandler];
+}
+
+- (void)createPPComConversation:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
+    [self basePPComRequest:@"/PPCOM_CREATE_CONVERSATION" with:params completionHandler:completionHandler];
+}
+
+- (void)getConversationUserList:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
+    [self basePPComRequest:@"/PP_GET_CONVERSATION_USER_LIST" with:params completionHandler:completionHandler];
+}
+
+- (void)getConversationInfo:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
+    [self basePPComRequest:@"/PP_GET_CONVERSATION_INFO" with:params completionHandler:completionHandler];
+}
+
+- (void)getAppInfo:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
+    [self basePPComRequest:@"/PP_GET_APP_INFO" with:params completionHandler:completionHandler];
+}
+
+- (void)createAnonymousUser:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
+    [self basePPComRequest:@"/PP_CREATE_ANONYMOUS" with:params completionHandler:completionHandler];
+}
+
+- (void)getUserUuid:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
+    [self basePPComRequest:@"/PP_GET_USER_UUID" with:params completionHandler:completionHandler];
+}
+
+- (void)getPPComDeviceUser:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
+    [self basePPComRequest:@"/PP_GET_USER_INFO" with:params completionHandler:completionHandler];
+}
+
+- (void)createDevice:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
+    [self basePPComRequest:@"/PP_CREATE_DEVICE" with:params completionHandler:completionHandler];
+}
+
+- (void)updateDevice:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
+    [self basePPComRequest:@"/PP_UPDATE_DEVICE" with:params completionHandler:completionHandler];
 }
 
 // =========================

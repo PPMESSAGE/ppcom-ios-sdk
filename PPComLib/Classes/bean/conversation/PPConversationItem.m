@@ -11,6 +11,7 @@
 #import "PPMessage.h"
 #import "PPUser.h"
 
+#import "PPSDK.h"
 #import "PPLog.h"
 #import "PPSDKUtils.h"
 #import "PPMessageUtils.h"
@@ -93,6 +94,15 @@ NSString *const PPConversationItemTypeS2P = @"P2S";
 
 - (NSUInteger)hash {
     return [self.uuid hash];
+}
+
+- (NSComparisonResult)compare:(PPConversationItem *)other {
+    if (self.updateTimestamp > other.updateTimestamp) {
+        return NSOrderedAscending;
+    } else if (self.updateTimestamp < other.updateTimestamp) {
+        return NSOrderedDescending;
+    }
+    return NSOrderedSame;
 }
 
 @end

@@ -11,6 +11,7 @@
 #import "PPUser.h"
 #import "PPImageView.h"
 #import "PPSDKUtils.h"
+#import "UIImage+PPSDK.h"
 
 #import "PPLayoutConstraintsUtils.h"
 
@@ -85,7 +86,7 @@ NSString *const PPGroupMemberViewCellIdentifier = @"PPGroupMemberViewCellIdentif
     
     if (_groupMember) {
         NSURL *userIcon = _groupMember.userIcon ? [NSURL URLWithString:_groupMember.userIcon] : nil;
-        [self.memberAvatarImageView loadWithUrl:userIcon placeHolderImage:PPDefaultAvatarImage() completionHandler:nil];
+        [self.memberAvatarImageView loadWithUrl:userIcon placeHolderImage:[UIImage pp_defaultAvatarImage] completionHandler:nil];
         self.memberNameLabel.text = _groupMember.userName;
     }
 }

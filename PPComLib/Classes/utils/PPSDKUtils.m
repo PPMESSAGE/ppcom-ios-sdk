@@ -10,40 +10,12 @@
 #import "PPLog.h"
 #import <UIKit/UIKit.h>
 
-#ifdef PP_LOCAL_DEBUG
+// ==================
+// PPFileHost - get from PPSDK.configuration.downloadHost
+// ==================
 
-NSString *const PPApiHost = @"http://192.168.0.204:8080/api";
-NSString *const PPFileHost = @"http://192.168.0.204:8080/download/";
-NSString *const PPWebSocketHost = @"ws://192.168.0.204:8080/pcsocket/WS";
-NSString *const PPFileUploadHost = @"http://192.168.0.204:8080/upload";
-NSString *const PPTxtUploadHost = @"http://192.168.0.204:8080/upload";
-NSString *const PPAuthHost = @"http://192.168.0.204:8080/ppauth";
-
-NSString *const PPApiKey = @"MTJkZDBmNDc0Yjg5NDIwY2RjM2M5ZjUyNGNiOTc3NGFhY2JlODllNA==";
-
-#elif defined(PP_LOCAL_NGROK_DEBUG)
-
-NSString *const PPApiHost = @"http://5aed1483.ngrok.io/api";
-NSString *const PPFileHost = @"http://5aed1483.ngrok.io/download/";
-NSString *const PPWebSocketHost = @"ws://5aed1483.ngrok.io/pcsocket/WS";
-NSString *const PPFileUploadHost = @"http://5aed1483.ngrok.io/upload";
-NSString *const PPTxtUploadHost = @"http://5aed1483.ngrok.io/upload";
-NSString *const PPAuthHost = @"http://5aed1483.ngrok.io/ppauth";
-
-NSString *const PPApiKey = @"ZmE1YTJhOTYzYjNhMDUyYTY0ZjdhNjJiMWI3NGZhMGZiMTlkNmI0Zg==";
-
-#else
-
-NSString *const PPApiHost = @"https://ppmessage.com/api";
-NSString *const PPFileHost = @"https://ppmessage.com/download/";
-NSString *const PPWebSocketHost = @"wss://ppmessage.com/pcsocket/WS";
-NSString *const PPFileUploadHost = @"https://ppmessage.com/upload";
-NSString *const PPTxtUploadHost = @"https://ppmessage.com/upload";
-NSString *const PPAuthHost = @"https://ppmessage.com/ppauth";
-
-NSString *const PPApiKey = @"MWJkZWI3NDZhZmRiN2NjNDYzZDVmZGI3YTk2YjI5NzhhOWJhNzIyZA==";
-
-#endif
+NSString * PPFileHost = @"";
+NSString * PPTxtUploadHost = @"";
 
 #pragma mark - Private
 
@@ -208,16 +180,24 @@ NSString* PPFormatFileSize(NSUInteger fileSizeInBytes) {
     return [NSString stringWithFormat:@"%4.2f%@", convertedValue, [tokens objectAtIndex:multiplyFactor]];
 }
 
-UIImage* PPImageFromAssets(NSString* imagePathWithOutSuffix) {
-    return [UIImage imageNamed:[NSString stringWithFormat:@"PPComLib.bundle/%@", imagePathWithOutSuffix]];
+BOOL PPIsApiResponseEmpty(NSDictionary* apiResponse) {
+    if (!apiResponse) return YES;
+    if ([apiResponse[@"error_code"] integerValue] != 0) return NO;
+    
+    NSMutableDictionary *copied = [NSMutableDictionary dictionaryWithDictionary:[apiResponse copy]];
+    [copied removeObjectForKey:@"error_code"];
+    [copied removeObjectForKey:@"error_string"];
+    [copied removeObjectForKey:@"uri"];
+    
+    return copied.count == 0;
 }
 
-UIImage* PPDefaultAvatarImage() {
-    return PPImageFromAssets(@"pp_icon_avatar");
+BOOL PPIsApiResponseError(NSDictionary* apiResponse) {
+    if (!apiResponse) return YES;
+    return [apiResponse[@"error_code"] integerValue] != 0;
 }
 
-UIImage* PPImageFromBundle(NSString* imagePathWithOutSuffix) {
-    NSBundle* bundle = [NSBundle bundleWithURL:[[NSBundle mainBundle]URLForResource:@"PPComLib" withExtension:@"bundle"]];
-    NSString *imagePath = [bundle pathForResource:imagePathWithOutSuffix ofType:@"png"];
-    UIImage* image = [UIImage imageWithContentsOfFile:imagePath];
+UIAlertView* PPMakeWarningAlert(NSString *message) {
+    UIAlertView *warnAlertView = [[UIAlertView alloc] initWithTitle:@"错误" message:message delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil];
+    return warnAlertView;
 }

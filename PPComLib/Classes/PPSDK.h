@@ -26,7 +26,6 @@ FOUNDATION_EXPORT NSString *const PPSDKMessageSendFailed;
 @class PPApp;
 @class PPWebSocketPool;
 @class PPSDKConfiguration;
-@class PPSDKService;
 
 @interface PPSDK : NSObject
 
@@ -34,7 +33,6 @@ FOUNDATION_EXPORT NSString *const PPSDKMessageSendFailed;
 @property (nonatomic) PPAPI *api;
 @property (nonatomic) PPWebSocketPool *webSocket;
 @property (nonatomic) PPServiceUser *user;
-@property (nonatomic) PPSDKService *sdkService;
 @property (nonatomic) id<PPMessageSendProtocol> messageSender;
 
 @property (nonatomic, readonly) PPSDKConfiguration* configuration;

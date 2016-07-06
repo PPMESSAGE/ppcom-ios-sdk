@@ -10,6 +10,7 @@
 #import "PPAPI.h"
 #import "PPWebSocketPool.h"
 #import "PPReceiver.h"
+#import "PPSDKStartUpHelper.h"
 
 // Notification: A new message arrived
 NSString *const PPSDKMessageArrived = @"PPSDKMessageArrived";
@@ -23,6 +24,7 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 @interface PPSDK () <PPWebSocketPoolDelegate>
 
 @property (nonatomic, readwrite) PPSDKConfiguration* configuration;
+@property (nonatomic) PPSDKStartUpHelper* startUpHelper;
 
 @end
 
@@ -46,7 +48,7 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 }
 
 - (void)start {
-    
+    [self.startUpHelper start];
 }
 
 - (void)reset {
@@ -77,6 +79,13 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
         _webSocket = [[PPWebSocketPool alloc] initWithPPSDK:self];
     }
     return _webSocket;
+}
+
+- (PPSDKStartUpHelper*)startUpHelper {
+    if (!_startUpHelper) {
+        _startUpHelper = [[PPSDKStartUpHelper alloc] initWithSDK:self];
+    }
+    return _startUpHelper;
 }
 
 // ==============================

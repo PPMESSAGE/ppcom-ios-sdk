@@ -73,7 +73,37 @@ typedef NS_ENUM(NSInteger, PPMessageCustomErrorCode) {
 
 - (void)updateUser:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
 
+// ======================
+// PPCom API
+// ======================
+
 - (void)getPPComConversationList:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
+
+- (void)getWaitingQueueLength:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
+
+- (void)getPPComDefaultConversation:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
+
+- (void)createPPComConversation:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
+
+- (void)getConversationUserList:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
+
+- (void)getConversationInfo:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
+
+- (void)getAppInfo:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
+
+- (void)createAnonymousUser:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
+
+- (void)getUserUuid:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
+
+- (void)getPPComDeviceUser:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
+
+- (void)createDevice:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
+
+- (void)updateDevice:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
+
+// =========================
+// Get access token
+// =========================
 
 /**
  * @param params {

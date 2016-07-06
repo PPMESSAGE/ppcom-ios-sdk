@@ -28,9 +28,12 @@ extern NSString *const PPConversationItemTypeS2P;
 @property (nonatomic) NSString *conversationStatus;
 @property (nonatomic) NSString *conversationName;
 @property (nonatomic) NSString *uuid;
+@property (nonatomic) NSString *conversationSummary;
 @property (nonatomic) int unreadMsgNumber;
 @property (nonatomic) double updateTimestamp;
 @property (nonatomic) NSString *conversationS2SUserUUID;
 @property (nonatomic) NSMutableArray *conversationMemberIdsArray;
+
+- (NSComparisonResult)compare:(PPConversationItem*)other;
 
 @end

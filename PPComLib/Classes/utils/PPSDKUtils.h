@@ -8,17 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-//#define PP_LOCAL_DEBUG
-//#define PP_LOCAL_NGROK_DEBUG
+// ===================================================
+// Host Info - set from sdk.configuration
+// ===================================================
 
-extern NSString *const PPApiHost;
-extern NSString *const PPFileHost;
-extern NSString *const PPWebSocketHost;
-extern NSString *const PPFileUploadHost;
-extern NSString *const PPTxtUploadHost;
-extern NSString *const PPAuthHost;
-
-extern NSString *const PPApiKey;
+extern NSString * PPFileHost;
+extern NSString * PPTxtUploadHost;
 
 NSString* PPFileURL(NSString *fileId);
 
@@ -54,11 +49,9 @@ NSString* PPLocalizedString(NSString* key);
 NSString* PPFormatFileSize(NSUInteger fileSizeInBytes);
 
 /**
- * Fetch image by path
- *
- * @imagePathWithOutSuffix you should provided `aa` instead of `aa.png` when you want to get `aa.png` image
+ * We consider { error_code: 0, uri: '/xxx', error_string: 'xxx' } as empty response
  */
-UIImage* PPImageFromAssets(NSString* imagePathWithOutSuffix);
-UIImage* PPDefaultAvatarImage();
-UIImage* PPImageFromBundle(NSString* imagePathWithOutSuffix);
+BOOL PPIsApiResponseEmpty(NSDictionary* apiResponse);
+BOOL PPIsApiResponseError(NSDictionary* apiResponse);
 
+UIAlertView* PPMakeWarningAlert(NSString *message);

@@ -62,7 +62,7 @@ static NSInteger const kPPSocketRocketDelayBetweenEachReconnect = 10; // after 1
 
 - (void)open {
     self.closed = NO;
-    NSURL *url = [NSURL URLWithString:PPWebSocketHost];
+    NSURL *url = [NSURL URLWithString:self.sdk.configuration.webSockeUrl];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     SRWebSocket *webSocket = [[SRWebSocket alloc] initWithURLRequest:request];
     webSocket.delegate = self;

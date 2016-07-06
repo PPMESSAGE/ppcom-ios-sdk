@@ -8,6 +8,8 @@
 
 #import "PPSDKConfiguration.h"
 
+#import "PPSDKUtils.h"
+
 @interface PPSDKConfiguration ()
 
 @property (nonatomic, readwrite) NSString *apiUrl;
@@ -28,6 +30,10 @@
     self.uploadUrl = [self.hostUrl stringByAppendingString:@"/upload"];
     self.authUrl = [self.hostUrl stringByAppendingString:@"/ppauth"];
     self.apiUrl = [self.hostUrl stringByAppendingString:@"/api"];
+    
+    PPFileHost = self.downloadUrl;
+    PPTxtUploadHost = self.uploadUrl;
+    
 }
 
 @end

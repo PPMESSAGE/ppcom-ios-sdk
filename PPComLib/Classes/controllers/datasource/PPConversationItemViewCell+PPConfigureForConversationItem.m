@@ -28,26 +28,24 @@
     PPMessage *latestMessage = conversation.latestMessage;
     
     NSString *displayName = conversation.conversationName;
-    NSString *messageSummary = @" ";
+    NSString *messageSummary = [self determineSummaryForConveresation:conversationItem];
     NSString *messageTimestamp = PPFormatTimestampToHumanReadableStyle(conversation.updateTimestamp, NO);
     NSString *avatarUrl = PPIsNotNull(conversation.conversationIcon) ? conversation.conversationIcon : @"";
     
-    if (latestMessage) {
-        messageSummary = [PPMessage summaryInMessage:latestMessage];
-    }
-    
-    if (latestMessage.type == PPMessageTypeTxt) {
-        PPMessageTxtMediaPart *txtMediaPart = latestMessage.mediaPart;
-        if (txtMediaPart.txtURL) {
-            self.msgSummaryLabel.text = messageSummary;
-            [[PPTxtLoader sharedLoader] loadTxtWithURL:txtMediaPart.txtURL completed:^(NSString *text, NSError *error, NSURL *txtURL) {
-                self.msgSummaryLabel.text = text != nil ? text : messageSummary;
-            }];
-        } else {
-            self.msgSummaryLabel.text = latestMessage.body;
-        }
-    } else {
+    if (messageSummary) {
         self.msgSummaryLabel.text = messageSummary;
+    } else {
+        if (latestMessage && latestMessage.type == PPMessageTypeTxt) {
+            PPMessageTxtMediaPart *txtMediaPart = latestMessage.mediaPart;
+            if (txtMediaPart.txtURL) {
+                self.msgSummaryLabel.text = messageSummary;
+                [[PPTxtLoader sharedLoader] loadTxtWithURL:txtMediaPart.txtURL completed:^(NSString *text, NSError *error, NSURL *txtURL) {
+                    self.msgSummaryLabel.text = text != nil ? text : messageSummary;
+                }];
+            } else {
+                self.msgSummaryLabel.text = latestMessage.body;
+            }
+        }
     }
     
     int unreadMessageCount = conversation.unreadMsgNumber;
@@ -64,6 +62,22 @@
     
     [self.avatarView.imageView loadWithUrl:[[NSURL alloc] initWithString:avatarUrl] placeHolderImage:[UIImage pp_defaultAvatarImage] completionHandler:nil];
 
+}
+
+- (NSString*)determineSummaryForConveresation:(PPConversationItem*)conversation {
+    // First check `conversationSummary`
+    NSString *messageSummary = conversation.conversationSummary;
+    if (messageSummary) {
+        return messageSummary;
+    }
+    
+    // Then, check `latestMessage`
+    if (conversation.latestMessage) {
+        PPMessage *message = conversation.latestMessage;
+        messageSummary = [PPMessage summaryInMessage:message];
+    }
+    
+    return messageSummary;
 }
 
 @end

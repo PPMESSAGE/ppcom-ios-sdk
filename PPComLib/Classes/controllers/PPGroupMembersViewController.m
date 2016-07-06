@@ -13,9 +13,16 @@
 #import "PPSDK.h"
 #import "PPUser.h"
 
+#import "PPSDKUtils.h"
+#import "UIViewController+PPAnimating.h"
+
 #import "PPGroupMembersCollectionViewLayout.h"
 #import "PPGroupMembersDataSource.h"
 #import "PPGroupMemberViewCell.h"
+
+#import "PPStoreManager.h"
+#import "PPGroupMembersStore.h"
+#import "PPConversationsStore.h"
 
 #import "PPTestData.h"
 
@@ -23,12 +30,11 @@
 
 @property (nonatomic) PPSDK *sdk;
 
+@property (nonatomic) PPGroupMembersStore *groupMembersStore;
+@property (nonatomic) PPConversationsStore *conversationsStore;
+
 @property (nonatomic) NSString *conversationUUID;
 @property (nonatomic) PPGroupMembersDataSource *groupMemberDataSource;
-
-@property (nonatomic) BOOL animating;
-@property (nonatomic) UIBarButtonItem *animatingButton;
-@property (nonatomic) UIActivityIndicatorView *activityIndicator;
 
 @end
 
@@ -54,7 +60,6 @@
     self.collectionView.contentInset = UIEdgeInsetsMake(0, 5.0, 0, 5.0);
     
     [self updateTitleWithGroupMembersCount:0];
-    self.navigationItem.rightBarButtonItem = self.animatingButton;
     
     [self setUpCollectionView];
 }
@@ -72,34 +77,25 @@
     self.collectionView.dataSource = self.groupMemberDataSource;
     
     // Test data
-    NSMutableArray *testGroupMembers = [[PPTestData sharedInstance] getGroupMembers];
-    [self updateTitleWithGroupMembersCount:testGroupMembers.count];
-    [self.groupMemberDataSource updateGroupMembers:testGroupMembers];
-    [self.collectionView reloadData];
-
+    //    NSMutableArray *testGroupMembers = [[PPTestData sharedInstance] getGroupMembers];
+    //    [self updateTitleWithGroupMembersCount:testGroupMembers.count];
+    //    [self.groupMemberDataSource updateGroupMembers:testGroupMembers];
+    //    [self.collectionView reloadData];
+    
     // TODO reload data
-//    self.animating = YES;
-//    [self.groupMembersStore groupMembersInConversation:self.conversationUUID findCompleted:^(NSMutableArray *members, BOOL success) {
-//        if (success) {
-//            [self updateTitleWithGroupMembersCount:members.count];
-//            [self.groupMemberDataSource updateGroupMembers:members];
-//            [self.collectionView reloadData];
-//        }
-//        self.animating = NO;
-//    }];
+    [self pp_startAnimating];
+    [self.groupMembersStore groupMembersInConversation:self.conversationUUID findCompleted:^(NSMutableArray *members, BOOL success) {
+        if (success) {
+            [self updateTitleWithGroupMembersCount:members.count];
+            [self.groupMemberDataSource updateGroupMembers:members];
+            [self.collectionView reloadData];
+        }
+        [self pp_stopAnimating];
+    }];
     
 }
 
-//- (NSMutableArray*)mockGroupMembers {
-//    NSMutableArray *array = [NSMutableArray array];
-//    for (int i=0; i < 14; ++i) {
-//        PPUser *user = [[PPUser alloc] initWithClient:self.client uuid:@"xxx" fullName:@"PPMessage" avatarId:nil];
-//        [array addObject:user];
-//    }
-//    return array;
-//}
-
-#pragma mark - 
+#pragma mark -
 
 - (CGSize)collectionView:(UICollectionView *)collectionView
                   layout:(UICollectionViewLayout*)collectionViewLayout
@@ -112,21 +108,19 @@
     PPUser *user = [self.groupMemberDataSource itemAtIndexPath:indexPath];
     if (!user.userUuid) return; // user.uuid not exist
     if ([user.userUuid isEqualToString:self.sdk.user.userUuid]) return; // self
-
-    // TODO try find P2S conversation uuid
     
-//    self.animating = YES;
-//    [self.conversationsStore findConversationAssociatedWithUserUUID:user.uuid findCompleted:^(PPConversationItem *conversationItem, BOOL success) {
-//        
-//        if (success) {
-//            [self moveToMessagesViewControllerWithConversation:conversationItem];
-//        } else {
-//            PPMakeWarningAlert(@"Can not find conversation");
-//        }
-//        
-//        self.animating = NO;
-//        
-//    }];
+    [self pp_startAnimating];
+    [self.conversationsStore findConversationAssociatedWithUserUUID:user.userUuid findCompleted:^(PPConversationItem *conversationItem, BOOL success) {
+        
+        if (success) {
+            [self moveToMessagesViewControllerWithConversation:conversationItem];
+        } else {
+            PPMakeWarningAlert(@"Can not find conversation");
+        }
+        
+        [self pp_stopAnimating];
+        
+    }];
     
 }
 
@@ -157,35 +151,26 @@
 
 #pragma mark - getter setter
 
+- (PPGroupMembersStore*)groupMembersStore {
+    if (!_groupMembersStore) {
+        _groupMembersStore = [PPStoreManager instanceWithClient:self.sdk].groupMembersStore;
+    }
+    return _groupMembersStore;
+}
+
+- (PPConversationsStore*)conversationsStore {
+    if (!_conversationsStore) {
+        _conversationsStore = [PPStoreManager instanceWithClient:self.sdk].conversationStore;
+    }
+    return _conversationsStore;
+}
+
 - (void)updateTitleWithGroupMembersCount:(NSInteger)count {
     if (count > 0) {
         self.title = [NSString stringWithFormat:@"Group(%@)", [NSNumber numberWithInteger:count]];
     } else {
         self.title = @"Group";
     }
-}
-
-- (void)setAnimating:(BOOL)animating {
-    _animating = animating;
-    if (_animating) {
-        [self.activityIndicator startAnimating];
-    } else {
-        [self.activityIndicator stopAnimating];
-    }
-}
-
-- (UIBarButtonItem*)animatingButton {
-    if (!_animatingButton) {
-        _animatingButton = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];
-    }
-    return _animatingButton;
-}
-
-- (UIActivityIndicatorView*)activityIndicator {
-    if (!_activityIndicator) {
-        _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    }
-    return _activityIndicator;
 }
 
 #pragma mark - Group members datasource
