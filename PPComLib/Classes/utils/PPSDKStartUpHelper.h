@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class PPSDK, PPSDKStartUpHelper;
+@class PPSDK, PPUser, PPSDKStartUpHelper;
 
 @protocol PPSDKStartUpHelperDelegate <NSObject>
 
@@ -24,6 +24,7 @@
 
 @interface PPSDKStartUpHelper : NSObject
 
+@property (nonatomic) NSString *status;
 @property (nonatomic, weak) id<PPSDKStartUpHelperDelegate> startUpDelegate;
 
 - (instancetype)initWithSDK:(PPSDK*)sdk;
