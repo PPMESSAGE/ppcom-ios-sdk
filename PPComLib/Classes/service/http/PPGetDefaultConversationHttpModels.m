@@ -70,7 +70,7 @@
     
 }
 
-- (void)getConversationInfoWithConversationUUID:(NSString*)conversationUUID completed:(PPHttpModelCompletedBlock)completedBlock; {
+- (void)getConversationInfoWithConversationUUID:(NSString*)conversationUUID completed:(PPHttpModelCompletedBlock)completedBlock {
     PPGetConversationInfoHttpModel *getConversationInfoHttpModel = [[PPGetConversationInfoHttpModel alloc] initWithClient:self.client];
     [getConversationInfoHttpModel getWithConversationUUID:conversationUUID completedBlock:completedBlock];
 }

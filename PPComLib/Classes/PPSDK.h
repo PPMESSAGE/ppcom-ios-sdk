@@ -12,6 +12,8 @@
 #import "PPSDKConfiguration.h"
 #import "PPMessageSendProtocol.h"
 
+@class PPServiceUser, PPAPI, PPApp, PPWebSocketPool, PPSDKConfiguration, PPSDK;
+
 // Notification: A new message arrived
 FOUNDATION_EXPORT NSString *const PPSDKMessageArrived;
 
@@ -21,11 +23,17 @@ FOUNDATION_EXPORT NSString *const PPSDKMessageSendSucceed;
 // Notification: Message send failed
 FOUNDATION_EXPORT NSString *const PPSDKMessageSendFailed;
 
-@class PPServiceUser;
-@class PPAPI;
-@class PPApp;
-@class PPWebSocketPool;
-@class PPSDKConfiguration;
+@protocol PPSDKDelegate <NSObject>
+
+@optional
+
+// sdk startup succeded
+- (void)didPPSDKStartUpSucceded:(PPSDK*)sdk;
+
+// sdk startup failed
+- (void)didPPSDKStartUpFailed:(PPSDK*)sdk errorInfo:(id)errorInfo;
+
+@end
 
 @interface PPSDK : NSObject
 
@@ -36,6 +44,7 @@ FOUNDATION_EXPORT NSString *const PPSDKMessageSendFailed;
 @property (nonatomic) id<PPMessageSendProtocol> messageSender;
 
 @property (nonatomic, readonly) PPSDKConfiguration* configuration;
+@property (nonatomic, weak) id<PPSDKDelegate> sdkDelegate;
 
 + (instancetype)sharedSDK;
 

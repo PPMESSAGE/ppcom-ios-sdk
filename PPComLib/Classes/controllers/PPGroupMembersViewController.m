@@ -76,13 +76,6 @@
     
     self.collectionView.dataSource = self.groupMemberDataSource;
     
-    // Test data
-    //    NSMutableArray *testGroupMembers = [[PPTestData sharedInstance] getGroupMembers];
-    //    [self updateTitleWithGroupMembersCount:testGroupMembers.count];
-    //    [self.groupMemberDataSource updateGroupMembers:testGroupMembers];
-    //    [self.collectionView reloadData];
-    
-    // TODO reload data
     [self pp_startAnimating];
     [self.groupMembersStore groupMembersInConversation:self.conversationUUID findCompleted:^(NSMutableArray *members, BOOL success) {
         if (success) {

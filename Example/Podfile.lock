@@ -32,13 +32,13 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   PPComLib:
-    :path: "../"
+    :path: ../
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   Better-JTSImageViewController: d1cd3b46361ed22f47737a458474def9837f72cf
   MGSwipeTableCell: bafeb5f351124544c9364ecbdf24c7b06a37d340
-  PPComLib: 0052168f5bfc2eb3aa2950675f07164763b3fa97
+  PPComLib: 34243dded9a6fe898bc186a19751aa89413f5854
   SDWebImage: 35f9627a3e44b4f292a8a8ce6a531fa488239b91
   SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
 

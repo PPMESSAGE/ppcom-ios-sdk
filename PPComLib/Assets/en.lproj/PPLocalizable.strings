@@ -1,0 +1,33 @@
+/* 
+  PPLocalizable.strings
+  Pods
+
+  Created by PPMessage on 7/6/16.
+
+*/
+"Group Member Controller Title With Number" = "Conversation Members(%d)";
+"Group Member Controller Title" = "Conversation Members";
+"Create Conversation Error" = "Create conversation failed";
+"Conversations Controller Title" = "Conversations";
+"Conversations Waiting Queue Length" = "There are total %d person in the queue";
+
+"Please Wait" = "Please Wait...";
+"Loading" = "Loading...";
+
+"Unknown Msg" = "[Please view this message in browser]";
+
+"File Msg Summary" = "[File]";
+"Image Msg Summary" = "[Image]";
+"Unknown Msg Summary" = "[Unknown Msg]";
+
+"Yesterday" = "Yesterday";
+
+"Network Not Avaliable" = "The Internet connection appears to be offline";
+"Another Device Logged In" = "Your account logged in another mobile device.";
+
+"OK" = "OK";
+"Saved to Album" = "Saved to Album";
+"Cancel" = "Cancel";
+"Save" = "Save";
+
+"Enter Message" = "Enter Message";

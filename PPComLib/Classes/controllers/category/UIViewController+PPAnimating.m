@@ -37,6 +37,7 @@
     if (![self isActivityIndicatorViewAttached]) return;
     UIActivityIndicatorView *activityIndicatorView = (UIActivityIndicatorView*) self.navigationItem.rightBarButtonItem;
     [activityIndicatorView stopAnimating];
+    self.navigationItem.rightBarButtonItem = nil;
 }
 
 #pragma mark - helper

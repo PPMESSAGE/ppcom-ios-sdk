@@ -8,6 +8,7 @@
 
 #include "PPSDKUtils.h"
 #import "PPLog.h"
+#import "NSString+PPSDK.h"
 #import <UIKit/UIKit.h>
 
 // ==================
@@ -166,7 +167,7 @@ NSString* PPDataToString(NSData *data) {
 }
 
 NSString* PPLocalizedString(NSString* key) {
-    return [NSString stringWithFormat:NSLocalizedString(key, nil)];
+    return [NSString pp_LocaliziedStringForKey:key];
 }
 
 NSString* PPFormatFileSize(NSUInteger fileSizeInBytes) {

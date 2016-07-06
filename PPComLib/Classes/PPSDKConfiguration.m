@@ -22,7 +22,9 @@
 
 @implementation PPSDKConfiguration
 
-- (void)setHostUrl:(NSString*)hostUrl {
+- (void)setHostUrl:(NSString *)hostUrl {
+    _hostUrl = hostUrl;
+    
     NSString *wsHost = [self.hostUrl stringByReplacingCharactersInRange:NSMakeRange(0,4) withString:@"ws"];
     
     self.webSockeUrl = [wsHost stringByAppendingString:@"/pcsocket/WS"];
@@ -33,7 +35,6 @@
     
     PPFileHost = self.downloadUrl;
     PPTxtUploadHost = self.uploadUrl;
-    
 }
 
 @end

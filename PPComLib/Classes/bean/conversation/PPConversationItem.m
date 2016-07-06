@@ -42,6 +42,12 @@ NSString *const PPConversationItemTypeS2P = @"P2S";
             [conversationItem.conversationType isEqualToString:PPConversationItemTypeS2S]) {
             conversationItem.conversationS2SUserUUID = conversationDataDict[@"user_uuid"];
         }
+    } else {
+        conversationItem.uuid = dictionary[@"uuid"];
+        conversationItem.conversationIcon = PPFileURL(conversationDataDict[@"conversation_icon"]);
+        conversationItem.conversationName = conversationDataDict[@"conversation_name"];
+        conversationItem.updateTimestamp = PPRetrieveTimestampFromString(conversationDataDict[@"updatetime"]);
+        conversationItem.conversationType = conversationDataDict[@"conversation_type"];
     }
     
     PPMessage *latestMessage = nil;

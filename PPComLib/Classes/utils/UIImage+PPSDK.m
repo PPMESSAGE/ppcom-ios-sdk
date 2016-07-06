@@ -7,14 +7,12 @@
 //
 
 #import "UIImage+PPSDK.h"
-#import "PPSDK.h"
+#import "NSBundle+PPSDK.h"
 
 @implementation UIImage (PPSDK)
 
 + (UIImage*)pp_imageForName:(NSString*)imageName {
-    NSString *bundleResourcePath = [NSBundle bundleForClass:[PPSDK class]].resourcePath;
-    NSString *assetsPath = [bundleResourcePath stringByAppendingPathComponent:@"PPComLibAssets.bundle"];
-    NSBundle *bundle = [NSBundle bundleWithPath:assetsPath];
+    NSBundle *bundle = [NSBundle pp_assetsBundle];
     return [self imageNamed:imageName inBundle:bundle compatibleWithTraitCollection:nil];
 }
 

@@ -33,7 +33,7 @@ TODO: Add long description of the pod here.
   s.source_files = 'PPComLib/Classes/**/*'
   
   s.resource_bundles = {
-     'PPComLibAssets' => ['PPComLib/Assets/*.png']
+     'PPComLibAssets' => ['PPComLib/Assets/*.*']
   }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'

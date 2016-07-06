@@ -21,7 +21,7 @@ NSString *const PPSDKMessageSendSucceed = @"PPSDKMessageSendSucceed";
 // Notification: Message send failed
 NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 
-@interface PPSDK () <PPWebSocketPoolDelegate>
+@interface PPSDK () <PPWebSocketPoolDelegate, PPSDKStartUpHelperDelegate>
 
 @property (nonatomic, readwrite) PPSDKConfiguration* configuration;
 @property (nonatomic) PPSDKStartUpHelper* startUpHelper;
@@ -84,6 +84,7 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 - (PPSDKStartUpHelper*)startUpHelper {
     if (!_startUpHelper) {
         _startUpHelper = [[PPSDKStartUpHelper alloc] initWithSDK:self];
+        _startUpHelper.startUpDelegate = self;
     }
     return _startUpHelper;
 }
@@ -106,6 +107,36 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 
 - (void)didMessageArrived:(PPWebSocketPool *)webSocket message:(id)obj {
     [[PPReceiver sharedReceiver] handle:obj handleCompleted:nil];
+}
+
+// ==============================
+// PPSDKStartUpHelperDelegate
+// ==============================
+- (void)didSDKStartUpSucceded:(PPSDKStartUpHelper*)startUpHelper {
+    [self notifyStartUpSucceded];
+}
+
+- (void)didSDKStartUpFailed:(PPSDKStartUpHelper*)startUpHelper errorInfo:(id)errorInfo {
+    [self notifyStartUpFailedWithErrorInfo:errorInfo];
+}
+
+// ==============================
+// PPSDKDelegate
+// ==============================
+- (void)notifyStartUpSucceded {
+    if (self.sdkDelegate) {
+        if ([self.sdkDelegate respondsToSelector:@selector(didPPSDKStartUpSucceded:)]) {
+            [self.sdkDelegate didPPSDKStartUpSucceded:self];
+        }
+    }
+}
+
+- (void)notifyStartUpFailedWithErrorInfo:(id)errorInfo {
+    if (self.sdkDelegate) {
+        if ([self.sdkDelegate respondsToSelector:@selector(didPPSDKStartUpFailed:errorInfo:)]) {
+            [self.sdkDelegate didPPSDKStartUpFailed:self errorInfo:errorInfo];
+        }
+    }
 }
 
 // TODO: report websocket state

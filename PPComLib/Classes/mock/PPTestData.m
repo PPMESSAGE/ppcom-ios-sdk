@@ -12,7 +12,10 @@
 #import "PPMessageImageMediaPart.h"
 #import "PPMessageFileMediaPart.h"
 #import "PPConversationItem.h"
+
+#import "PPApp.h"
 #import "PPUser.h"
+#import "PPServiceUser.h"
 
 #import "PPSDKUtils.h"
 
@@ -88,6 +91,19 @@
                                           withIcon:@"http://hitmaxz.com/wp-content/uploads/2014/11/cute-girls-kids-baby-31.jpg"]];
     
     return groupMembers;
+}
+
+- (PPApp*)getApp {
+    PPApp *app = [[PPApp alloc] initWithAppKey:@"779337ae-f17c-11e5-8957-02287b8c0ebf"
+                                     appSecret:@"779339b6-f17c-11e5-8957-02287b8c0ebf"
+                                          uuid:@"77933ab0-f17c-11e5-8957-02287b8c0ebf"];
+    return app;
+}
+
+- (PPServiceUser*)getServiceUser {
+    PPServiceUser *serviceUser = [[PPServiceUser alloc] initWithUuid:@"7168bdd0-392b-11e6-b4b8-02287b8c0ebf"];
+    serviceUser.mobileDeviceUuid = @"71976842-392b-11e6-b4b8-02287b8c0ebf";
+    return serviceUser;
 }
 
 #pragma mark - helpers

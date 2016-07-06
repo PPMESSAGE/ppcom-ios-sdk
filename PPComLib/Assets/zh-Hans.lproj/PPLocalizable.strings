@@ -1,0 +1,33 @@
+/* 
+  PPLocalizable.strings
+  Pods
+
+  Created by PPMessage on 7/6/16.
+
+*/
+"Group Member Controller Title With Number" = "会话成员(%d)";
+"Group Member Controller Title" = "会话成员";
+"Create Conversation Error" = "创建会话失败";
+"Conversations Controller Title" = "会话列表";
+"Conversations Waiting Queue Length" = "当前共有%d人正在排队";
+
+"Please Wait" = "请稍候...";
+"Loading" = "获取中...";
+
+"Unknown Msg" = "[请在浏览器中查看这条消息]";
+
+"File Msg Summary" = "[文件]";
+"Image Msg Summary" = "[图片]";
+"Unknown Msg Summary" = "[未知消息]";
+
+"Yesterday" = "昨天";
+
+"Network Not Avaliable" = "网络不可用";
+"Another Device Logged In" = "您的账号于另一台设备登录";
+
+"OK" = "好";
+"Saved to Album" = "已保存至相册";
+"Cancel" = "取消";
+"Save" = "保存";
+
+"Enter Message" = "输入信息";
