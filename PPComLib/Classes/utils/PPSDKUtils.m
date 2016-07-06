@@ -14,6 +14,8 @@
 // PPFileHost - get from PPSDK.configuration.downloadHost
 // ==================
 
+#define ANONYMOUS_USER_TRACE_UUID @"anonymous_trace_UUid"
+
 NSString * PPFileHost = @"";
 NSString * PPTxtUploadHost = @"";
 
@@ -200,4 +202,15 @@ BOOL PPIsApiResponseError(NSDictionary* apiResponse) {
 UIAlertView* PPMakeWarningAlert(NSString *message) {
     UIAlertView *warnAlertView = [[UIAlertView alloc] initWithTitle:@"错误" message:message delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil];
     return warnAlertView;
+}
+
+NSString* PPTraceUUID() {
+    NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
+    NSString *traceUUID = [preferences stringForKey:ANONYMOUS_USER_TRACE_UUID];
+    if (!traceUUID) {
+        traceUUID = PPRandomUUID();
+        [preferences setValue:traceUUID forKey:ANONYMOUS_USER_TRACE_UUID];
+        [preferences synchronize];
+    }
+    return traceUUID;
 }

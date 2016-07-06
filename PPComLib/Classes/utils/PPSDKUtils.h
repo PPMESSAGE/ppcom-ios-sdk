@@ -55,3 +55,7 @@ BOOL PPIsApiResponseEmpty(NSDictionary* apiResponse);
 BOOL PPIsApiResponseError(NSDictionary* apiResponse);
 
 UIAlertView* PPMakeWarningAlert(NSString *message);
+
+typedef void (^PPNoArgBlock)();
+
+NSString* PPTraceUUID();
