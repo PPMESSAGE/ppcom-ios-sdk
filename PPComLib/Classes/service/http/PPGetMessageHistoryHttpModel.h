@@ -24,4 +24,7 @@
                          pageOffset:(NSInteger)pageOffset
                           completed:(PPHttpModelCompletedBlock)completedBlock;
 
+- (void)requestWithConversationUUID:(NSString *)conversationUUID
+                         maxUUID:(NSInteger)maxUUID
+                          completed:(PPHttpModelCompletedBlock)completedBlock;
 @end

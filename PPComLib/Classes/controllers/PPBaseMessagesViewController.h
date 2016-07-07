@@ -8,12 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-@class PPConversationItem, PPMessage;
+@class PPConversationItem, PPMessage, PPBaseMessagesViewControllerDataSource;
 
 @interface PPBaseMessagesViewController : UIViewController <UITableViewDelegate>
 
 @property (nonatomic) NSString *conversationTitle;
 @property (nonatomic) NSString *conversationUUID;
+
+@property (nonatomic) PPBaseMessagesViewControllerDataSource *messagesDataSource;
 
 - (void)applicationIsActive:(NSNotification *)notification;
 - (void)applicationEnteredForeground:(NSNotification *)notification;

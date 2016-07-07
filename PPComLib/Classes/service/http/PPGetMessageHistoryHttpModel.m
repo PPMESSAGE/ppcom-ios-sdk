@@ -40,16 +40,34 @@ static NSInteger const DEFAULT_MESSAGE_PAGESIZE = 20;
 }
 
 - (void)requestWithConversationUUID:(NSString *)conversationUUID
+                         maxUUID:(NSString *)maxUUID
+                          completed:(PPHttpModelCompletedBlock)completedBlock {
+    NSDictionary *params = @{
+                             @"conversation_uuid": conversationUUID,
+                             @"max_uuid": maxUUID,
+                             @"page_size": [NSNumber numberWithInteger:DEFAULT_MESSAGE_PAGESIZE]
+                             };
+    [self requestWithConversationUUID:conversationUUID params:params completed:completedBlock];
+}
+
+- (void)requestWithConversationUUID:(NSString *)conversationUUID
                          pageOffset:(NSInteger)pageOffset
                            pageSize:(NSInteger)pageSize
                           completed:(PPHttpModelCompletedBlock)completedBlock {
     
-    PPAPI *api = self.client.api;
     NSDictionary *params = @{
                              @"conversation_uuid":conversationUUID,
                              @"page_offset":[NSNumber numberWithInteger:pageOffset],
-                             @"page_size":[NSNumber numberWithInteger:pageSize],
+                             @"page_size":[NSNumber numberWithInteger:pageSize]
                              };
+    [self requestWithConversationUUID:conversationUUID params:params completed:completedBlock];
+}
+
+- (void) requestWithConversationUUID:(NSString *)conversationUUID
+                          params:(NSDictionary*)params
+                           completed:(PPHttpModelCompletedBlock)completedBlock {
+    
+    PPAPI *api = self.client.api;
     [api getMessageHistory:params completionHandler:^(NSDictionary *response, NSDictionary *error) {
         if (!error) {
             
