@@ -28,6 +28,7 @@
 #import "PPSDKUtils.h"
 #import "PPLog.h"
 #import "UIImage+PPSDK.h"
+#import "UIViewController+PPAnimating.h"
 
 #import "PPMessage.h"
 #import "PPConversationItem.h"
@@ -98,7 +99,6 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
     }
     
     // Show test data
-    [self.messagesDataSource updateWithMessages:[[PPTestData sharedInstance] getMessages]];
     [self.keyboardDelegate keepTableViewContentAtBottomQuickly];
     
 }
@@ -152,7 +152,6 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     [self endEditing];
-    
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
@@ -368,4 +367,16 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
     [self.conversationUUID isEqualToString:conversationUUID];
 }
 
+// =================
+// Loading
+// =================
+- (void)showLoadingView {
+    [self pp_startAnimating];
+}
+
+- (void)dismissLoadingView {
+    [self pp_stopAnimating];
+}
+
 @end
+

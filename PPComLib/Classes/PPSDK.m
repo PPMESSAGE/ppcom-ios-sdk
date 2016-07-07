@@ -101,6 +101,7 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 - (PPWebSocketPool*)webSocket {
     if (!_webSocket) {
         _webSocket = [[PPWebSocketPool alloc] initWithPPSDK:self];
+        _webSocket.webSocketPoolDelegate = self;
     }
     return _webSocket;
 }

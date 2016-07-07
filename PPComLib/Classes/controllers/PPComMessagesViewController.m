@@ -48,4 +48,16 @@
     [self.navigationController pushViewController:groupMembersViewController animated:YES];
 }
 
+// ========================
+// Loading
+// ========================
+- (void)showLoadingView {
+    [super showLoadingView];
+}
+
+- (void)dismissLoadingView {
+    [super dismissLoadingView];
+    self.navigationItem.rightBarButtonItem = self.groupButtonItem;
+}
+
 @end

@@ -15,9 +15,6 @@
 @property (nonatomic) NSString *conversationTitle;
 @property (nonatomic) NSString *conversationUUID;
 
-/** TRUE: 显示loading动画，标志当前正在加载数据, FALSE: 不显示loading动画，标志当前数据加载完毕 **/
-@property (nonatomic) BOOL inRequesting;
-
 - (void)applicationIsActive:(NSNotification *)notification;
 - (void)applicationEnteredForeground:(NSNotification *)notification;
 
@@ -25,5 +22,11 @@
 
 // Page pull to refresh action triggered
 - (void)onPagePullToRefreshAction;
+
+// ===============
+// Loading
+// ===============
+- (void)showLoadingView;
+- (void)dismissLoadingView;
 
 @end
