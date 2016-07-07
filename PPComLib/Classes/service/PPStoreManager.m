@@ -10,6 +10,7 @@
 
 #import "PPConversationsStore.h"
 #import "PPGroupMembersStore.h"
+#import "PPMessagesStore.h"
 #import "PPSDK.h"
 
 @implementation PPStoreManager
@@ -27,6 +28,7 @@
     if (self = [super init]) {
         self.conversationStore = [PPConversationsStore storeWithClient:client];
         self.groupMembersStore = [PPGroupMembersStore storeWithClient:client];
+        self.messagesStore = [PPMessagesStore storeWithClient:client];
     }
     return self;
 }
