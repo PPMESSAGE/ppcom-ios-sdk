@@ -11,6 +11,10 @@
 #import "PPWebSocketPool.h"
 #import "PPReceiver.h"
 #import "PPSDKStartUpHelper.h"
+
+#import "PPStoreManager.h"
+#import "PPMessagesStore.h"
+
 #import "PPLog.h"
 
 // Notification: A new message arrived
@@ -26,6 +30,9 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 
 @property (nonatomic, readwrite) PPSDKConfiguration* configuration;
 @property (nonatomic) PPSDKStartUpHelper* startUpHelper;
+
+@property (nonatomic) PPStoreManager *storeManager;
+@property (nonatomic) PPMessagesStore *messagesStore;
 
 @end
 
@@ -99,6 +106,20 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
     return _startUpHelper;
 }
 
+- (PPStoreManager*)storeManager {
+    if (!_storeManager) {
+        _storeManager = [PPStoreManager instanceWithClient:self];
+    }
+    return _storeManager;
+}
+
+- (PPMessagesStore*)messagesStore {
+    if (!_messagesStore) {
+        _messagesStore = self.storeManager.messagesStore;
+    }
+    return _messagesStore;
+}
+
 // ==============================
 // Application Lifecycle
 // ==============================
@@ -145,16 +166,20 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 
 - (void)didPPMessageArrived:(id)obj {
     PPMessage *message = obj;
+    [self.messagesStore updateWithNewMessage:message];
     [self postWebSocketMessageNotificationWithObject:obj forName:PPSDKMessageArrived];
 }
 
 - (void)didSendAckMessageArrived:(id)obj {
     NSDictionary *notifyObj = obj;
+    NSString *conversationUUID = notifyObj[@"conversation_uuid"];
+    NSString *messageUUID = notifyObj[@"message_uuid"];
+    
     if ([notifyObj[@"error_code"] integerValue] != 0) {
-        NSString *conversationUUID = notifyObj[@"conversation_uuid"];
-        NSString *messageUUID = notifyObj[@"message_uuid"];
+        [self.messagesStore updateMessageStatus:PPMessageStatusError messageIndentifier:messageUUID conversationUUID:conversationUUID];
         [self postWebSocketMessageNotificationWithObject:obj forName:PPSDKMessageSendFailed];
     } else {
+        [self.messagesStore updateMessageStatus:PPMessageStatusOk messageIndentifier:messageUUID conversationUUID:conversationUUID];
         [self postWebSocketMessageNotificationWithObject:obj forName:PPSDKMessageSendSucceed];
     }
 }

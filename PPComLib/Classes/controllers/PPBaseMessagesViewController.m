@@ -230,8 +230,6 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
                     break;
                     
                 case PPMessageSendStateError:
-                    // TODO
-//                    [self asyncUpdateMessage:message completedBlock:nil];
                     [self reloadTableView];
                     break;
             }

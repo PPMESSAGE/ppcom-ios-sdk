@@ -7,14 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MGSwipeTableCell.h"
 
 @class PPBadgeSquareImageView;
 
 extern CGFloat const PPConversationItemViewHeight;
 extern NSString *const PPConversationItemViewCellIdentifier;
 
-@interface PPConversationItemViewCell : MGSwipeTableCell
+@interface PPConversationItemViewCell : UITableViewCell
 
 @property (nonatomic) PPBadgeSquareImageView *avatarView;
 @property (nonatomic) UILabel *displayNameLabel;

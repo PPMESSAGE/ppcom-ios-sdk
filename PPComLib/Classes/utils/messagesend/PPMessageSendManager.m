@@ -18,6 +18,7 @@
 
 #import "PPStoreManager.h"
 #import "PPConversationsStore.h"
+#import "PPMessagesStore.h"
 
 @implementation PPMessageSendManager
 
@@ -42,16 +43,21 @@ withConversation:(NSString *)conversationUUID
     toUser.userType = @"AG";
     
     PPConversationsStore *conversationsStore = [PPStoreManager instanceWithClient:sdk].conversationStore;
+    PPMessagesStore *messagesStore = [PPStoreManager instanceWithClient:sdk].messagesStore;
+    
     [conversationsStore asyncFindConversationWithConversationUUID:conversationUUID withBlock:^(PPConversationItem *conversationItem) {
         if (conversationItem) {
             PPMessage *message = [PPMessage messageForSend:PPRandomUUID() text:textToBeSend conversation:conversationItem toUser:toUser];
             
-            // Add message --: give it a callback --: if (block) block(message, obj, PPMessageSendStateSendOut);
+            [messagesStore updateWithNewMessage:message];
+            if (block) block(message, nil, PPMessageSendStateSendOut);
             
             id<PPMessageSendProtocol> messageSender = sdk.messageSender;
             [messageSender sendMessage:message withBlock:^(BOOL quickError) {
                 if (quickError) {
-                    message.status = PPMessageStatusError;
+                    [messagesStore updateMessageStatus:PPMessageSendStateError
+                                    messageIndentifier:message.identifier
+                                      conversationUUID:conversationUUID];
                     if (block) block(message, nil, PPMessageSendStateError);
                 }
             }];
