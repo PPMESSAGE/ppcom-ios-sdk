@@ -54,12 +54,11 @@
     return YES;
 }
 
-- (void)updateMessageStatus:(PPMessageStatus)status messageIndentifier:(NSString *)indentifier converationUUID:(NSString *)conversationUUID {
-    PPMessage *message = [self findMessageWithIndentifier:indentifier conversationUUID:conversationUUID];
+- (void)updateMessageStatus:(PPMessageStatus)status messageIndentifier:(NSString *)identifier conversationUUID:(NSString *)conversationUUID {
+    PPMessage *message = [self findMessageWithIndentifier:identifier conversationUUID:conversationUUID];
     if (message) {
         message.status = status;
     }
-    return;
 }
 
 // private
@@ -70,7 +69,7 @@
     [messages enumerateObjectsUsingBlock:^(PPMessage *obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([obj.identifier isEqualToString:indentifier]) {
             target = obj;
-            stop = YES;
+            *stop = YES;
         }
     }];
     return target;

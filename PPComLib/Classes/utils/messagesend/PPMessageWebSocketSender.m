@@ -50,6 +50,7 @@
         NSDictionary *sendParams = @{@"type": @"send",
                                      @"send": apiMessageDict};
         
+        PPFastLog(@"[WebSocket] send message: %@", sendParams);
         BOOL sendOK = [webSocket send:PPDictionaryToJsonString(sendParams)];
         if (quickErrorNotifyBlock) quickErrorNotifyBlock(!sendOK);
         

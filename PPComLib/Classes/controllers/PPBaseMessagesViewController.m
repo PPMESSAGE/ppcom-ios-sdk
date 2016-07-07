@@ -33,7 +33,6 @@
 #import "PPMessage.h"
 #import "PPConversationItem.h"
 #import "PPUser.h"
-#import "PPMessageWebSocketSender.h"
 #import "PPMessageSendProtocol.h"
 
 #import "PPSDK.h"
@@ -77,18 +76,21 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
     self.tableView = self.chattingView.chattingMessagesCollectionView;
     self.tableView.contentOffset = CGPointZero;
     
-    self.edgesForExtendedLayout = UIRectEdgeNone;
-    self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
-    
-    self.tableView.delegate = self;
-    // 键盘回车键用来发送
-    self.chattingView.inputToolbar.textInputView.returnKeyType = UIReturnKeySend;
-    self.chattingView.inputToolbar.textInputView.enablesReturnKeyAutomatically = YES;
-    
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
+    
+    self.tableView.delegate = self;
+    self.chattingView.inputToolbar.inputToolbarDelegate = self;
+    self.chattingView.inputToolbar.textInputView.delegate = self;
+    
+    // 键盘回车键用来发送
+    self.chattingView.inputToolbar.textInputView.returnKeyType = UIReturnKeySend;
+    self.chattingView.inputToolbar.textInputView.enablesReturnKeyAutomatically = YES;
     
     [self registerCellClass];
     [self setupTableView];
@@ -98,15 +100,11 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
         [self.keyboardDelegate keepTableViewContentAtBottomQuickly];
     }
     
-    // Show test data
-    [self.keyboardDelegate keepTableViewContentAtBottomQuickly];
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    self.chattingView.inputToolbar.inputToolbarDelegate = self;
     [self addApplicationObserver];
     [self addPPSDKObserver];
     [self addKeyboardObserver];
@@ -115,8 +113,6 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
 -(void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    self.chattingView.inputToolbar.inputToolbarDelegate = nil;
-    self.keyboardDelegate = nil;
     [self removePPSDKObserver];
     [self removeApplicationObserver];
     [self removeKeyboardObserver];
@@ -131,8 +127,8 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    self.chattingView.inputToolbar.inputToolbarDelegate = nil;
     self.chattingView.inputToolbar.textInputView.delegate = nil;
-    self.chattingView.inputToolbar.delegate = nil;
     self.keyboardDelegate = nil;
 }
 

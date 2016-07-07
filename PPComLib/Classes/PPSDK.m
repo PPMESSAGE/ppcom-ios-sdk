@@ -11,6 +11,7 @@
 #import "PPWebSocketPool.h"
 #import "PPReceiver.h"
 #import "PPSDKStartUpHelper.h"
+#import "PPMessageWebSocketSender.h"
 
 #import "PPStoreManager.h"
 #import "PPMessagesStore.h"
@@ -133,6 +134,13 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
         _fetchUnackedMessagesTask = [[PPFetchUnackedMessagesTask alloc] initWithSDK:self];
     }
     return _fetchUnackedMessagesTask;
+}
+
+- (id<PPMessageSendProtocol>)messageSender {
+    if (!_messageSender) {
+        _messageSender = [PPMessageWebSocketSender new];
+    }
+    return _messageSender;
 }
 
 // ==============================

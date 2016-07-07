@@ -50,7 +50,7 @@ withConversation:(NSString *)conversationUUID
             PPMessage *message = [PPMessage messageForSend:PPRandomUUID() text:textToBeSend conversation:conversationItem toUser:toUser];
             
             [messagesStore updateWithNewMessage:message];
-            if (block) block(message, nil, PPMessageSendStateSendOut);
+            if (block) block(message, [messagesStore messagesInCovnersation:conversationUUID], PPMessageSendStateSendOut);
             
             id<PPMessageSendProtocol> messageSender = sdk.messageSender;
             [messageSender sendMessage:message withBlock:^(BOOL quickError) {
@@ -58,7 +58,7 @@ withConversation:(NSString *)conversationUUID
                     [messagesStore updateMessageStatus:PPMessageSendStateError
                                     messageIndentifier:message.identifier
                                       conversationUUID:conversationUUID];
-                    if (block) block(message, nil, PPMessageSendStateError);
+                    if (block) block(message, [messagesStore messages], PPMessageSendStateError);
                 }
             }];
             
