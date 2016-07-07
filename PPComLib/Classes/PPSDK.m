@@ -15,6 +15,8 @@
 #import "PPStoreManager.h"
 #import "PPMessagesStore.h"
 
+#import "PPFetchUnackedMessagesTask.h"
+
 #import "PPLog.h"
 
 // Notification: A new message arrived
@@ -33,6 +35,7 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 
 @property (nonatomic) PPStoreManager *storeManager;
 @property (nonatomic) PPMessagesStore *messagesStore;
+@property (nonatomic) PPFetchUnackedMessagesTask *fetchUnackedMessagesTask;
 
 @end
 
@@ -69,6 +72,10 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
     }
     if (_app) {
         _app = nil;
+    }
+    if (_fetchUnackedMessagesTask) {
+        [_fetchUnackedMessagesTask cancel];
+        _fetchUnackedMessagesTask = nil;
     }
 }
 
@@ -120,6 +127,13 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
     return _messagesStore;
 }
 
+- (PPFetchUnackedMessagesTask*)fetchUnackedMessagesTask {
+    if (!_fetchUnackedMessagesTask) {
+        _fetchUnackedMessagesTask = [[PPFetchUnackedMessagesTask alloc] initWithSDK:self];
+    }
+    return _fetchUnackedMessagesTask;
+}
+
 // ==============================
 // Application Lifecycle
 // ==============================
@@ -162,6 +176,10 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
                 break;
         }
     }];
+}
+
+- (void)didSocketAuthed:(PPWebSocketPool*)webSocketPool {
+    [self.fetchUnackedMessagesTask run];
 }
 
 - (void)didPPMessageArrived:(id)obj {
@@ -221,41 +239,5 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
         }
     }
 }
-
-// TODO: report websocket state
-
-//- (void)didSocketOpened:(PPWebSocketPool *)webSocket {
-//    if (self.webSocketStateChangeDelegate &&
-//        [self.webSocketStateChangeDelegate respondsToSelector:@selector(didWebSocketStateChanged:)]) {
-//        [self.webSocketStateChangeDelegate didWebSocketStateChanged:PPWebSocketStateOpen];
-//    }
-//    self.webSocketState = PPWebSocketStateOpen;
-//    
-//    [self fetchUnackedMessages];
-//}
-//
-//- (void)didSocketMeetError:(PPWebSocketPool *)webSocket error:(NSError *)error {
-//    if (self.webSocketStateChangeDelegate &&
-//        [self.webSocketStateChangeDelegate respondsToSelector:@selector(didWebSocketStateChanged:)]) {
-//        [self.webSocketStateChangeDelegate didWebSocketStateChanged:PPWebSocketStateClosed];
-//    }
-//    self.webSocketState = PPWebSocketStateClosed;
-//}
-//
-//- (void)didSocketClosed:(PPWebSocketPool *)webSocket {
-//    if (self.webSocketStateChangeDelegate &&
-//        [self.webSocketStateChangeDelegate respondsToSelector:@selector(didWebSocketStateChanged:)]) {
-//        [self.webSocketStateChangeDelegate didWebSocketStateChanged:PPWebSocketStateClosed];
-//    }
-//    self.webSocketState = PPWebSocketStateClosed;
-//}
-//
-//- (void)didSocketConnecting:(PPWebSocketPool *)webSocket {
-//    if (self.webSocketStateChangeDelegate &&
-//        [self.webSocketStateChangeDelegate respondsToSelector:@selector(didWebSocketStateChanged:)]) {
-//        [self.webSocketStateChangeDelegate didWebSocketStateChanged:PPWebSocketStateConnecting];
-//    }
-//    self.webSocketState = PPWebSocketStateConnecting;
-//}
 
 @end

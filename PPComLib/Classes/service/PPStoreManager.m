@@ -11,6 +11,8 @@
 #import "PPConversationsStore.h"
 #import "PPGroupMembersStore.h"
 #import "PPMessagesStore.h"
+#import "PPUsersStore.h"
+
 #import "PPSDK.h"
 
 @implementation PPStoreManager
@@ -29,6 +31,7 @@
         self.conversationStore = [PPConversationsStore storeWithClient:client];
         self.groupMembersStore = [PPGroupMembersStore storeWithClient:client];
         self.messagesStore = [PPMessagesStore storeWithClient:client];
+        self.usersStore = [PPUsersStore storeWithClient:client];
     }
     return self;
 }
