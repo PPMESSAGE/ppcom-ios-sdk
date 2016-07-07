@@ -28,4 +28,6 @@
 
 - (void)updateMessageStatus:(PPMessageStatus)status messageIndentifier:(NSString *)identifier conversationUUID:(NSString *)conversationUUID;
 
+- (void)insertAtHeadWithMessages:(NSMutableArray*)messages;
+
 @end

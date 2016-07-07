@@ -88,15 +88,13 @@
     }
     
     // 1. get conversations
-    NSMutableArray *conversations = self.conversationItems;
     PPGetConversationListHttpModel *getConversationsTask = [PPGetConversationListHttpModel modelWithClient:self.client];
     [getConversationsTask getConversationListWithBlock:^(id obj, NSDictionary *response, NSError *error) {
         
         self.fetchedFromServer = YES;
         
         if (obj) {
-            [conversations addObjectsFromArray:obj];
-            [self addConversations:conversations];
+            [self addConversations:obj];
         }
         
         if (block) block([self sortedConversations], error);

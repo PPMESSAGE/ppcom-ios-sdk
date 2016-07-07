@@ -216,6 +216,7 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 // And don't forget to removeObserver when the `UIViewController` become invisible
 - (void)postWebSocketMessageNotificationWithObject:(id)object
                                            forName:(NSString*)notificationName {
+    PPFastLog(@"[PPSDK] post notification with name: %@", notificationName);
     [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:object];
 }
 

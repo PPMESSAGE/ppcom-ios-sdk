@@ -36,6 +36,7 @@
     userInfo[@"is_active"] = self.active ? @"True": @"False";
     userInfo[@"is_login"] = self.login ? @"True": @"False";
     userInfo[@"access_token"] = PPSafeString(self.accessToken);
+    userInfo[@"mobile_device_uuid"] = PPSafeString(self.mobileDeviceUuid);
     
     return [NSString stringWithFormat:
             @"<%p, %@, %@>",

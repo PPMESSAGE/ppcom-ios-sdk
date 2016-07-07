@@ -138,9 +138,7 @@ static const NSTimeInterval PPGetUnackedMessageDelayTime = 0.5;
 }
 
 - (NSString*)convertToWebSocketMessageWithMsg:(NSMutableDictionary*)msg {
-    NSDictionary *webSocketMsg = @{ @"type":@"MSG",
-                                    @"msg":msg };
-    return PPDictionaryToJsonString(webSocketMsg);
+    return PPDictionaryToJsonString(msg);
 }
 
 // =======================

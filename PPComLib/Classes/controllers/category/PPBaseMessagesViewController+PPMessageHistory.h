@@ -18,6 +18,6 @@ typedef void (^loadMessageHistoryBlock)(NSMutableArray *messages);
 
 @interface PPBaseMessagesViewController (PPMessageHistory)
 
-- (void)loadMessageHistory:(PPNoArgBlock)block;
+- (void)pp_loadMessageHistory:(PPNoArgBlock)block;
 
 @end

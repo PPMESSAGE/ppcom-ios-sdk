@@ -99,6 +99,7 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     PPUser *user = [self.groupMemberDataSource itemAtIndexPath:indexPath];
+    
     if (!user.userUuid) return; // user.uuid not exist
     if ([user.userUuid isEqualToString:self.sdk.user.userUuid]) return; // self
     
@@ -123,6 +124,7 @@
     
     PPComMessagesViewController *messagesViewController = [self messagesViewControllerFromHistoryStack];
     if (messagesViewController) {
+        
         messagesViewController.conversationTitle = conversationItem.conversationName;
         messagesViewController.conversationUUID = conversationItem.uuid;
         
@@ -166,10 +168,17 @@
     }
 }
 
+- (PPSDK*)sdk {
+    if (!_sdk) {
+        _sdk = [PPSDK sharedSDK];
+    }
+    return _sdk;
+}
+
 #pragma mark - Group members datasource
 
 - (NSMutableArray*)groupMembersInConversationUUID:(NSString *)conversationUUID {
-    return nil;
+    return [self.groupMembersStore groupMembersInConversation:conversationUUID];
 }
 
 @end

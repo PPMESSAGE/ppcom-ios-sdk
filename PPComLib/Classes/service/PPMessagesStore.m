@@ -12,6 +12,12 @@
 #import "PPMessage.h"
 #import "PPSDK.h"
 
+@interface PPMessagesStore ()
+
+@property (nonatomic) NSMutableSet *messageUUIDArray;
+
+@end
+
 @implementation PPMessagesStore
 
 + (instancetype)storeWithClient:(PPSDK*)client {
@@ -20,6 +26,7 @@
 
 - (instancetype)initWithClient:(PPSDK*)client {
     if (self = [super init]) {
+        self.messageUUIDArray = [NSMutableSet set];
         self.messages = [NSMutableDictionary dictionary];
         self.sdk = client;
     }
@@ -50,6 +57,7 @@
     }
     NSMutableArray *messages = [self messagesInCovnersation:message.conversationUUID autoCreate:YES];
     [messages addObject:message];
+    [self.messageUUIDArray addObject:message.identifier];
     [[PPStoreManager instanceWithClient:self.sdk].conversationStore updateConversationsWithMessage:message];
     return YES;
 }
@@ -59,6 +67,26 @@
     if (message) {
         message.status = status;
     }
+}
+
+- (void)insertAtHeadWithMessages:(NSMutableArray*)messages {
+    if (!messages || messages.count == 0) return;
+    
+    //Remove duplicate messages
+    NSMutableArray *filterMessageArray = [[NSMutableArray alloc] init];
+    for (PPMessage *message in messages) {
+        if (![self isExistForMessage:message]) {
+            [self.messageUUIDArray addObject:message.identifier];
+            [filterMessageArray addObject:message];
+        }
+    }
+    
+    //Add messages at head
+    NSString *conversationUUID = ((PPMessage*)messages[0]).conversationUUID;
+    NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, filterMessageArray.count)];
+    NSMutableArray *localMessages = [self messagesInCovnersation:conversationUUID autoCreate:YES];
+    [localMessages insertObjects:filterMessageArray atIndexes:indexes];
+    
 }
 
 // private
@@ -73,6 +101,11 @@
         }
     }];
     return target;
+}
+
+- (BOOL)isExistForMessage:(PPMessage*)message {
+    NSString *messageUUID = message.identifier;
+    return [self.messageUUIDArray containsObject:messageUUID];
 }
 
 @end

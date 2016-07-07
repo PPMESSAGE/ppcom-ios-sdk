@@ -160,6 +160,9 @@
             return;
         }
         
+        // Update user's deviceUUID
+        self.sdk.user.mobileDeviceUuid = deviceUUID;
+        
         PPUpdateDeviceHttpModel *updateDeviceHttpModel = [[PPUpdateDeviceHttpModel alloc] initWithSDK:self.sdk];
         [updateDeviceHttpModel updateDeviceWithDeviceUUID:deviceUUID withOnline:YES withBlock:^(id success, NSDictionary *response, NSError *error) {
             if (!success) {

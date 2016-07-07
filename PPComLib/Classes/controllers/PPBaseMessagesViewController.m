@@ -41,7 +41,6 @@
 #import "PPMessageControllerKeyboardDelegate.h"
 
 #import "PPBaseMessagesViewControllerDataSource.h"
-#import "PPBaseMessagesViewController+PPMessageHistory.h"
 
 #import "PPStoreManager.h"
 #import "PPMessagesStore.h"
@@ -60,6 +59,7 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
 
 @property (nonatomic) PPMessageControllerKeyboardDelegate *keyboardDelegate;
 
+@property (nonatomic) PPBaseMessagesViewControllerDataSource *messagesDataSource;
 @property (nonatomic) PPMessagesStore *messagesStore;
 
 @end
@@ -342,7 +342,8 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
 }
 
 - (void)messageArrived:(NSNotification *)notification {
-    [self scrollToBottomAnimated:YES];
+    NSMutableArray *messages = [self.messagesStore messagesInCovnersation:self.conversationUUID autoCreate:YES];
+    [self reloadTableViewWithMessages:messages scrollToBottom:YES];
 }
 
 - (void)messageSendFailed:(NSNotification *)notification {

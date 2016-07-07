@@ -22,10 +22,10 @@
     
     // Configure PPSDK
     PPSDKConfiguration *sdkConfiguration = [[PPSDKConfiguration alloc] init];
-    sdkConfiguration.hostUrl = @"https://ppmessage.com";
-    sdkConfiguration.apiKey = @"M2E2OTRjZTQ5Mzk4ZWUxYzRjM2FlZDM2NmE4MjA4MzkzZjFjYWQyOA==";
-    sdkConfiguration.apiSecret = @"ZThmMTM1ZDM4ZmI2NjE1YWE0NWEwMGM3OGNkMzY5MzVjOTQ2MGU0NQ==";
-    sdkConfiguration.appUUID = @"77933ab0-f17c-11e5-8957-02287b8c0ebf";
+    sdkConfiguration.hostUrl = @"http://192.168.0.52:8945";
+    sdkConfiguration.apiKey = @"ZGEwYjExYzFkOGI1N2YxYTRiNGI5MGYzMzQwZjQ3NTllZmY2MWMzNw==";
+    sdkConfiguration.apiSecret = @"NTEyYmJhOWM3NTZhYWRlNjhhYjA1ODljODU0YjlhODUwZDViZDAyYw==";
+    sdkConfiguration.appUUID = @"6892a540-4439-11e6-98b2-ac87a30c6610";
     [[PPSDK sharedSDK] configure:sdkConfiguration];
     
     // Start PPSDK

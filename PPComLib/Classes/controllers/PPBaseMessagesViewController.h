@@ -15,12 +15,16 @@
 @property (nonatomic) NSString *conversationTitle;
 @property (nonatomic) NSString *conversationUUID;
 
-@property (nonatomic) PPBaseMessagesViewControllerDataSource *messagesDataSource;
-
 - (void)applicationIsActive:(NSNotification *)notification;
 - (void)applicationEnteredForeground:(NSNotification *)notification;
 
 - (void)endEditing;
+
+// Reload table view
+- (void)reloadTableView;
+- (void)reloadTableViewWithMessages:(NSMutableArray *)messages;
+- (void)reloadTableViewWithMessages:(NSMutableArray *)messages
+                     scrollToBottom:(BOOL)scrollToBottom;
 
 // Page pull to refresh action triggered
 - (void)onPagePullToRefreshAction;

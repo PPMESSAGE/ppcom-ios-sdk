@@ -12,6 +12,10 @@
 #import "PPSDK.h"
 #import "PPMessage.h"
 
+#import "PPSDKUtils.h"
+#import "PPLog.h"
+#import "PPMessageUtils.h"
+
 static NSInteger const DEFAULT_MESSAGE_PAGESIZE = 20;
 
 @interface PPGetMessageHistoryHttpModel ()
@@ -44,7 +48,7 @@ static NSInteger const DEFAULT_MESSAGE_PAGESIZE = 20;
                           completed:(PPHttpModelCompletedBlock)completedBlock {
     NSDictionary *params = @{
                              @"conversation_uuid": conversationUUID,
-                             @"max_uuid": maxUUID,
+                             @"max_uuid": PPSafeString(maxUUID),
                              @"page_size": [NSNumber numberWithInteger:DEFAULT_MESSAGE_PAGESIZE]
                              };
     [self requestWithConversationUUID:conversationUUID params:params completed:completedBlock];
@@ -91,11 +95,13 @@ static NSInteger const DEFAULT_MESSAGE_PAGESIZE = 20;
     if (array && [array count] > 0) {
         
         for (NSDictionary* obj in array) {
-            PPMessage *message = [PPMessage messageWithDictionary:obj];
+            NSMutableDictionary *messageDictionary = PPJSONStringToDictionary(obj[@"message_body"]);
+            messageDictionary[@"from_user"] = obj[@"from_user"];
+            PPMessage *message = [PPMessage messageWithDictionary:messageDictionary];
             [messages addObject:message];
         }
     }
-    return messages;
+    return [NSMutableArray arrayWithArray:[[messages reverseObjectEnumerator] allObjects]];
 }
 
 @end

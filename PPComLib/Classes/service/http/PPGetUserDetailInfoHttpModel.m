@@ -34,7 +34,8 @@
                         withBlock:(PPHttpModelCompletedBlock)aBlock {
     
     NSDictionary *params = @{ @"type": @"DU",
-                              @"uuid": userUUID };
+                              @"uuid": userUUID,
+                              @"app_uuid":self.sdk.app.appUuid };
     
     [self.sdk.api getPPComDeviceUser:params completionHandler:^(NSDictionary *response, NSDictionary *error) {
         

@@ -9,6 +9,8 @@
 #import "PPComMessagesViewController.h"
 #import "PPGroupMembersViewController.h"
 
+#import "PPBaseMessagesViewController+PPMessageHistory.h"
+
 #import "UIImage+PPSDK.h"
 
 @interface PPComMessagesViewController ()
@@ -58,6 +60,21 @@
 - (void)dismissLoadingView {
     [super dismissLoadingView];
     self.navigationItem.rightBarButtonItem = self.groupButtonItem;
+}
+
+// ========================
+// PullToRefresh
+// ========================
+- (void)onPagePullToRefreshAction {
+    [super onPagePullToRefreshAction];
+    
+    __weak PPComMessagesViewController *wself = self;
+    [self showLoadingView];
+    [self pp_loadMessageHistory:^{
+        __strong PPComMessagesViewController *self = wself;
+        [wself dismissLoadingView];
+        [wself reloadTableView];
+    }];
 }
 
 @end

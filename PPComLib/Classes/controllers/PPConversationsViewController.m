@@ -131,7 +131,7 @@
 
 - (void)addPPSDKObservers {
     // add message arrived observer
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMessageArrived) name:PPSDKMessageArrived object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMessageArrived:) name:PPSDKMessageArrived object:nil];
 }
 
 - (void)removePPSDKObservers {

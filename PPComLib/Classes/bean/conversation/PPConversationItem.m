@@ -79,7 +79,7 @@ NSString *const PPConversationItemTypeS2P = @"P2S";
             @{@"conversation_uuid": self.uuid,
               @"conversation_name": PPSafeString(self.conversationName),
               @"conversation_icon": PPSafeString(self.conversationIcon),
-              @"conversation_type": self.conversationType,
+              @"conversation_type": PPSafeString(self.conversationType),
               @"latest_message": self.latestMessage ? self.latestMessage : @"<null>",
               @"s2s_user_uuid": PPSafeString(self.conversationS2SUserUUID),
               @"update_timestamp": [NSNumber numberWithDouble:self.updateTimestamp]}];
