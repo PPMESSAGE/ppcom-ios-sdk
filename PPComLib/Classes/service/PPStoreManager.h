@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class PPConversationsStore, PPGroupMembersStore, PPMessagesStore, PPSDK;
+@class PPSDK, PPConversationsStore, PPGroupMembersStore, PPMessagesStore, PPUsersStore;
 
 @interface PPStoreManager : NSObject
 
@@ -17,5 +17,6 @@
 @property (nonatomic) PPConversationsStore *conversationStore;
 @property (nonatomic) PPGroupMembersStore *groupMembersStore;
 @property (nonatomic) PPMessagesStore *messagesStore;
+@property (nonatomic) PPUsersStore *usersStore;
 
 @end

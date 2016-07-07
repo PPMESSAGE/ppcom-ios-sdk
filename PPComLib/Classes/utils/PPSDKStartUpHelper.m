@@ -173,7 +173,6 @@
 
 - (void)socket {
     self.sdk.user.accessToken = self.sdk.api.accessToken;
-    self.sdk.webSocket = [[PPWebSocketPool alloc] initWithPPSDK:self.sdk];
     [self.sdk.webSocket open];
     [self onStartSuccess];
 }

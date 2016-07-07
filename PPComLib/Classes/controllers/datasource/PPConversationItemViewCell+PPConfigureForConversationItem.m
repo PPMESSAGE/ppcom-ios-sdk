@@ -17,8 +17,6 @@
 #import "PPSDKUtils.h"
 #import "UIImage+PPSDK.h"
 
-#import "MGSwipeTableCell.h"
-
 @implementation PPConversationItemViewCell (PPConfigureForConversationItem)
 
 - (void)configureForConversationItem:(PPConversationItem *)conversationItem {

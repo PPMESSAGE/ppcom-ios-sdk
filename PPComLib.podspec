@@ -40,7 +40,6 @@ TODO: Add long description of the pod here.
   # s.frameworks = 'UIKit', 'MapKit'
   s.dependency 'AFNetworking', '~> 3.0'
   s.dependency 'SDWebImage', '~>3.7'
-  s.dependency 'MGSwipeTableCell'
   s.dependency 'Better-JTSImageViewController'
   s.dependency 'SocketRocket'
 end

@@ -11,7 +11,6 @@
 #import "AFNetworking.h"
 
 #import "PPFileUtils.h"
-#import "PPMemCache.h"
 #import "NSString+Crypto.h"
 #import "PPLog.h"
 
@@ -44,7 +43,7 @@ typedef NS_ENUM(NSUInteger, PPTxtLoaderErrorCode) {
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _memCache = [PPMemCache sharedCache];
+        _memCache = [NSCache new];
     }
     return self;
 }

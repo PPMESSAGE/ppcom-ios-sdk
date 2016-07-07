@@ -8,12 +8,6 @@
 
 #import "PPConversationsViewControllerDataSource.h"
 
-#import "PPMemoryCache.h"
-#import "PPConversationMemoryCache.h"
-#import "PPBooleanDictionaryMemoryCache.h"
-
-static NSString *const kPPHasFetchedFromServerCacheKey = @"pp_has_conversations_fetched_from_server";
-
 @interface PPConversationsViewControllerDataSource ()
 
 @property (nonatomic, copy) PPConversationsTableViewConfigureBlock configureBlock;
@@ -29,7 +23,7 @@ static NSString *const kPPHasFetchedFromServerCacheKey = @"pp_has_conversations_
     if (self = [super init]) {
         self.cellIdentifier = cellIdentifier;
         self.configureBlock = [block copy];
-        self.conversationList = [[PPMemoryCache sharedInstance].conversationCache conversations]; // sort it
+        self.conversationList = [NSMutableArray array];
     }
     return self;
 }

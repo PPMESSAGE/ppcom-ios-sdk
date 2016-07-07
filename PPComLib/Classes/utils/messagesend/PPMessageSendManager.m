@@ -16,6 +16,10 @@
 
 #import "PPSDK.h"
 
+#import "PPStoreManager.h"
+#import "PPConversationsStore.h"
+#import "PPMessagesStore.h"
+
 @implementation PPMessageSendManager
 
 + (instancetype)getInstance {
@@ -37,60 +41,33 @@ withConversation:(NSString *)conversationUUID
     
     PPUser *toUser = [[PPUser alloc] initWithUuid:conversationUUID];
     toUser.userType = @"AG";
+    
+    PPConversationsStore *conversationsStore = [PPStoreManager instanceWithClient:sdk].conversationStore;
+    PPMessagesStore *messagesStore = [PPStoreManager instanceWithClient:sdk].messagesStore;
+    
+    [conversationsStore asyncFindConversationWithConversationUUID:conversationUUID withBlock:^(PPConversationItem *conversationItem) {
+        if (conversationItem) {
+            PPMessage *message = [PPMessage messageForSend:PPRandomUUID() text:textToBeSend conversation:conversationItem toUser:toUser];
+            
+            [messagesStore updateWithNewMessage:message];
+            if (block) block(message, nil, PPMessageSendStateSendOut);
+            
+            id<PPMessageSendProtocol> messageSender = sdk.messageSender;
+            [messageSender sendMessage:message withBlock:^(BOOL quickError) {
+                if (quickError) {
+                    [messagesStore updateMessageStatus:PPMessageSendStateError
+                                    messageIndentifier:message.identifier
+                                      conversationUUID:conversationUUID];
+                    if (block) block(message, nil, PPMessageSendStateError);
+                }
+            }];
+            
+        } else {
+            PPFastLog(@"[PPMessageSendManager] Try send text:%@, but can not find conversation:%@, ignore it", textToBeSend, conversationUUID);
+            if (block) block(nil, nil, PPMessageSendStateErrorNoConversationId);
+        }
+    }];
 
-    // TODO send text
-//    [self asyncFindConversationJobWithConversationUUID:conversationUUID withBlock:^(BOOL success, id obj, NSDictionary *jobInfo) {
-//        
-//        if (success) {
-//            
-//            PPMessage *message = [PPMessage messageForSend:PPRandomUUID() text:textToBeSend conversation:obj toUser:toUser];
-//            
-//            if (block) block(message, nil, PPMessageSendStateBeforeSend);
-//            
-//            [self asyncAddMessage:message completedBlock:^(BOOL success, id obj, NSDictionary *jobInfo) {
-//                
-//                if (success) {
-//                    if (block) block(message, obj, PPMessageSendStateSendOut);
-//                }
-//                
-//                id<PPMessageSendProtocol> messageSender = sdk.messageSender;
-//                [messageSender sendMessage:message withBlock:^(BOOL quickError) {
-//                    if (quickError) {
-//                        message.status = PPMessageStatusError;
-//                        if (block) block(message, nil, PPMessageSendStateError);
-//                    }
-//                }];
-//                
-//            }];
-//            
-//        } else {
-//            
-//            PPFastLog(@"failed to find conversation");
-//            if (block) block(nil, nil, PPMessageSendStateErrorNoConversationId);
-//            
-//        }
-//        
-//    }];
 }
-
-#pragma mark - helpers
-
-//- (void)asyncFindConversationJobWithConversationUUID:(NSString*)conversationUUID
-//                                           withBlock:(PPJobCompletedBlock)block {
-//    if (!conversationUUID) {
-//        PPFastLog(@"!conversationUUID");
-//        if (block) block(NO, nil, nil);
-//        return;
-//    }
-//    
-//    PPFindConversationJob *findConversationJob = [[PPFindConversationJob alloc]initWithClient:[PPClient sharedClient] params:@{PPFindConversationJobParamConversationUUID: conversationUUID} completedBlock:block];
-//    [[PPClient sharedClient].jobScheduler postJob:findConversationJob];
-//}
-//
-//- (void)asyncAddMessage:(PPMessage*)message
-//         completedBlock:(PPJobCompletedBlock)completed {
-//    PPUpdateMessageJob *updateMessageJob = [[PPUpdateMessageJob alloc]initWithClient:[PPClient sharedClient] params:@{PPUpdateMessageJobParamAction: [NSNumber numberWithInteger:PPUpdateMessageJobActionAdd], PPUpdateMessageJobParamMessage: message, PPUpdateMessageJobParamIncreUnread: [NSNumber numberWithBool:NO]} completedBlock:completed];
-//    [[PPClient sharedClient].jobScheduler postJob:updateMessageJob];
-//}
 
 @end

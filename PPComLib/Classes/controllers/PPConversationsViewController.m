@@ -16,14 +16,12 @@
 
 #import "PPLog.h"
 #import "PPSDKUtils.h"
-#import "PPReceiver.h"
 #import "PPMessageUtils.h"
 #import "PPPolling.h"
 
 #import "PPSDK.h"
 #import "PPServiceUser.h"
 #import "PPMessage.h"
-#import "PPWebSocketPool.h"
 
 #import "PPStoreManager.h"
 #import "PPConversationsStore.h"
@@ -41,6 +39,7 @@
 
 @interface PPConversationsViewController () <PPSDKDelegate>
 
+@property (nonatomic) PPConversationsStore *conversationsStore;
 @property (nonatomic) PPConversationsViewControllerDataSource *conversationsDataSource;
 
 @property (nonatomic) PPComLoadingView *loadingView;
@@ -61,7 +60,6 @@
     [super viewDidLoad];
     
     self.title = [NSString pp_LocaliziedStringForKey:@"Conversations Controller Title"];
-    
     [self setupTableView];
     
 }
@@ -81,7 +79,9 @@
     [self addPPSDKObservers];
     [self addApplicationObservers];
     
-    if (![[PPSDK sharedSDK] isStarted]) {
+    if ([[PPSDK sharedSDK] isStarted]) {
+        [self.conversationsDataSource updateItemsWithConversations:[self.conversationsStore sortedConversations]];
+    } else {
         [self showActivityIndicatorViewLoading];
     }
     
@@ -294,6 +294,13 @@
         _loadingView.center = CGPointMake([UIScreen mainScreen].bounds.size.width / 2, [UIScreen mainScreen].bounds.size.height / 2);
     }
     return _loadingView;
+}
+
+- (PPConversationsStore*)conversationsStore {
+    if (!_conversationsStore) {
+        _conversationsStore = [PPStoreManager instanceWithClient:[PPSDK sharedSDK]].conversationStore;
+    }
+    return _conversationsStore;
 }
 
 @end

@@ -7,7 +7,6 @@
 //
 
 #import "PPConversationItemViewCell.h"
-#import "MGSwipeButton.h"
 #import "PPLog.h"
 
 #import "PPBadgeSquareImageView.h"

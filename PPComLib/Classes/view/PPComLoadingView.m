@@ -8,6 +8,7 @@
 
 #import "PPComLoadingView.h"
 #import "PPLayoutConstraintsUtils.h"
+#import "PPSDKUtils.h"
 
 @interface PPComLoadingView ()
 
@@ -29,7 +30,7 @@
 
 - (void)commonInit {
     self.frame = CGRectMake(0, 0, 140, 140);
-    self.loadingText = @"Loading...";
+    self.loadingText = PPLocalizedString(@"Loading");
     self.backgroundColor = [UIColor colorWithWhite:0.95f alpha:0.6f];
     self.layer.cornerRadius = 5.0f;
     

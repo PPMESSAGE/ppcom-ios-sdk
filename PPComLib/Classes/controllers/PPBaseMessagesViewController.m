@@ -27,31 +27,25 @@
 #import "PPMessageUtils.h"
 #import "PPSDKUtils.h"
 #import "PPLog.h"
-#import "PPTxtLoader.h"
-#import "PPReceiver.h"
-#import "PPMessageUtils.h"
-#import "PPImageUtils.h"
 #import "UIImage+PPSDK.h"
+#import "UIViewController+PPAnimating.h"
 
 #import "PPMessage.h"
 #import "PPConversationItem.h"
 #import "PPUser.h"
-#import "PPApiMessage.h"
 #import "PPMessageWebSocketSender.h"
 #import "PPMessageSendProtocol.h"
-#import "PPMessageTxtMediaPart.h"
 
 #import "PPSDK.h"
-
-#import "PPMemoryCache.h"
-#import "PPMessageMemoryCache.h"
-#import "PPBooleanDictionaryMemoryCache.h"
 
 #import "PPMessageSendManager.h"
 #import "PPMessageControllerKeyboardDelegate.h"
 
 #import "PPBaseMessagesViewControllerDataSource.h"
 #import "PPBaseMessagesViewController+PPMessageHistory.h"
+
+#import "PPStoreManager.h"
+#import "PPMessagesStore.h"
 
 #import "PPTestData.h"
 
@@ -66,6 +60,8 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
 @property (nonatomic) UITableView *tableView;
 
 @property (nonatomic) PPMessageControllerKeyboardDelegate *keyboardDelegate;
+
+@property (nonatomic) PPMessagesStore *messagesStore;
 
 @end
 
@@ -99,12 +95,11 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
     [self setupTableView];
     
     if (self.conversationUUID) {
-        [self.messagesDataSource updateWithMessages:[[PPMemoryCache sharedInstance].messageCache messagesInConversation:self.conversationUUID]];
+        [self.messagesDataSource updateWithMessages:[self.messagesStore messagesInCovnersation:self.conversationUUID autoCreate:YES]];
         [self.keyboardDelegate keepTableViewContentAtBottomQuickly];
     }
     
     // Show test data
-    [self.messagesDataSource updateWithMessages:[[PPTestData sharedInstance] getMessages]];
     [self.keyboardDelegate keepTableViewContentAtBottomQuickly];
     
 }
@@ -158,7 +153,6 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     [self endEditing];
-    
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
@@ -230,8 +224,6 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
                     break;
                     
                 case PPMessageSendStateError:
-                    // TODO
-//                    [self asyncUpdateMessage:message completedBlock:nil];
                     [self reloadTableView];
                     break;
             }
@@ -242,7 +234,9 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
     return YES;
 }
 
-#pragma mark - getter setter
+// ===========================
+// Getter - Setter
+// ===========================
 
 - (void)setConversationTitle:(NSString *)conversationTitle {
     _conversationTitle = conversationTitle;
@@ -261,6 +255,13 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
         _keyboardDelegate = [[PPMessageControllerKeyboardDelegate alloc] initWithTableView:self.tableView inputToolbar:self.chattingView.inputToolbar];
     }
     return _keyboardDelegate;
+}
+
+- (PPMessagesStore*)messagesStore {
+    if (!_messagesStore) {
+        _messagesStore = [PPStoreManager instanceWithClient:[PPSDK sharedSDK]].messagesStore;
+    }
+    return _messagesStore;
 }
 
 // =========================================
@@ -367,4 +368,16 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
     [self.conversationUUID isEqualToString:conversationUUID];
 }
 
+// =================
+// Loading
+// =================
+- (void)showLoadingView {
+    [self pp_startAnimating];
+}
+
+- (void)dismissLoadingView {
+    [self pp_stopAnimating];
+}
+
 @end
+
