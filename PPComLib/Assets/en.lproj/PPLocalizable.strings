@@ -5,7 +5,7 @@
   Created by PPMessage on 7/6/16.
 
 */
-"Group Member Controller Title With Number" = "Conversation Members(%d)";
+"Group Member Controller Title With Number" = "Conversation Members(%@)";
 "Group Member Controller Title" = "Conversation Members";
 "Create Conversation Error" = "Create conversation failed";
 "Conversations Controller Title" = "Conversations";
