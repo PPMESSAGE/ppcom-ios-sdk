@@ -51,6 +51,7 @@
 #import "PPMessageControllerKeyboardDelegate.h"
 
 #import "PPBaseMessagesViewControllerDataSource.h"
+#import "PPBaseMessagesViewController+PPMessageHistory.h"
 
 #import "PPTestData.h"
 
@@ -65,7 +66,6 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
 @property (nonatomic) UITableView *tableView;
 
 @property (nonatomic) PPMessageControllerKeyboardDelegate *keyboardDelegate;
-@property (nonatomic) PPBaseMessagesViewControllerDataSource *messagesDataSource;
 
 @end
 
@@ -73,7 +73,7 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
 
 - (void)loadView {
     [super loadView];
-    
+
     self.chattingView = [PPChattingView new];
     self.chattingView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.chattingView];
