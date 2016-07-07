@@ -18,6 +18,7 @@
 #import "PPGetConversationListHttpModel.h"
 #import "PPCreateConversationHttpModel.h"
 #import "PPGetDefaultConversationHttpModels.h"
+#import "PPGetConversationInfoHttpModel.h"
 
 #define PP_ENABLE_LOG 1
 
@@ -154,6 +155,37 @@
         }
         if (completedBlock) completedBlock(self.defaultConversation);
     }];
+}
+
+- (void)asyncFindConversationWithConversationUUID:(NSString *)conversationUUID
+                                        withBlock:(void (^)(PPConversationItem *))aBlock {
+    // check memory
+    if (self.conversationItems) {
+        NSInteger findIndex = [self indexForConversation:conversationUUID];
+        if (findIndex != NSNotFound) {
+            PPConversationItem *find = self.conversationItems[findIndex];
+            if (aBlock) {
+                aBlock(find);
+            }
+            return;
+        }
+    }
+    
+    // try get from http
+    PPGetConversationInfoHttpModel *findConversationTask = [[PPGetConversationInfoHttpModel alloc] initWithClient:self.client];
+    [findConversationTask getWithConversationUUID:conversationUUID
+                                   completedBlock:^(id obj, NSDictionary *response, NSError *error) {
+                                       PPConversationItem *conversationItem = nil;
+                                       if (obj) {
+                                           conversationItem = obj;
+                                           [self addConversation:conversationItem];
+                                       }
+                                       
+                                       if (aBlock) {
+                                           aBlock(conversationItem);
+                                       }
+    }];
+    
 }
 
 - (BOOL)isDefaultConversationAvaliable {

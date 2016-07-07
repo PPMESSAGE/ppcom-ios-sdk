@@ -108,7 +108,9 @@
     
     PPComMessagesViewController *controller = [[PPComMessagesViewController alloc] init];
     PPConversationItem *item = [self.conversationsDataSource objectAtIndex:indexPath];
-    controller.conversationItem = item;
+    
+    controller.conversationUUID = item.uuid;
+    controller.conversationTitle = item.conversationName;
     
     [self removeAllObservers];
     

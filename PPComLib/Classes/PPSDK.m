@@ -11,6 +11,7 @@
 #import "PPWebSocketPool.h"
 #import "PPReceiver.h"
 #import "PPSDKStartUpHelper.h"
+#import "PPLog.h"
 
 // Notification: A new message arrived
 NSString *const PPSDKMessageArrived = @"PPSDKMessageArrived";
@@ -115,7 +116,55 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 // ==============================
 
 - (void)didMessageArrived:(PPWebSocketPool *)webSocket message:(id)obj {
-    [[PPReceiver sharedReceiver] handle:obj handleCompleted:nil];
+    [[PPReceiver sharedReceiver] handle:obj handleCompleted:^(id obj, PPReceiverMessageType type, BOOL success) {
+        if (!success) {
+            PPFastLog(@"[PPSDK] PPReciver receive webSocket message:%@, but parse it failed, ignore this message.", obj);
+            return;
+        }
+        
+        switch (type) {
+            case PPReceiverMessageTypeMsg:
+                [self didPPMessageArrived:obj];
+                break;
+                
+            case PPReceiverMessageTypeSendAck:
+                [self didSendAckMessageArrived:obj];
+                break;
+                
+            case PPReceiverMessageTypeLogout:
+                break;
+                
+            case PPReceiverMessageTypeUnknown:
+                break;
+                
+            default:
+                break;
+        }
+    }];
+}
+
+- (void)didPPMessageArrived:(id)obj {
+    PPMessage *message = obj;
+    [self postWebSocketMessageNotificationWithObject:obj forName:PPSDKMessageArrived];
+}
+
+- (void)didSendAckMessageArrived:(id)obj {
+    NSDictionary *notifyObj = obj;
+    if ([notifyObj[@"error_code"] integerValue] != 0) {
+        NSString *conversationUUID = notifyObj[@"conversation_uuid"];
+        NSString *messageUUID = notifyObj[@"message_uuid"];
+        [self postWebSocketMessageNotificationWithObject:obj forName:PPSDKMessageSendFailed];
+    } else {
+        [self postWebSocketMessageNotificationWithObject:obj forName:PPSDKMessageSendSucceed];
+    }
+}
+
+// After update inner data states, we will post this websocket message as a Notification.
+// You can receive these Notification in the `UIViewController` to update view
+// And don't forget to removeObserver when the `UIViewController` become invisible
+- (void)postWebSocketMessageNotificationWithObject:(id)object
+                                           forName:(NSString*)notificationName {
+    [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:object];
 }
 
 // ==============================

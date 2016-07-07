@@ -11,6 +11,4 @@
 
 @interface PPComMessagesViewController : PPBaseMessagesViewController
 
-@property (nonatomic) PPConversationItem *conversationItem;
-
 @end

@@ -38,12 +38,12 @@
 }
 
 - (void)onGroupButtonItemClicked:(id)sender {
-    if (!self.conversationItem) return;
+    if (!self.conversationUUID) return;
     [self gotoGroupMembersViewController];
 }
 
 - (void)gotoGroupMembersViewController {
-    PPGroupMembersViewController *groupMembersViewController = [[PPGroupMembersViewController alloc] initWithConversationUUID:self.conversationItem.uuid];
+    PPGroupMembersViewController *groupMembersViewController = [[PPGroupMembersViewController alloc] initWithConversationUUID:self.conversationUUID];
     self.navigationController.view.backgroundColor = [UIColor whiteColor];
     [self.navigationController pushViewController:groupMembersViewController animated:YES];
 }

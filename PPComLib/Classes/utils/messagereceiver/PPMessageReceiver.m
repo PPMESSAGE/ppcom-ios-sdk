@@ -16,6 +16,11 @@
 #import "PPTxtLoader.h"
 #import "PPAPI.h"
 
+#import "PPStoreManager.h"
+#import "PPConversationsStore.h"
+
+#import "PPAckMessageHttpModel.h"
+
 #import "PPLog.h"
 
 @implementation PPMessageReceiver
@@ -27,50 +32,49 @@
     
     PPMessage *message = [PPMessage messageWithDictionary:msg[@"msg"]];
     
-    PPFastLog(@"=========message arrived=======");
-    // TODO
+    PPFastLog(@"[MessageArrived] message arrived: %@", message);
     
-    // find conversation
-//    [self findConversationAssociatedWithMessage:message completed:^(BOOL success, id obj, NSDictionary *jobInfo) {
-//        
-//        if (!success) return ;
-//        
-//        PPFastLog(@"=========findConversationAssociatedWithMessage=======");
-//        PPConversationItem *conversation = obj;
-//        conversation.latestMessage = message;
-//        
-//        // find conversation name
-//        [self findConversationNameAssociatedWithConversation:conversation completed:^(BOOL success, id obj, NSDictionary *jobInfo) {
-//            
-//            if (!success) return ;
-//            
-//            // update conversation name
-//            [self updateConversation:conversation];
-//            
-//            PPFastLog(@"=========findConversationNameAssociatedWithConversation=======");
-//            
-//            switch (message.type) {
-//                case PPMessageTypeText:
-//                case PPMessageTypeFile:
-//                case PPMessageTypeImage:
-//                    [self ackMessageWithPushID:message.pushID];
-//                    [self makeResponseWithMessage:message success:YES withHandler:completedHandler];
-//                    break;
-//                    
-//                case PPMessageTypeTxt: {
-//                    [self pp_handleTxtMessage:message handleCompleted:^(id obj, BOOL success) {
-//                        [self makeResponseWithMessage:message success:success withHandler:completedHandler];
-//                    }];
-//                }
-//                    break;
-//                    
-//                default:
-//                    break;
-//            }
-//            
-//        }];
-//        
-//    }];
+    PPSDK *sdk = [PPSDK sharedSDK];
+    PPStoreManager *storeManager = [PPStoreManager instanceWithClient:sdk];
+    PPConversationsStore *conversationsStore = storeManager.conversationStore;
+    
+    // Find conversation
+    [conversationsStore asyncFindConversationWithConversationUUID:message.conversationUUID
+                                                        withBlock:^(PPConversationItem *conversationItem) {
+                                                            if (conversationItem) {
+                                                                PPFastLog(@"[MessageArrived] find conversation:%@.", conversationItem);
+                                                                
+                                                                // Ack message
+                                                                // make callback
+                                                                switch (message.type) {
+                                                                    case PPMessageTypeText:
+                                                                    case PPMessageTypeFile:
+                                                                    case PPMessageTypeImage:
+                                                                        [self ackMessageWithPushID:message.pushID];
+                                                                        [self makeResponseWithMessage:message
+                                                                                              success:YES
+                                                                                          withHandler:completedHandler];
+                                                                        break;
+                                                                        
+                                                                    case PPMessageTypeTxt: {
+                                                                        [self pp_handleTxtMessage:message
+                                                                                  handleCompleted:^(id obj, BOOL success) {
+                                                                            [self makeResponseWithMessage:message
+                                                                                                  success:success
+                                                                                              withHandler:completedHandler];
+                                                                        }];
+                                                                    }
+                                                                        break;
+                                                                        
+                                                                    default:
+                                                                        break;
+                                                                }
+
+                                                                
+                                                            } else {
+                                                                PPFastLog(@"[MessageArrived] cannot get conversation with messageUUID:%@, ignore this message", message.identifier);
+                                                            }
+    }];
     
 }
 
@@ -87,53 +91,18 @@
 }
 
 - (void)ackMessageWithPushID:(NSString*)pushId {
-    PPFastLog(@"=== Ack message with pushID:%@===", pushId);
     
     if (!pushId) {
-        PPFastLog(@"=== Push ID not exit ===");
+        PPFastLog(@"[AckMessage] pushID == nil");
         return;
     }
+    
+    PPFastLog(@"[AckMessage] with pushID:%@", pushId);
+    PPAckMessageHttpModel *ackMessageModel = [[PPAckMessageHttpModel alloc] initWithSDK:[PPSDK sharedSDK]];
+    // We don't care about the ack result
+    [ackMessageModel ackMessageWithMessagePushUUID:pushId withBlock:nil];
 
-    // TODO
-//    [[PPClient sharedClient] inAPI:^(PPSDK *sdk, PPAPI *api) {
-//        
-//        NSMutableArray *ackIdList = [NSMutableArray array];
-//        [ackIdList addObject:pushId];
-//        NSDictionary *params = @{@"list": ackIdList};
-//        
-//        [api ackMessage:params completionHandler:^(NSDictionary *response, NSDictionary *error) {
-//            PPFastLog(@"===Ack message:%@ response:%@, error:%@===", pushId, response, error);
-//        }];
-//        
-//    }];
 }
-
-//- (void)findConversationAssociatedWithMessage:(PPMessage*)message
-//                                    completed:(PPJobCompletedBlock)completedHandler {
-//    PPFindConversationJob *findConversationJob = [[PPFindConversationJob alloc] initWithClient:[PPClient sharedClient] params:@{PPFindConversationJobParamConversationUUID: message.conversationUUID} completedBlock:^(BOOL success, id obj, NSDictionary *jobInfo) {
-//        if (completedHandler) completedHandler(YES, obj, jobInfo);
-//    }];
-//    findConversationJob.stopIfFind = YES;
-//    [[PPClient sharedClient].jobScheduler postJob:findConversationJob];
-//}
-//
-//- (void)findConversationNameAssociatedWithConversation:(PPConversationItem*)conversation
-//                                             completed:(PPJobCompletedBlock)completedHandler {
-//    if (!conversation) {
-//        if (completedHandler) completedHandler(NO, nil, nil);
-//        return;
-//    }
-//    
-//    PPFetchConversationNameJob *fetchConversationNameJob = [[PPFetchConversationNameJob alloc] initWithClient:[PPClient sharedClient] params:@{PPFetchConversationNameJobParamConversation: conversation} completedBlock:^(BOOL success, id obj, NSDictionary *jobInfo) {
-//        if (completedHandler) completedHandler(success, obj, jobInfo);
-//    }];
-//    [[PPClient sharedClient].jobScheduler postJob:fetchConversationNameJob];
-//}
-//
-//- (void)updateConversation:(PPConversationItem*)conversation {
-//    PPUpdateConversationJob *updateConversationJob = [[PPUpdateConversationJob alloc] initWithClient:[PPClient sharedClient] params:@{PPUpdateConversationJobParamConversation: conversation} completedBlock:nil];
-//    [[PPClient sharedClient].jobScheduler postJob:updateConversationJob];
-//}
 
 #pragma mark -
 
@@ -142,14 +111,6 @@
                     withHandler:(PPArrivedMsgHandleCompletedBlock)handler {
     
     if (handler) handler(message, success);
-    
-    if (success) {
-        PPFastLog(@"----broadcast Message arrived info globally--------");
-        NSDictionary *obj = @{@"success": [NSNumber numberWithBool:success],
-                              @"msg": message};
-        // TODO
-//        [[NSNotificationCenter defaultCenter] postNotificationName:PPClientNotificationMsgArrived object:obj];
-    }
     
 }
 

@@ -7,6 +7,7 @@
 //
 
 #import "PPWSMessageAckReceiver.h"
+#import "PPLog.h"
 
 @implementation PPWSMessageAckReceiver
 
@@ -21,29 +22,22 @@
 //    what = SEND;
 //}
 - (void)onArrived:(NSDictionary *)msg handleCompleted:(PPArrivedMsgHandleCompletedBlock)completedHandler {
-    if (completedHandler) completedHandler(msg, YES);
     
-    // TODO report notification status
-    
-//    NSDictionary *ackInfo = msg;
-//    NSInteger errorCode = [ackInfo[@"code"] integerValue];
-//    NSString *conversationUUID = ackInfo[@"extra"][@"conversation_uuid"];
-//    NSString *messageUUID = ackInfo[@"extra"][@"uuid"];
-//    if (errorCode != 0) {
-//        NSString *reason = ackInfo[@"reason"];
-//        PPMessage *message = [[PPMemoryCache sharedInstance].messageCache findMessageWithUUID:messageUUID inConversation:conversationUUID];
-//        message.status = PPMessageStatusError;
-//        if (message) {
-//            [self asyncUpdateMessage:message completedBlock:^(BOOL success, id obj, NSDictionary *jobInfo) {
-//                if (success) {
-//                    [self reloadMessages];
-//                }
-//            }];
-//        }
-//        PPFastLog(@"message %@ send error, reason:%@ ", messageUUID, reason);
-//    }
-//    
-//    [[NSNotificationCenter defaultCenter] postNotificationName:PPClientNotificationMsgSendStatus object:msg];
+    NSDictionary *ackInfo = msg;
+    NSInteger errorCode = [ackInfo[@"code"] integerValue];
+    NSString *conversationUUID = ackInfo[@"extra"][@"conversation_uuid"];
+    NSString *messageUUID = ackInfo[@"extra"][@"uuid"];
+    NSString *reason = ackInfo[@"reason"];
+
+    // The final notify obj
+    NSDictionary *notifyObj = @{ @"conversation_uuid": conversationUUID,
+                                 @"message_uuid": messageUUID,
+                                 @"reason": reason,
+                                 @"error_code": [NSNumber numberWithInteger:errorCode] };
+    if (completedHandler) {
+        completedHandler(notifyObj, YES);
+    }
+
 }
 
 @end

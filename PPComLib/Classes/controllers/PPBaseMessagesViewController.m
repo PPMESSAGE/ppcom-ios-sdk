@@ -65,13 +65,7 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
 @property (nonatomic) UITableView *tableView;
 
 @property (nonatomic) PPMessageControllerKeyboardDelegate *keyboardDelegate;
-
 @property (nonatomic) PPBaseMessagesViewControllerDataSource *messagesDataSource;
-
-- (void)reloadTableView;
-- (void)reloadTableViewWithMessages:(NSMutableArray*)messages;
-- (void)reloadTableViewWithMessages:(NSMutableArray*)messages
-                     scrollToBottom:(BOOL)scrollToBottom;
 
 @end
 
@@ -88,33 +82,20 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
     self.tableView = self.chattingView.chattingMessagesCollectionView;
     self.tableView.contentOffset = CGPointZero;
     
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
+    
+    self.tableView.delegate = self;
+    // 键盘回车键用来发送
+    self.chattingView.inputToolbar.textInputView.returnKeyType = UIReturnKeySend;
+    self.chattingView.inputToolbar.textInputView.enablesReturnKeyAutomatically = YES;
+    
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.chattingView.inputToolbar.inputToolbarDelegate = self;
-    
-    self.edgesForExtendedLayout = UIRectEdgeNone;
-    self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
-    
-    [self pp_init];
-    [self pp_registerNotifications];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(applicationIsActive:)
-                                                 name:UIApplicationDidBecomeActiveNotification
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(applicationEnteredForeground:)
-                                                 name:UIApplicationWillEnterForegroundNotification
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(messageArrived:) name:PPSDKMessageArrived object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(messageSendOutStatusReport:) name:PPSDKMessageSendSucceed object:nil];
-    
+    [self registerCellClass];
     [self setupTableView];
     
     if (self.conversationUUID) {
@@ -128,57 +109,31 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
     
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    self.chattingView.inputToolbar.inputToolbarDelegate = self;
+    [self addApplicationObserver];
+    [self addPPSDKObserver];
+    [self addKeyboardObserver];
+}
+
+-(void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    self.chattingView.inputToolbar.inputToolbarDelegate = nil;
+    self.keyboardDelegate = nil;
+    [self removePPSDKObserver];
+    [self removeApplicationObserver];
+    [self removeKeyboardObserver];
+}
+
 - (void)setupTableView {
     self.messagesDataSource = [[PPBaseMessagesViewControllerDataSource alloc] initWithController:self];
     self.tableView.dataSource = self.messagesDataSource;
 }
 
--(void) viewWillDisappear:(BOOL)animated {
-    // TODO should we do something here ?
-//    if ([self.navigationController.viewControllers indexOfObject:self] == NSNotFound) {
-//        [[NSNotificationCenter defaultCenter] removeObserver:self name:PPClientNotificationMsgArrived object:nil];
-//    }
-    self.keyboardDelegate = nil;
-    [super viewWillDisappear:animated];
-}
-
 #pragma mark - Init Methods
-
-- (void)pp_init {
-    [self pp_registerCellClasses];
-    
-    self.tableView.delegate = self;
-    self.chattingView.inputToolbar.textInputView.delegate = self;
-    
-    // 键盘回车键用来发送
-    self.chattingView.inputToolbar.textInputView.returnKeyType = UIReturnKeySend;
-    self.chattingView.inputToolbar.textInputView.enablesReturnKeyAutomatically = YES;
-    
-}
-
-- (void)pp_registerCellClasses {
-    PPChattingMessagesCollectionView *chattingMessagesCollectionView = self.chattingView.chattingMessagesCollectionView;
-    // Register classes
-    // (incoming)
-    [chattingMessagesCollectionView registerClass:[PPMessageItemLeftTextView class] forCellReuseIdentifier:PPMessageItemLeftTextViewIdentifier];
-    [chattingMessagesCollectionView registerClass:[PPMessageItemLeftImageView class] forCellReuseIdentifier:PPMessageItemLeftImageViewIdentifier];
-    [chattingMessagesCollectionView registerClass:[PPMessageItemLeftFileView class] forCellReuseIdentifier:PPMessageItemLeftFileViewIdentifier];
-    [chattingMessagesCollectionView registerClass:[PPMessageItemLeftLargeTxtView class] forCellReuseIdentifier:PPMessageItemLeftLargeTxtViewIdentifier];
-    [chattingMessagesCollectionView registerClass:[PPMessageItemLeftUnknownView class] forCellReuseIdentifier:PPMessageItemLeftUnknownViewIdentifier];
-    
-    // (outgoing)
-    [chattingMessagesCollectionView registerClass:[PPMessageItemRightTextView class] forCellReuseIdentifier:PPMessageItemRightTextViewIdentifier];
-    [chattingMessagesCollectionView registerClass:[PPMessageItemRightImageView class] forCellReuseIdentifier:PPMessageItemRightImageViewIdentifier];
-    [chattingMessagesCollectionView registerClass:[PPMessageItemRightFileView class] forCellReuseIdentifier:PPMessageItemRightFileViewIdentifier];
-    [chattingMessagesCollectionView registerClass:[PPMessageItemRightLargeTxtView class] forCellReuseIdentifier:PPMessageItemRightLargeTxtViewIdentifier];
-    [chattingMessagesCollectionView registerClass:[PPMessageItemRightUnknownView class] forCellReuseIdentifier:PPMessageItemRightUnknownViewIdentifier];
-}
-
-- (void)pp_registerNotifications {
-    // Keyboard Notifications
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
-}
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -188,49 +143,6 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
 }
 
 #pragma mark -
-
-- (void)applicationIsActive:(NSNotification *)notification {
-    PPFastLog(@"Application Did Become Active");
-}
-
-- (void)applicationEnteredForeground:(NSNotification *)notification {
-    PPFastLog(@"Application Entered Foreground");
-}
-
-- (void)messageArrived:(NSNotification *)notification {
-    // TODO
-//    PPMessage *comingMessage = notification.object[@"msg"];
-//    
-//    // Add timestamp if need
-//    PPAddTimestampIfNeedToMessage([self.messagesDataSource messages], comingMessage);
-//    
-//    BOOL incrementUnread = ![self.conversationUUID isEqualToString:comingMessage.conversationUUID];
-//    [self asyncAddMessage:comingMessage incrementUnread:incrementUnread completedBlock:^(BOOL success, id obj, NSDictionary *jobInfo) {
-//        [self reloadTableViewWithMessages:[self.messagesDataSource messages] scrollToBottom:YES];
-//        [self.keyboardDelegate moveUpTableView];
-//    }];
-}
-
-- (void)messageSendOutStatusReport:(NSNotification *)notification {
-//    NSDictionary *ackInfo = notification.object;
-//    NSInteger errorCode = [ackInfo[@"code"] integerValue];
-//    NSString *conversationUUID = ackInfo[@"extra"][@"conversation_uuid"];
-//    NSString *messageUUID = ackInfo[@"extra"][@"uuid"];
-//    if (errorCode != 0) {
-//        NSString *reason = ackInfo[@"reason"];
-//        PPMessage *message = [[PPMemoryCache sharedInstance].messageCache findMessageWithUUID:messageUUID inConversation:conversationUUID];
-//        message.status = PPMessageStatusError;
-//        if (message) {
-//            [self asyncUpdateMessage:message completedBlock:^(BOOL success, id obj, NSDictionary *jobInfo) {
-//                if (success) {
-//                    [self reloadMessages];
-//                }
-//            }];
-//        }
-//        PPFastLog(@"message %@ send error, reason:%@ ", messageUUID, reason);
-//    }
-    // TODO
-}
 
 - (void)endEditing {
     [self.chattingView endEditing:YES];
@@ -289,18 +201,6 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
 - (void)onPagePullToRefreshAction {
 }
 
-#pragma mark - Notification Handlers
-
-- (void)keyboardWillShow:(NSNotification *)notification {
-    PPFastLog(@"**keyboardWillShow**");
-    [self.keyboardDelegate keyboardWillShow:notification];
-}
-
-- (void)keyboardWillHide:(NSNotification *)notification {
-    PPFastLog(@"**keyboardWillHide**");
-    [self.keyboardDelegate keyboardWillHide:notification];
-}
-
 #pragma mark - InputToolbar Delegate
 
 - (void)didHeightChanged:(PPMessageInputToolbar *)inputToolbar
@@ -344,16 +244,6 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
 
 #pragma mark - getter setter
 
-- (void)setInRequesting:(BOOL)inRequesting {
-    _inRequesting = inRequesting;
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = inRequesting;
-    if (inRequesting) {
-        self.navigationItem.title = PPLocalizedString(@"Loading");
-    } else {
-        self.navigationItem.title = self.conversationTitle;
-    }
-}
-
 - (void)setConversationTitle:(NSString *)conversationTitle {
     _conversationTitle = conversationTitle;
     self.navigationItem.title = conversationTitle;
@@ -371,6 +261,110 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
         _keyboardDelegate = [[PPMessageControllerKeyboardDelegate alloc] initWithTableView:self.tableView inputToolbar:self.chattingView.inputToolbar];
     }
     return _keyboardDelegate;
+}
+
+// =========================================
+// UITableView - Register Cell Class
+// =========================================
+- (void)registerCellClass {
+    PPChattingMessagesCollectionView *chattingMessagesCollectionView = self.chattingView.chattingMessagesCollectionView;
+    // Register classes
+    // (incoming)
+    [chattingMessagesCollectionView registerClass:[PPMessageItemLeftTextView class] forCellReuseIdentifier:PPMessageItemLeftTextViewIdentifier];
+    [chattingMessagesCollectionView registerClass:[PPMessageItemLeftImageView class] forCellReuseIdentifier:PPMessageItemLeftImageViewIdentifier];
+    [chattingMessagesCollectionView registerClass:[PPMessageItemLeftFileView class] forCellReuseIdentifier:PPMessageItemLeftFileViewIdentifier];
+    [chattingMessagesCollectionView registerClass:[PPMessageItemLeftLargeTxtView class] forCellReuseIdentifier:PPMessageItemLeftLargeTxtViewIdentifier];
+    [chattingMessagesCollectionView registerClass:[PPMessageItemLeftUnknownView class] forCellReuseIdentifier:PPMessageItemLeftUnknownViewIdentifier];
+    
+    // (outgoing)
+    [chattingMessagesCollectionView registerClass:[PPMessageItemRightTextView class] forCellReuseIdentifier:PPMessageItemRightTextViewIdentifier];
+    [chattingMessagesCollectionView registerClass:[PPMessageItemRightImageView class] forCellReuseIdentifier:PPMessageItemRightImageViewIdentifier];
+    [chattingMessagesCollectionView registerClass:[PPMessageItemRightFileView class] forCellReuseIdentifier:PPMessageItemRightFileViewIdentifier];
+    [chattingMessagesCollectionView registerClass:[PPMessageItemRightLargeTxtView class] forCellReuseIdentifier:PPMessageItemRightLargeTxtViewIdentifier];
+    [chattingMessagesCollectionView registerClass:[PPMessageItemRightUnknownView class] forCellReuseIdentifier:PPMessageItemRightUnknownViewIdentifier];
+}
+
+// ==========================
+// Notification
+// ==========================
+
+- (void)addPPSDKObserver {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(messageArrived:) name:PPSDKMessageArrived object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(messageSendFailed:) name:PPSDKMessageSendFailed object:nil];
+}
+
+- (void)removePPSDKObserver {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:PPSDKMessageArrived object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:PPSDKMessageSendFailed object:nil];
+}
+
+- (void)addApplicationObserver {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationIsActive:)
+                                                 name:UIApplicationDidBecomeActiveNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationEnteredForeground:)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+}
+
+- (void)removeApplicationObserver {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
+}
+
+- (void)addKeyboardObserver {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+}
+
+- (void)removeKeyboardObserver {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+}
+
+#pragma mark - Notification Handlers
+
+- (void)keyboardWillShow:(NSNotification *)notification {
+    PPFastLog(@"**keyboardWillShow**");
+    [self.keyboardDelegate keyboardWillShow:notification];
+}
+
+- (void)keyboardWillHide:(NSNotification *)notification {
+    PPFastLog(@"**keyboardWillHide**");
+    [self.keyboardDelegate keyboardWillHide:notification];
+}
+
+- (void)applicationIsActive:(NSNotification *)notification {
+    PPFastLog(@"Application Did Become Active");
+}
+
+- (void)applicationEnteredForeground:(NSNotification *)notification {
+    PPFastLog(@"Application Entered Foreground");
+}
+
+- (void)messageArrived:(NSNotification *)notification {
+    [self scrollToBottomAnimated:YES];
+}
+
+- (void)messageSendFailed:(NSNotification *)notification {
+    NSDictionary *notifyObj = notification.object;
+    NSString *conversationUUID = notifyObj[@"converstion_uuid"];
+    if ([self isActiveForConversationUUID:conversationUUID]) {
+        [self reloadTableView];
+    }
+}
+
+// =================
+// Helper
+// =================
+
+// Whether or not we are chatting with `conversationUUID`
+- (BOOL)isActiveForConversationUUID:(NSString*)conversationUUID {
+    return self.conversationUUID != nil &&
+    conversationUUID != nil &&
+    [self.conversationUUID isEqualToString:conversationUUID];
 }
 
 @end

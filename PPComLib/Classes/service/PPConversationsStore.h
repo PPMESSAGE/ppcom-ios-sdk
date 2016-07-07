@@ -64,6 +64,10 @@
 - (void)findConversationAssociatedWithUserUUID:(NSString*)userUUID
                                  findCompleted:(void (^)(PPConversationItem *conversationItem, BOOL success))completedBlock;
 
+// Async find conversation by uuid
+- (void)asyncFindConversationWithConversationUUID:(NSString*)conversationUUID
+                                        withBlock:(void (^)(PPConversationItem *conversationItem))aBlock;
+
 /**
  * Async get default conversation with completed block
  */

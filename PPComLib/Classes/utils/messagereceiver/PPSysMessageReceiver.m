@@ -19,8 +19,10 @@
     // `LOGOUT`
     // {"msg": {"mt": "SYS", "bo": "48fb0cf5-e5dc-11e5-91f1-acbc327f19e9", "ms": "LOGOUT"}, "type": "MSG"}
     if ([ms isEqualToString:@"LOGOUT"]) {
-//        [[NSNotificationCenter defaultCenter] postNotificationName:PPClientNotificationLogout object:msg userInfo:@{@"reason": PPLocalizedString(@"Another Device Logged In")}];
-        // TODO logout
+        if (completedHandler) {
+            NSDictionary *obj = @{ @"sysType":@"LOGOUT", @"info":msg };
+            completedHandler(obj, YES);
+        }
     }
     
 }
