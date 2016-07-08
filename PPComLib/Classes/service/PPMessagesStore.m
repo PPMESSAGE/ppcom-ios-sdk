@@ -12,6 +12,9 @@
 #import "PPMessage.h"
 #import "PPSDK.h"
 
+#import "PPMessageUtils.h"
+#import "PPSDKUtils.h"
+
 @interface PPMessagesStore ()
 
 @property (nonatomic) NSMutableSet *messageUUIDArray;
@@ -35,7 +38,7 @@
 
 
 - (NSMutableArray*)messagesInCovnersation:(NSString*)conversationUUID {
-    return self.messages[conversationUUID];
+    return [self messagesInCovnersation:conversationUUID autoCreate:NO];
 }
 
 - (NSMutableArray*)messagesInCovnersation:(NSString *)conversationUUID autoCreate:(BOOL)autoCreate {
@@ -44,6 +47,7 @@
         messages = [NSMutableArray new];
         self.messages[conversationUUID] = messages;
     }
+    PPAddTimestampToMessages(messages, PPCurrentTimestamp());
     return messages;
 }
 
@@ -55,8 +59,11 @@
     if (!message || !message.conversationUUID) {
         return NO;
     }
+    
     NSMutableArray *messages = [self messagesInCovnersation:message.conversationUUID autoCreate:YES];
     [messages addObject:message];
+    PPAddTimestampIfNeedToMessage(messages, message);
+    
     [self.messageUUIDArray addObject:message.identifier];
     [[PPStoreManager instanceWithClient:self.sdk].conversationStore updateConversationsWithMessage:message];
     return YES;

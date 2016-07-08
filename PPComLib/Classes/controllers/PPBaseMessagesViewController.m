@@ -97,7 +97,7 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
     [self setupTableView];
     
     if (self.conversationUUID) {
-        [self.messagesDataSource updateWithMessages:[self.messagesStore messagesInCovnersation:self.conversationUUID autoCreate:YES]];
+        [self.messagesDataSource updateWithMessages:[self messagesInMemory]];
         [self.keyboardDelegate keepTableViewContentAtBottomQuickly];
     }
     
@@ -342,7 +342,7 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
 }
 
 - (void)messageArrived:(NSNotification *)notification {
-    NSMutableArray *messages = [self.messagesStore messagesInCovnersation:self.conversationUUID autoCreate:YES];
+    NSMutableArray *messages = [self messagesInMemory];
     [self reloadTableViewWithMessages:messages scrollToBottom:YES];
 }
 
@@ -363,6 +363,10 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
     return self.conversationUUID != nil &&
     conversationUUID != nil &&
     [self.conversationUUID isEqualToString:conversationUUID];
+}
+
+- (NSMutableArray*)messagesInMemory {
+    return [self.messagesStore messagesInCovnersation:self.conversationUUID autoCreate:YES];
 }
 
 // =================
