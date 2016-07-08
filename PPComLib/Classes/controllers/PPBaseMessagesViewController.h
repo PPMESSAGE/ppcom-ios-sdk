@@ -15,6 +15,8 @@
 @property (nonatomic) NSString *conversationTitle;
 @property (nonatomic) NSString *conversationUUID;
 
+@property (nonatomic) UIRefreshControl *refreshControl;
+
 - (void)applicationIsActive:(NSNotification *)notification;
 - (void)applicationEnteredForeground:(NSNotification *)notification;
 

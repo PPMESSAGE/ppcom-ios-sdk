@@ -79,8 +79,9 @@
     [self showLoadingView];
     [self pp_loadMessageHistory:^{
         __strong PPComMessagesViewController *self = wself;
-        [wself dismissLoadingView];
-        [wself reloadTableView];
+        [self dismissLoadingView];
+        [self reloadTableView];
+        [self.refreshControl endRefreshing];
     }];
 }
 
