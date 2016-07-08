@@ -93,8 +93,8 @@ static const NSTimeInterval PPGetUnackedMessageDelayTime = 0.5;
 
 - (void)addFromUserForMessageDictionary:(NSMutableDictionary*)msgContainer
                               completed:(void (^)(NSMutableDictionary *msg))completed {
-    NSMutableDictionary *msg = msgContainer[@"msg"];
-    NSString *userUUID = msg[@"fi"];
+    
+    NSString *userUUID = msgContainer[@"msg"][@"fi"];
     [self.usersStore findWithUserUUID:userUUID withBlock:^(PPUser *user) {
         if (user) {
             // Build a from_user dictionary
@@ -103,7 +103,9 @@ static const NSTimeInterval PPGetUnackedMessageDelayTime = 0.5;
             fromUserDictionary[@"uuid"] = user.userUuid;
             fromUserDictionary[@"user_email"] = user.userEmail;
             fromUserDictionary[@"user_icon"] = user.userIcon;
-            msg[@"from_user"] = fromUserDictionary;
+            msgContainer[@"msg"][@"from_user"] = fromUserDictionary;
+        } else {
+            PPFastLog(@"[PPFetchUnackedMessagesTask] Cannot find user %@ in message %@", userUUID, msgContainer[@"msg"]);
         }
         if (completed) completed(msgContainer);
     }];

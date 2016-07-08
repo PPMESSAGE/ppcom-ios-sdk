@@ -27,7 +27,7 @@
     }
     
     PPMessage *message = messages[0];
-    PPFastLog(@"[PPMessageHistory] load page with maxUUID:%@, messageBody:%@", message.identifier, message.body);
+    PPFastLog(@"[PPMessageHistory] load page with maxUUID:%@", message.identifier);
     [getMessageHistoryHttpModel requestWithConversationUUID:self.conversationUUID maxUUID:message.identifier completed:^(id obj, NSDictionary *response, NSError *error) {
         [self pp_loadMessageHistory:obj withBlock:block];
     }];
