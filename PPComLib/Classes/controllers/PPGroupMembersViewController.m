@@ -26,6 +26,8 @@
 
 #import "PPTestData.h"
 
+typedef void(^findConversationBlock)(PPConversationItem *conversation, BOOL success);
+
 @interface PPGroupMembersViewController ()
 
 @property (nonatomic) PPSDK *sdk;
@@ -81,6 +83,7 @@
         if (success) {
             [self updateTitleWithGroupMembersCount:members.count];
             [self.groupMemberDataSource updateGroupMembers:members];
+            [self.conversationsStore setMembers:members withConversationUUID:self.conversationUUID];
             [self.collectionView reloadData];
         }
         [self pp_stopAnimating];
@@ -97,29 +100,28 @@
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
     PPUser *user = [self.groupMemberDataSource itemAtIndexPath:indexPath];
     
     if (!user.userUuid) return; // user.uuid not exist
     if ([user.userUuid isEqualToString:self.sdk.user.userUuid]) return; // self
     
-    [self pp_startAnimating];
-    
-    NSMutableArray *members = [self.groupMembersStore groupMembersInConversation:self.conversationUUID];
-    [self.conversationsStore findConversationAssociatedWithUserUUID:user.userUuid
-                             memberCount:members.count
-                             conversationUUID:self.conversationUUID
-                             findCompleted:^(PPConversationItem *conversationItem, BOOL success) {
-        
+    findConversationBlock block = ^(PPConversationItem *conversationItem, BOOL success) {
         if (success) {
             [self moveToMessagesViewControllerWithConversation:conversationItem];
         } else {
             PPMakeWarningAlert(PPLocalizedString(@"Create Conversation Error"));
         }
-        
         [self pp_stopAnimating];
-        
-    }];
+    };
+
+    [self pp_startAnimating];
+    NSMutableArray *members = [self.groupMembersStore groupMembersInConversation:self.conversationUUID];
+    if (members.count == 2) {
+        PPConversationItem *conversation = [self.conversationsStore findConversationWithConversationUUID:self.conversationUUID];
+        block(conversation, conversation != nil);
+        return;
+    }
+    [self.conversationsStore findConversationAssociatedWithUserUUID:user.userUuid findCompleted:block];
     
 }
 

@@ -59,11 +59,14 @@
 - (void)asyncFindConversationWithGroupUUID:(NSString*)groupUUID completedBlock:(void (^)(PPConversationItem *conversation, BOOL success))completed;
 
 /**
+ * find conversation by conversation uuid, only from memory
+ */
+- (PPConversationItem *)findConversationWithConversationUUID:(NSString*)conversationUUID;
+
+/**
  * Async find conversation by user uuid
  */
 - (void)findConversationAssociatedWithUserUUID:(NSString*)userUUID
-                                   memberCount:(NSInteger)memberCount
-                              conversationUUID:(NSString*)conversationUUID
                                  findCompleted:(void (^)(PPConversationItem *conversationItem, BOOL success))completedBlock;
 
 // Async find conversation by uuid
@@ -79,5 +82,10 @@
  * Is default conversation avaliable now
  */
 - (BOOL)isDefaultConversationAvaliable;
+
+/**
+ * set members
+ */
+- (void)setMembers:(NSMutableArray *)members withConversationUUID:(NSString *)conversationUUID;
 
 @end

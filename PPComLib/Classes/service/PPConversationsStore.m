@@ -11,6 +11,7 @@
 #import "PPApp.h"
 #import "PPMessage.h"
 #import "PPConversationItem.h"
+#import "PPUser.h"
 
 #import "PPLog.h"
 #import "PPSDKUtils.h"
@@ -115,14 +116,36 @@
     }
 }
 
+- (BOOL)isUserUUID:(NSString *)userUUID inConversation:(PPConversationItem *)conversation {
+    __block BOOL result = NO;
+    if (conversation.members && conversation.members.count > 0) {
+        [conversation.members enumerateObjectsUsingBlock:^(PPUser *user, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([user.userUuid isEqualToString:userUUID]) {
+                result = YES;
+                *stop = YES;
+            }
+        }];
+    }
+    return result;
+}
+
+- (PPConversationItem *)findSingleConversationWithUserUUID:(NSString *)userUUID {
+    __block PPConversationItem *target = nil;
+    [self.conversationItems enumerateObjectsUsingBlock:^(PPConversationItem *conversation, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ((conversation.members == 2) && [self isUserUUID:userUUID inConversation:conversation]) {
+            target = conversation;
+            *stop = YES;
+        }
+    }];
+    return target;
+}
+
 - (void)findConversationAssociatedWithUserUUID:(NSString *)userUUID
-                                memberCount:(NSInteger)memberCount
-                                conversationUUID:(NSString *)conversationUUID
-                                findCompleted:(void (^)(PPConversationItem *, BOOL))completedBlock {
-    
-    if (memberCount == 2) {
-        PPConversationItem *conversation = [self findConversationWithConversationUUID:conversationUUID];
-        if (completedBlock) completedBlock(conversation, conversation != nil);
+                                 findCompleted:(void (^)(PPConversationItem *, BOOL))completedBlock {
+    // find from memory
+    PPConversationItem *conversation = [self findSingleConversationWithUserUUID:userUUID];
+    if (conversation) {
+        if (completedBlock) completedBlock(conversation, YES);
         return;
     }
     
@@ -197,6 +220,13 @@
     return self.defaultConversation != nil;
 }
 
+- (void)setMembers:(NSMutableArray *)members withConversationUUID:(NSString *)conversationUUID {
+    PPConversationItem *conversation = [self findConversationWithConversationUUID:conversationUUID];
+    if (conversation) {
+        conversation.members = members;
+    }
+}
+
 #pragma mark - Helper
 
 - (NSInteger)indexForConversation:(NSString*)conversationUUID {
@@ -229,7 +259,7 @@
     return findIndex;
 }
 
-- (BOOL)isConversationExit:(NSString*)conversationoUUID {
+- (BOOL)isConversationExist:(NSString*)conversationoUUID {
     return [self indexForConversation:conversationoUUID] != NSNotFound;
 }
 
