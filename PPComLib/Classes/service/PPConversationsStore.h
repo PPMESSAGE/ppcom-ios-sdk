@@ -62,6 +62,8 @@
  * Async find conversation by user uuid
  */
 - (void)findConversationAssociatedWithUserUUID:(NSString*)userUUID
+                                   memberCount:(NSInteger)memberCount
+                              conversationUUID:(NSString*)conversationUUID
                                  findCompleted:(void (^)(PPConversationItem *conversationItem, BOOL success))completedBlock;
 
 // Async find conversation by uuid

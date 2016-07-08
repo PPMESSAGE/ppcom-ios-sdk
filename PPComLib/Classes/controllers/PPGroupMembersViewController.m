@@ -104,7 +104,12 @@
     if ([user.userUuid isEqualToString:self.sdk.user.userUuid]) return; // self
     
     [self pp_startAnimating];
-    [self.conversationsStore findConversationAssociatedWithUserUUID:user.userUuid findCompleted:^(PPConversationItem *conversationItem, BOOL success) {
+    
+    NSMutableArray *members = [self.groupMembersStore groupMembersInConversation:self.conversationUUID];
+    [self.conversationsStore findConversationAssociatedWithUserUUID:user.userUuid
+                             memberCount:members.count
+                             conversationUUID:self.conversationUUID
+                             findCompleted:^(PPConversationItem *conversationItem, BOOL success) {
         
         if (success) {
             [self moveToMessagesViewControllerWithConversation:conversationItem];

@@ -116,12 +116,13 @@
 }
 
 - (void)findConversationAssociatedWithUserUUID:(NSString *)userUUID
-                                 findCompleted:(void (^)(PPConversationItem *, BOOL))completedBlock {
+                                memberCount:(NSInteger)memberCount
+                                conversationUUID:(NSString *)conversationUUID
+                                findCompleted:(void (^)(PPConversationItem *, BOOL))completedBlock {
     
-    // Find from memory
-    NSInteger findIndex = [self indexForAssignedUserConversation:userUUID];
-    if (findIndex != NSNotFound) {
-        if (completedBlock) completedBlock(self.conversationItems[findIndex], YES);
+    if (memberCount == 2) {
+        PPConversationItem *conversation = [self findConversationWithConversationUUID:conversationUUID];
+        if (completedBlock) completedBlock(conversation, conversation != nil);
         return;
     }
     
@@ -155,18 +156,24 @@
     }];
 }
 
-- (void)asyncFindConversationWithConversationUUID:(NSString *)conversationUUID
-                                        withBlock:(void (^)(PPConversationItem *))aBlock {
-    // check memory
+- (PPConversationItem *)findConversationWithConversationUUID:(NSString *)conversationUUID {
+    PPConversationItem *conversation = nil;
     if (self.conversationItems) {
         NSInteger findIndex = [self indexForConversation:conversationUUID];
         if (findIndex != NSNotFound) {
-            PPConversationItem *find = self.conversationItems[findIndex];
-            if (aBlock) {
-                aBlock(find);
-            }
-            return;
+            conversation = self.conversationItems[findIndex];
         }
+    }
+    return conversation;
+}
+
+- (void)asyncFindConversationWithConversationUUID:(NSString *)conversationUUID
+                                        withBlock:(void (^)(PPConversationItem *))aBlock {
+    // check memory
+    PPConversationItem *find = [self findConversationWithConversationUUID:conversationUUID];
+    if (find) {
+        if (aBlock) aBlock(find);
+        return;
     }
     
     // try get from http

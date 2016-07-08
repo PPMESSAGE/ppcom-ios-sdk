@@ -28,6 +28,13 @@
     self.navigationItem.rightBarButtonItem = self.groupButtonItem;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    if ([self messagesInMemory].count <= 0) {
+        [self onPagePullToRefreshAction];
+    }
+}
 // ========================
 // Group Member Icon
 // ========================

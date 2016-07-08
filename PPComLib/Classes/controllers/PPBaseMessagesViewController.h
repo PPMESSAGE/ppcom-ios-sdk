@@ -29,6 +29,9 @@
 // Page pull to refresh action triggered
 - (void)onPagePullToRefreshAction;
 
+// Helper
+- (NSMutableArray*)messagesInMemory;
+
 // ===============
 // Loading
 // ===============
