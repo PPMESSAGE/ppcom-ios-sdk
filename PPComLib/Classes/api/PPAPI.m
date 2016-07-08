@@ -91,6 +91,9 @@ static NSString *const kPPHeaderTypePPCom = @"PPCOM";
             }
             
             NSDictionary *result = (NSDictionary *)responseObject;
+            if (result && result[@"error_code"] && [result[@"error_code"] integerValue] != 0) {
+                PPFastWarn(@"[PPAPI] api request error: %@", result);
+            }
             if (completionHandler) completionHandler(result, nil);
             
         } else {

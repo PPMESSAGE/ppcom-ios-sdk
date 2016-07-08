@@ -12,6 +12,8 @@
 #import "PPSDK.h"
 #import "PPApp.h"
 
+#import "PPServiceUser.h"
+
 @interface PPGetWaitingQueueLengthHttpModel ()
 
 @property (nonatomic) PPSDK *client;
@@ -34,7 +36,8 @@
 - (void)getWaitingQueueLengthWithCompletedBlock:(PPHttpModelCompletedBlock)completedBlock {
     if (!self.client.app || !self.client.app.appUuid) return;
     
-    NSDictionary *requestParams = @{ @"app_uuid": self.client.app.appUuid };
+    NSDictionary *requestParams = @{ @"app_uuid": self.client.app.appUuid,
+                                     @"user_uuid": self.client.user.userUuid };
     [self.client.api getWaitingQueueLength:requestParams completionHandler:^(NSDictionary *response, NSDictionary *error) {
         NSInteger *waitingQueueLength = 0;
         if (response && [response[@"error_code"] integerValue] == 0) {

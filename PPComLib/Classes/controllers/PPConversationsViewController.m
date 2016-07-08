@@ -81,6 +81,7 @@
     
     if ([[PPSDK sharedSDK] isStarted]) {
         [self.conversationsDataSource updateItemsWithConversations:[self.conversationsStore sortedConversations]];
+        [self.tableView reloadData];
     } else {
         [self showActivityIndicatorViewLoading];
     }
