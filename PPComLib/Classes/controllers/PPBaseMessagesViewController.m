@@ -47,9 +47,6 @@
 
 #import "PPTestData.h"
 
-// scroll Y值小于这个之后，触发下拉刷新操作
-static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
-
 @interface PPBaseMessagesViewController ()<UITextViewDelegate, PPMessageInputToolbarDelegate>
 
 @property (nonatomic) PPChattingView *chattingView;
@@ -84,6 +81,10 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
     
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
+    
+    self.refreshControl = [UIRefreshControl new];
+    [self.refreshControl addTarget:self action:@selector(onPagePullToRefreshAction) forControlEvents:UIControlEventValueChanged];
+    [self.tableView addSubview:self.refreshControl];
     
     self.tableView.delegate = self;
     self.chattingView.inputToolbar.inputToolbarDelegate = self;
@@ -153,14 +154,6 @@ static CGFloat const kPPChattingViewControllerPullToRefreshY = -75;
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     [self.chattingView.inputToolbar.textInputView resignFirstResponder];
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    NSInteger currentOffset = scrollView.contentOffset.y;
-    
-    if (currentOffset < kPPChattingViewControllerPullToRefreshY) {
-        [self onPagePullToRefreshAction];
-    }
 }
 
 - (void)scrollToBottomAnimated:(BOOL)animated {

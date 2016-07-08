@@ -10,6 +10,7 @@
 
 #import "PPSDK.h"
 #import "PPAPI.h"
+#import "PPApp.h"
 
 #import "PPSDKUtils.h"
 
@@ -30,7 +31,8 @@
 
 - (void)getUserUUIDWithEmail:(NSString *)userEmail
                    withBlock:(PPHttpModelCompletedBlock)aBlock {
-    NSDictionary *params = @{ @"user_email":userEmail };
+    NSDictionary *params = @{ @"user_email":userEmail,
+                              @"app_uuid":self.sdk.app.appUuid };
     [self.sdk.api getUserUuid:params completionHandler:^(NSDictionary *response, NSDictionary *error) {
         
         NSString *userUUID = nil;
