@@ -7,9 +7,8 @@
 //
 
 #import "PPMessageItemBaseView.h"
-
-#import "JTSImageViewController.h"
-#import "JTSImageInfo.h"
+#import <Better_JTSImageViewController/JTSImageInfo.h>
+#import <Better_JTSImageViewController/JTSImageViewController.h>
 
 @interface PPMessageItemBaseView (PPOnTappedMessageItemCell)
 
