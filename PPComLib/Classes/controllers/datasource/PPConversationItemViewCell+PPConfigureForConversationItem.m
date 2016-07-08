@@ -77,7 +77,6 @@
         messageSummary = [PPMessage summaryInMessage:message];
     }
     
-    NSLog(@"message summary :%@", messageSummary);
     return messageSummary;
 }
 

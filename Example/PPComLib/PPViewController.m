@@ -26,6 +26,7 @@
     sdkConfiguration.apiKey = @"YjRlZTYyNWY3ZThjMDJlNDg3YjRkYjNkZDQzNTk0NjdmODk1ZTMzNg==";
     sdkConfiguration.apiSecret = @"MTU3ZWE3MWQ4MTc0NzgxNjRhNGViMTdhMWUyMDUxZTRlYzAzNjg2YQ==";
     sdkConfiguration.appUUID = @"9c60acbd-44bb-11e6-94c0-acbc327f19e9";
+//    sdkConfiguration.email = @"test_user@gamil.com";
     [[PPSDK sharedSDK] configure:sdkConfiguration];
     
     // Start PPSDK
