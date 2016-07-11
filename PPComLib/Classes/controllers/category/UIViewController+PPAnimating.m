@@ -11,7 +11,6 @@
 @implementation UIViewController (PPAnimating)
 
 - (BOOL)pp_isAnimating {
-    UIBarButtonItem *buttonItem = self.navigationItem.rightBarButtonItem;
     if ([self pp_isActivityIndicatorViewAttached]) {
         UIActivityIndicatorView *activityIndicatorView = (UIActivityIndicatorView*) self.navigationItem.rightBarButtonItem.customView;
         if (!activityIndicatorView) return NO;

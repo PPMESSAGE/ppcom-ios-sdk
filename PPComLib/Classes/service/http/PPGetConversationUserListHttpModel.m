@@ -105,7 +105,9 @@
             
         }
         
-        if (completedBlock) completedBlock(users, response, error);
+        if (completedBlock) completedBlock(users, response, [NSError errorWithDomain:PPErrorDomain
+                                                                                code:PPErrorCodeAPIError
+                                                                            userInfo:error]);
         
     }];
     

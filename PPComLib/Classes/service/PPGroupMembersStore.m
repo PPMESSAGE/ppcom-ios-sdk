@@ -17,18 +17,18 @@ static NSString *const kPPGroupMembersStoreUsersCacheKey = @"PPGroupMembersStore
 
 @interface PPGroupMembersStore ()
 
-@property (nonatomic) PPCom *client;
+@property (nonatomic) PPSDK *client;
 @property (nonatomic) NSCache *store;
 
 @end
 
 @implementation PPGroupMembersStore
 
-+ (instancetype)storeWithClient:(PPCom *)client {
++ (instancetype)storeWithClient:(PPSDK *)client {
     return [[self alloc] initWithClient:client];
 }
 
-- (instancetype)initWithClient:(PPCom *)client {
+- (instancetype)initWithClient:(PPSDK *)client {
     if (self = [super init]) {
         self.client = client;
     }

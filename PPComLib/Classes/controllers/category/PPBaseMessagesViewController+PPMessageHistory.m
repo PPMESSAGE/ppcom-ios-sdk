@@ -20,7 +20,7 @@
     PPGetMessageHistoryHttpModel *getMessageHistoryHttpModel = [PPGetMessageHistoryHttpModel modelWithClient:sdk];
     
     if (!messages || messages.count == 0) {
-        [getMessageHistoryHttpModel requestWithConversationUUID:self.conversationUUID pageOffset:@0 completed:^(id obj, NSDictionary *response, NSError *error) {
+        [getMessageHistoryHttpModel requestWithConversationUUID:self.conversationUUID pageOffset:0 completed:^(id obj, NSDictionary *response, NSError *error) {
             [self pp_loadMessageHistory:obj withBlock:block];
         }];
         return;

@@ -83,7 +83,9 @@ static NSString *const kPPCreateConversationDefaultConversationType = @"P2S";
         }
         
         if (completedBlock) {
-            completedBlock(conversationItem, response, error);
+            completedBlock(conversationItem, response, [NSError errorWithDomain:PPErrorDomain
+                                                                           code:PPErrorCodeAPIError
+                                                                       userInfo:error]);
         }
         
     }];
@@ -113,7 +115,9 @@ static NSString *const kPPCreateConversationDefaultConversationType = @"P2S";
             conversationItem = [PPConversationItem conversationWithDictionary:response];
         }
         
-        if (completedBlock) completedBlock(conversationItem, response, error);
+        if (completedBlock) completedBlock(conversationItem, response, [NSError errorWithDomain:PPErrorDomain
+                                                                                           code:PPErrorCodeAPIError
+                                                                                       userInfo:error]);
         
     }];
     

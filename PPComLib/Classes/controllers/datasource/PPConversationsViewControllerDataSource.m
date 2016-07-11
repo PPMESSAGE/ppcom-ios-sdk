@@ -23,7 +23,7 @@
     if (self = [super init]) {
         self.cellIdentifier = cellIdentifier;
         self.configureBlock = [block copy];
-        self.conversationList = [NSMutableArray array];
+        self.conversationList = [NSOrderedSet orderedSet];
     }
     return self;
 }

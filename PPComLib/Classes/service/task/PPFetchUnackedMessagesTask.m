@@ -124,9 +124,10 @@ static const NSTimeInterval PPGetUnackedMessageDelayTime = 0.5;
     }
     
     NSMutableDictionary *msg = self.unackedMessagesArray[self.unackedMessagesIndex++];
+    __weak PPFetchUnackedMessagesTask *wself = self;
     [self addFromUserForMessageDictionary:msg completed:^(NSMutableDictionary *msg) {
     
-        [self simulateArrivedWebSocketMessage:msg];
+        [wself simulateArrivedWebSocketMessage:msg];
         
     }];
 }

@@ -80,7 +80,7 @@
     [self addApplicationObservers];
     
     if ([[PPSDK sharedSDK] isStarted]) {
-        [self.conversationsDataSource updateItemsWithConversations:[self.conversationsStore sortedConversations]];
+        [self.conversationsDataSource updateItemsWithConversations:[NSOrderedSet orderedSetWithArray:[self.conversationsStore sortedConversations]]];
         [self.tableView reloadData];
     } else {
         [self showActivityIndicatorViewLoading];
@@ -246,7 +246,7 @@
 - (void)getAllConversations:(__weak PPConversationsViewController *)wself storeManager:(PPStoreManager *)storeManager {
     [storeManager.conversationStore sortedConversationsWithBlock:^(NSArray *conversations, NSError *error) {
         
-        [wself.conversationsDataSource updateItemsWithConversations:conversations];
+        [wself.conversationsDataSource updateItemsWithConversations:[NSOrderedSet orderedSetWithArray:conversations]];
         [wself.tableView reloadData];
         [wself endLoading];
         

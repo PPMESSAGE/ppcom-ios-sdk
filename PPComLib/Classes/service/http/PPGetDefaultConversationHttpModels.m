@@ -62,7 +62,9 @@
             
         } else {
 
-            if (completed) completed(defaultConversation, response, error);
+            if (completed) completed(defaultConversation, response, [NSError errorWithDomain:PPErrorDomain
+                                                                                        code:PPErrorCodeAPIError
+                                                                                    userInfo:error]);
             
         }
         

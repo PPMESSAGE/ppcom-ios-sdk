@@ -55,7 +55,9 @@
             }];
         }
         
-        if (block) block(conversations, response, error);
+        if (block) block(conversations, response, [NSError errorWithDomain:PPErrorDomain
+                                                                      code:PPErrorCodeAPIError
+                                                                  userInfo:error]);
         
     }];
     

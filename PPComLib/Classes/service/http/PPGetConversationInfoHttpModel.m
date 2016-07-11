@@ -44,7 +44,9 @@
         }
         
         if (completedBlock) {
-            completedBlock(conversation, response, error);
+            completedBlock(conversation, response, [NSError errorWithDomain:PPErrorDomain
+                                                                       code:PPErrorCodeAPIError
+                                                                   userInfo:error]);
         }
         
     }];

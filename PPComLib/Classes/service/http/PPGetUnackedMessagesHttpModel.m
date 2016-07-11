@@ -49,7 +49,9 @@
                 webSocketMessages = [self parseUnackedMessagesFromResponse:response];
             }
             if (aBlock) {
-                aBlock(webSocketMessages, response, error);
+                aBlock(webSocketMessages, response, [NSError errorWithDomain:PPErrorDomain
+                                                                        code:PPErrorCodeAPIError
+                                                                    userInfo:error]);
             }
         }];
     }

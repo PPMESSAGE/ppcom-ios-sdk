@@ -54,11 +54,6 @@
 - (void)updateConversationsWithMessage:(PPMessage*)message;
 
 /**
- * Async find conversation by group uuid
- */
-- (void)asyncFindConversationWithGroupUUID:(NSString*)groupUUID completedBlock:(void (^)(PPConversationItem *conversation, BOOL success))completed;
-
-/**
  * find conversation by conversation uuid, only from memory
  */
 - (PPConversationItem *)findConversationWithConversationUUID:(NSString*)conversationUUID;

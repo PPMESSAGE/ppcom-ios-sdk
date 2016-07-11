@@ -9,3 +9,7 @@
 #import <Foundation/Foundation.h>
 
 typedef void (^PPHttpModelCompletedBlock)(id obj, NSDictionary *response, NSError *error);
+
+FOUNDATION_EXPORT NSString *const PPErrorDomain;
+
+FOUNDATION_EXPORT NSInteger const PPErrorCodeAPIError;

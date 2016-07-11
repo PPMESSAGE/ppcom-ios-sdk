@@ -77,13 +77,19 @@ static NSInteger const DEFAULT_MESSAGE_PAGESIZE = 20;
             
             if ( [response[@"error_code"] integerValue] == 0 ) {
                 NSMutableArray *messages = [self messagesFromResponse:response];
-                if ( completedBlock ) completedBlock(messages, response, error);
+                if ( completedBlock ) completedBlock(messages, response, [NSError errorWithDomain:PPErrorDomain
+                                                                                             code:PPErrorCodeAPIError
+                                                                                         userInfo:error]);
             } else {
-                if ( completedBlock ) completedBlock(nil, response, error);
+                if ( completedBlock ) completedBlock(nil, response, [NSError errorWithDomain:PPErrorDomain
+                                                                                        code:PPErrorCodeAPIError
+                                                                                    userInfo:error]);
             }
             
         } else {
-            if ( completedBlock ) completedBlock(nil, response, error);
+            if ( completedBlock ) completedBlock(nil, response, [NSError errorWithDomain:PPErrorDomain
+                                                                                    code:PPErrorCodeAPIError
+                                                                                userInfo:error]);
         }
     }];
     
@@ -95,7 +101,7 @@ static NSInteger const DEFAULT_MESSAGE_PAGESIZE = 20;
     if (array && [array count] > 0) {
         
         for (NSDictionary* obj in array) {
-            NSMutableDictionary *messageDictionary = PPJSONStringToDictionary(obj[@"message_body"]);
+            NSMutableDictionary *messageDictionary = [PPJSONStringToDictionary(obj[@"message_body"]) mutableCopy];
             messageDictionary[@"from_user"] = obj[@"from_user"];
             PPMessage *message = [PPMessage messageWithDictionary:messageDictionary];
             [messages addObject:message];

@@ -8,11 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-@class PPCom, PPUser;
+@class PPSDK, PPUser;
 
 @interface PPGroupMembersStore : NSObject
 
-+ (instancetype)storeWithClient:(PPCom*)client;
++ (instancetype)storeWithClient:(PPSDK*)client;
 
 - (NSMutableArray*)groupMembersInConversation:(NSString*)conversationUUID;
 - (void)groupMembersInConversation:(NSString*)conversationUUID

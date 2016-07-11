@@ -41,7 +41,9 @@
         }
         
         if (aBlock) {
-            aBlock(app, response, error);
+            aBlock(app, response, [NSError errorWithDomain:PPErrorDomain
+                                                      code:PPErrorCodeAPIError
+                                                  userInfo:error]);
         }
         
     }];

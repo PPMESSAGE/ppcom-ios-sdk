@@ -47,7 +47,9 @@
         }
         
         if (aBlock) {
-            aBlock(deviceUUID, response, error);
+            aBlock(deviceUUID, response, [NSError errorWithDomain:PPErrorDomain
+                                                             code:PPErrorCodeAPIError
+                                                         userInfo:error]);
         }
         
     }];

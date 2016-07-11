@@ -28,7 +28,7 @@
 
 - (void)ackMessageWithMessagePushUUID:(NSString *)pushUUID
                             withBlock:(PPHttpModelCompletedBlock)aBlock {
-    [self ackMessageWithMessagePushUUIDArray:@[ pushUUID ] withBlock:aBlock];
+    [self ackMessageWithMessagePushUUIDArray:[NSMutableArray arrayWithArray:@[ pushUUID ]] withBlock:aBlock];
 }
 
 - (void)ackMessageWithMessagePushUUIDArray:(NSMutableArray *)pushUUIDArray
@@ -36,7 +36,9 @@
     NSDictionary *params = @{ @"list": pushUUIDArray };
     [self.sdk.api ackMessage:params completionHandler:^(NSDictionary *response, NSDictionary *error) {
         if (aBlock) {
-            aBlock(response, response, error);
+            aBlock(response, response, [NSError errorWithDomain:PPErrorDomain
+                                                           code:PPErrorCodeAPIError
+                                                       userInfo:error]);
         }
     }];
     

@@ -15,7 +15,7 @@ PODS:
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
   - Better-JTSImageViewController (1.5.3)
-  - PPComLib (0.1.0):
+  - PPComLib (0.1.1):
     - AFNetworking (~> 3.0)
     - Better-JTSImageViewController
     - SDWebImage (~> 3.7)
@@ -30,12 +30,12 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   PPComLib:
-    :path: "../"
+    :path: ../
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   Better-JTSImageViewController: d1cd3b46361ed22f47737a458474def9837f72cf
-  PPComLib: a2c4d563d497d9610aa5edeabc9abdeb7dd8e10b
+  PPComLib: 2ae4951c556105f31a205dbfcf82c5bef4d95f9c
   SDWebImage: 35f9627a3e44b4f292a8a8ce6a531fa488239b91
   SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
 

@@ -55,7 +55,7 @@ withConversation:(NSString *)conversationUUID
             id<PPMessageSendProtocol> messageSender = sdk.messageSender;
             [messageSender sendMessage:message withBlock:^(BOOL quickError) {
                 if (quickError) {
-                    [messagesStore updateMessageStatus:PPMessageSendStateError
+                    [messagesStore updateMessageStatus:PPMessageStatusError
                                     messageIndentifier:message.identifier
                                       conversationUUID:conversationUUID];
                     if (block) block(message, [messagesStore messages], PPMessageSendStateError);
