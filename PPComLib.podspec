@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'PPComLib'
-  s.version          = '0.1.3'
+  s.version          = '0.1.4'
   s.summary          = 'PPCom-iOS-SDK for PPMessage'
 
   # This description is used to generate tags and improve search results.
@@ -40,6 +40,6 @@ TODO: Add long description of the pod here.
   # s.frameworks = 'UIKit', 'MapKit'
   s.dependency 'AFNetworking', '~> 3.0'
   s.dependency 'SDWebImage', '~>3.7'
-  s.dependency 'Better-JTSImageViewController'
+  s.dependency 'PPJTSImageViewController'
   s.dependency 'SocketRocket'
 end
