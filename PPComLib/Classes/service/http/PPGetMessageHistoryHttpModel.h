@@ -25,6 +25,6 @@
                           completed:(PPHttpModelCompletedBlock)completedBlock;
 
 - (void)requestWithConversationUUID:(NSString *)conversationUUID
-                         maxUUID:(NSInteger)maxUUID
+                            maxUUID:(NSString *)maxUUID
                           completed:(PPHttpModelCompletedBlock)completedBlock;
 @end
