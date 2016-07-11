@@ -9,6 +9,13 @@
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
+> You may need refresh your existed cocoapods repos before running `pod install`.
+
+```
+cd ~/.cocoapods/repos/master; git pull;
+```
+
+
 ## Requirements
 
 ## Installation
