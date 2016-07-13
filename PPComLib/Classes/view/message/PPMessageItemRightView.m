@@ -13,6 +13,7 @@
 #import "PPMessageUtils.h"
 #import "PPLog.h"
 #import "PPConstants.h"
+#import "UIView+PPBorder.h"
 
 #import "PPUser.h"
 
@@ -90,12 +91,16 @@ CGFloat const PPMessageItemRightViewDefaultBubbleCornerRadius = 17.0f;
     _msgStatusView.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_msgStatusView];
     
+    self.leftView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:self.leftView];
+    
     [self configureMessageTimestampLayoutConstraints];
     [self configureAvatarImageViewLayoutConstraints];
     [self configureRightColumnViewLayoutConstraints];
     [self configureNameLabelLayoutConstraints];
     [self configureMessageContentLayoutConstraints];
     [self pp_configureMessageStatusViewLayoutConstraints];
+    [self configureLeftViewLayoutConstraints];
     
 }
 
@@ -292,6 +297,17 @@ CGFloat const PPMessageItemRightViewDefaultBubbleCornerRadius = 17.0f;
     
 }
 
+//
+// [status]-(8)-[leftview]-(8)-[rightColumnView]-(8)-[user-avatar]
+//
+- (void)configureLeftViewLayoutConstraints {
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.leftView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:_msgContentView attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:.0]];
+    
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.leftView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:_msgContentView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-8.0]];
+    
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.leftView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:_msgStatusView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:8.0]];
+}
+
 - (void)pp_configureMessageStatusViewLayoutConstraints {
     // width & height
     _messageStatusViewConstraintHeight = [NSLayoutConstraint constraintWithItem:_msgStatusView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:kPPMessageItemRightViewStatusViewWidth];
@@ -303,9 +319,6 @@ CGFloat const PPMessageItemRightViewDefaultBubbleCornerRadius = 17.0f;
     
     // centerY with msgContentView
     [self addConstraint:[NSLayoutConstraint constraintWithItem:_msgStatusView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:_msgContentView attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]];
-    
-    // _msgStatusView-(15.0)-msgContentView
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:_msgStatusView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:_msgContentView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-10.0]];
     
 }
 
@@ -321,6 +334,16 @@ CGFloat const PPMessageItemRightViewDefaultBubbleCornerRadius = 17.0f;
 
 - (void)pp_hideMessageStatusView {
     [self pp_configureMessageStatusViewLayoutConstraintsWithWidth:.0f height:.0f];
+}
+
+// =====================
+// Getter Setter
+// =====================
+- (UIView*)leftView {
+    if (!_leftView) {
+        _leftView = [UIView new];
+    }
+    return _leftView;
 }
 
 @end

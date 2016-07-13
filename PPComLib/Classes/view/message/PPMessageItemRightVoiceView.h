@@ -13,5 +13,6 @@ extern NSString *const PPMessageItemRightVoiceViewIdentifier;
 @interface PPMessageItemRightVoiceView : PPMessageItemRightView
 
 @property (nonatomic) UIImageView *animationVoiceImageView;
+@property (nonatomic) UILabel *durationLabel;
 
 @end

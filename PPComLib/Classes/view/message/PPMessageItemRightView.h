@@ -19,4 +19,6 @@ extern CGFloat const PPMessageItemRightViewDefaultBubbleCornerRadius;
 @property (nonatomic) UIColor *bubbleColor;
 @property (nonatomic) CGFloat bubbleCornerRadius;
 
+@property (nonatomic) UIView *leftView;
+
 @end

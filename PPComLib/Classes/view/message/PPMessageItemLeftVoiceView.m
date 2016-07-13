@@ -52,6 +52,7 @@ CGFloat const PPMessageItemVoiceUnreadDotSize = 8;
     PPMessageAudioMediaPart *audioMediaPart = message.mediaPart;
     
     self.durationLabel.text = [NSString stringWithFormat:@"%.1f\"", audioMediaPart.duration];
+    self.unreadDot.hidden = !audioMediaPart.unread;
     
     self.messageContentViewSize = [PPMessageItemLeftVoiceView cellBodySizeForMessage:message];
 }

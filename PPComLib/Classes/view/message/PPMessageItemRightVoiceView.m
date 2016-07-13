@@ -55,9 +55,17 @@ CGFloat const PPMessageItemLeftVoiceViewTrailing = 8.0;
     return _voiceContainerView;
 }
 
+- (UIView*)leftView {
+    if (!_durationLabel) {
+        _durationLabel = [UILabel new];
+    }
+    return _durationLabel;
+}
+
 - (void)presentMessage:(PPMessage *)message {
     [super presentMessage:message];
     PPMessageAudioMediaPart *audioMediaPart = message.mediaPart;
+    self.durationLabel.text = [NSString stringWithFormat:@"%.1f\"", audioMediaPart.duration];
     self.messageContentViewSize = [PPMessageItemRightVoiceView cellBodySizeForMessage:message];
 }
 

@@ -66,25 +66,31 @@
                                         withImageWidth:634
                                         withImageHeight:356
                                           withDirection:PPMessageDirectionIncoming]];
-    [messages addObject:[self makePPMessageWithImageUrl:@"http://lemanoosh.com/wp-content/uploads/d6374625065727.5634d1ec41b4c-500x888.jpg"
-                                         withImageWidth:500
-                                        withImageHeight:888
-                                          withDirection:PPMessageDirectionOutgoing]];
+    PPMessage *loadingImageMessage = [self makePPMessageWithImageUrl:@"http://lemanoosh.com/wp-content/uploads/d6374625065727.5634d1ec41b4c-500x888.jpg"
+                                                      withImageWidth:500
+                                                     withImageHeight:888
+                                                       withDirection:PPMessageDirectionOutgoing];
+    loadingImageMessage.status = PPMessageStatusLoading;
+    [messages addObject:loadingImageMessage];
     
     [messages addObject:[self makePPMessageWithFileName:@"AA.txt" withFileSize:123 withDirection:PPMessageDirectionIncoming]];
     [messages addObject:[self makePPMessageWithFileName:@"BB.zip" withFileSize:456 withDirection:PPMessageDirectionOutgoing]];
     
     [messages addObject:[self makePPMessageWithAudioDuration:20 withDirection:PPMessageDirectionIncoming]];
-    [messages addObject:[self makePPMessageWithAudioDuration:0 withDirection:PPMessageDirectionIncoming]];
+    [messages addObject:[self makePPMessageWithAudioDuration:0 withDirection:PPMessageDirectionIncoming withUnread:NO]];
     [messages addObject:[self makePPMessageWithAudioDuration:5 withDirection:PPMessageDirectionIncoming]];
     [messages addObject:[self makePPMessageWithAudioDuration:60 withDirection:PPMessageDirectionIncoming]];
-    [messages addObject:[self makePPMessageWithAudioDuration:100 withDirection:PPMessageDirectionIncoming]];
+    [messages addObject:[self makePPMessageWithAudioDuration:100 withDirection:PPMessageDirectionIncoming withUnread:NO]];
     
     [messages addObject:[self makePPMessageWithAudioDuration:20 withDirection:PPMessageDirectionOutgoing]];
     [messages addObject:[self makePPMessageWithAudioDuration:0 withDirection:PPMessageDirectionOutgoing]];
     [messages addObject:[self makePPMessageWithAudioDuration:5 withDirection:PPMessageDirectionOutgoing]];
-    [messages addObject:[self makePPMessageWithAudioDuration:60 withDirection:PPMessageDirectionOutgoing]];
-    [messages addObject:[self makePPMessageWithAudioDuration:100 withDirection:PPMessageDirectionOutgoing]];
+    PPMessage *errorAudioMessage = [self makePPMessageWithAudioDuration:60 withDirection:PPMessageDirectionOutgoing];
+    errorAudioMessage.status = PPMessageStatusError;
+    [messages addObject:errorAudioMessage];
+    PPMessage *loadingAudioMessage = [self makePPMessageWithAudioDuration:100 withDirection:PPMessageDirectionOutgoing];
+    loadingAudioMessage.status = PPMessageStatusLoading;
+    [messages addObject:loadingAudioMessage];
     
     return messages;
 }
@@ -189,6 +195,14 @@
 
 - (PPMessage*)makePPMessageWithAudioDuration:(CGFloat)duration
                                withDirection:(PPMessageDirection)direction {
+    return [self makePPMessageWithAudioDuration:duration
+                                  withDirection:direction
+                                     withUnread:YES];
+}
+
+- (PPMessage*)makePPMessageWithAudioDuration:(CGFloat)duration
+                               withDirection:(PPMessageDirection)direction
+                                  withUnread:(BOOL)unread {
     PPMessage *audioMessage = [[PPMessage alloc] init];
     audioMessage.identifier = PPRandomUUID();
     audioMessage.type = PPMessageTypeAudio;
@@ -196,6 +210,7 @@
     PPMessageAudioMediaPart *audioMediaPart = [[PPMessageAudioMediaPart alloc] init];
     audioMediaPart.duration = duration;
     audioMediaPart.fileUUID = PPRandomUUID();
+    audioMediaPart.unread = unread;
     
     audioMessage.mediaPart = audioMediaPart;
     audioMessage.fromUser = [self getUserForMessageDirection:direction];

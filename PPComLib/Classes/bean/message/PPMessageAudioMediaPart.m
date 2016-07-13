@@ -22,6 +22,7 @@
         NSDictionary *audioDictionary = PPJSONStringToDictionary(jsonString);
         self.duration = [audioDictionary[@"dura"] floatValue];
         self.fileUUID = [audioDictionary[@"fid"] string];
+        self.unread = YES;
     }
     return self;
 }
