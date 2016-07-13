@@ -22,6 +22,8 @@
 #import "PPMessageItemRightLargeTxtView.h"
 #import "PPMessageItemLeftUnknownView.h"
 #import "PPMessageItemRightUnknownView.h"
+#import "PPMessageItemLeftVoiceView.h"
+#import "PPMessageItemRightVoiceView.h"
 
 #import "PPLayoutConstraintsUtils.h"
 #import "PPMessageUtils.h"
@@ -45,6 +47,8 @@
 #import "PPStoreManager.h"
 #import "PPMessagesStore.h"
 
+#import "PPVoiceRecordHelper.h"
+
 #import "PPTestData.h"
 
 @interface PPBaseMessagesViewController ()<UITextViewDelegate, PPMessageInputToolbarDelegate>
@@ -58,6 +62,11 @@
 
 @property (nonatomic) PPBaseMessagesViewControllerDataSource *messagesDataSource;
 @property (nonatomic) PPMessagesStore *messagesStore;
+
+// Manage record tools
+@property (nonatomic) PPVoiceRecordHelper *voiceRecordHelper;
+// Is exceeded
+@property (nonatomic) BOOL isMaxTimeStop;
 
 @end
 
@@ -193,6 +202,40 @@
     [self.keyboardDelegate didHeightChanged:inputToolbar height:height heightDiff:heightDiff];
 }
 
+- (void)prepareRecordingVoiceActionWithCompletion:(BOOL (^)(void))completion {
+    PPFastLog(@"prepareRecordingWithCompletion");
+    [self prepareRecordWithCompletion:completion];
+}
+
+- (void)didStartRecordingVoiceAction {
+    PPFastLog(@"didStartRecordingVoice");
+    [self startRecord];
+}
+
+- (void)didCancelRecordingVoiceAction {
+    PPFastLog(@"didCancelRecordingVoice");
+    [self cancelRecord];
+}
+
+- (void)didFinishRecoingVoiceAction {
+    PPFastLog(@"didFinishRecoingVoice");
+    if (self.isMaxTimeStop == NO) {
+        [self finishRecorded];
+    } else {
+        self.isMaxTimeStop = NO;
+    }
+}
+
+- (void)didDragOutsideAction {
+    PPFastLog(@"didDragOutsideAction");
+    [self resumeRecord];
+}
+
+- (void)didDragInsideAction {
+    PPFastLog(@"didDragInsideAction");
+    [self pauseRecord];
+}
+
 #pragma mark - TextView Delegate
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
@@ -253,6 +296,37 @@
     return _messagesStore;
 }
 
+- (PPVoiceRecordHelper*)voiceRecordHelper {
+    if (!_voiceRecordHelper) {
+        _isMaxTimeStop = NO;
+        
+        typeof(self) __weak weakSelf = self;
+        _voiceRecordHelper = [PPVoiceRecordHelper new];
+        _voiceRecordHelper.maxTimeStopRecorderCompletion = ^{
+            PPFastLog(@"已经达到最大限制时间了，进入下一步的提示");
+            
+            // Unselect and unhilight the hold down button, and set isMaxTimeStop to YES.
+            UIButton *holdDown = weakSelf.chattingView.inputToolbar.holdToTalkButton;
+            holdDown.selected = NO;
+            holdDown.highlighted = NO;
+            weakSelf.isMaxTimeStop = YES;
+            
+            [weakSelf finishRecorded];
+        };
+        _voiceRecordHelper.peakPowerForChannel = ^(float peakPowerForChannel) {
+            weakSelf.voiceRecordHUD.peakPower = peakPowerForChannel;
+        };
+    }
+    return _voiceRecordHelper;
+}
+
+- (PPVoiceRecord*)voiceRecordHUD {
+    if (!_voiceRecordHUD) {
+        _voiceRecordHUD = [[PPVoiceRecord alloc] initWithFrame:CGRectMake(0, 0, 140, 140)];
+    }
+    return _voiceRecordHUD;
+}
+
 // =========================================
 // UITableView - Register Cell Class
 // =========================================
@@ -264,6 +338,7 @@
     [chattingMessagesCollectionView registerClass:[PPMessageItemLeftImageView class] forCellReuseIdentifier:PPMessageItemLeftImageViewIdentifier];
     [chattingMessagesCollectionView registerClass:[PPMessageItemLeftFileView class] forCellReuseIdentifier:PPMessageItemLeftFileViewIdentifier];
     [chattingMessagesCollectionView registerClass:[PPMessageItemLeftLargeTxtView class] forCellReuseIdentifier:PPMessageItemLeftLargeTxtViewIdentifier];
+    [chattingMessagesCollectionView registerClass:[PPMessageItemLeftVoiceView class] forCellReuseIdentifier:PPMessageItemLeftVoiceViewIdentifier];
     [chattingMessagesCollectionView registerClass:[PPMessageItemLeftUnknownView class] forCellReuseIdentifier:PPMessageItemLeftUnknownViewIdentifier];
     
     // (outgoing)
@@ -271,6 +346,7 @@
     [chattingMessagesCollectionView registerClass:[PPMessageItemRightImageView class] forCellReuseIdentifier:PPMessageItemRightImageViewIdentifier];
     [chattingMessagesCollectionView registerClass:[PPMessageItemRightFileView class] forCellReuseIdentifier:PPMessageItemRightFileViewIdentifier];
     [chattingMessagesCollectionView registerClass:[PPMessageItemRightLargeTxtView class] forCellReuseIdentifier:PPMessageItemRightLargeTxtViewIdentifier];
+    [chattingMessagesCollectionView registerClass:[PPMessageItemRightVoiceView class] forCellReuseIdentifier:PPMessageItemRightVoiceViewIdentifier];
     [chattingMessagesCollectionView registerClass:[PPMessageItemRightUnknownView class] forCellReuseIdentifier:PPMessageItemRightUnknownViewIdentifier];
 }
 
@@ -359,7 +435,8 @@
 }
 
 - (NSMutableArray*)messagesInMemory {
-    return [self.messagesStore messagesInCovnersation:self.conversationUUID autoCreate:YES];
+//    return [self.messagesStore messagesInCovnersation:self.conversationUUID autoCreate:YES];
+    return [[PPTestData sharedInstance] getMessages];
 }
 
 // =================
@@ -371,6 +448,61 @@
 
 - (void)dismissLoadingView {
     [self pp_stopAnimating];
+}
+
+// =================
+// Record
+// =================
+- (void)prepareRecordWithCompletion:(PPPrepareRecorderCompletion)completion {
+    [self.voiceRecordHelper prepareRecordingWithPath:[self getRecorderPath] prepareRecorderCompletion:completion];
+}
+
+- (void)startRecord {
+    [self.voiceRecordHUD removeFromSuperview];
+    [self.voiceRecordHUD startRecordingHUDAtView:self.view];
+    [self.voiceRecordHelper startRecordingWithStartRecorderCompletion:^{
+    }];
+}
+
+- (void)finishRecorded {
+    typeof(self) __weak weakSelf = self;
+    [self.voiceRecordHUD stopRecordCompled:^(BOOL fnished) {
+        weakSelf.voiceRecordHUD = nil;
+    }];
+    [self.voiceRecordHelper stopRecordingWithStopRecorderCompletion:^{
+        PPFastLog(@"Send voice message: %@, voice duration: %@",
+                  weakSelf.voiceRecordHelper.recordPath,
+                  weakSelf.voiceRecordHelper.recordDuration);
+//        [weakSelf didSendMessageWithVoice:weakSelf.voiceRecordHelper.recordPath voiceDuration:weakSelf.voiceRecordHelper.recordDuration];
+    }];
+}
+
+- (void)pauseRecord {
+    [self.voiceRecordHUD pauseRecord];
+}
+
+- (void)resumeRecord {
+    [self.voiceRecordHUD resaueRecord];
+}
+
+- (void)cancelRecord {
+    typeof(self) __weak weakSelf = self;
+    [self.voiceRecordHUD cancelRecordCompled:^(BOOL fnished) {
+        weakSelf.voiceRecordHUD = nil;
+    }];
+    [self.voiceRecordHelper cancelledDeleteWithCompletion:^{
+        
+    }];
+}
+
+- (NSString *)getRecorderPath {
+    NSString *recorderPath = nil;
+    recorderPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
+    NSDate *now = [NSDate date];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyyMMddHHmmssSSS"];
+    recorderPath = [recorderPath stringByAppendingFormat:@"/PPVoice-%@.m4a", [dateFormatter stringFromDate:now]];
+    return recorderPath;
 }
 
 @end

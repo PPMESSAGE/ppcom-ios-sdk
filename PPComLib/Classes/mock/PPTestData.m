@@ -11,6 +11,7 @@
 #import "PPMessage.h"
 #import "PPMessageImageMediaPart.h"
 #import "PPMessageFileMediaPart.h"
+#import "PPMessageAudioMediaPart.h"
 #import "PPConversationItem.h"
 
 #import "PPApp.h"
@@ -72,6 +73,18 @@
     
     [messages addObject:[self makePPMessageWithFileName:@"AA.txt" withFileSize:123 withDirection:PPMessageDirectionIncoming]];
     [messages addObject:[self makePPMessageWithFileName:@"BB.zip" withFileSize:456 withDirection:PPMessageDirectionOutgoing]];
+    
+    [messages addObject:[self makePPMessageWithAudioDuration:20 withDirection:PPMessageDirectionIncoming]];
+    [messages addObject:[self makePPMessageWithAudioDuration:0 withDirection:PPMessageDirectionIncoming]];
+    [messages addObject:[self makePPMessageWithAudioDuration:5 withDirection:PPMessageDirectionIncoming]];
+    [messages addObject:[self makePPMessageWithAudioDuration:60 withDirection:PPMessageDirectionIncoming]];
+    [messages addObject:[self makePPMessageWithAudioDuration:100 withDirection:PPMessageDirectionIncoming]];
+    
+    [messages addObject:[self makePPMessageWithAudioDuration:20 withDirection:PPMessageDirectionOutgoing]];
+    [messages addObject:[self makePPMessageWithAudioDuration:0 withDirection:PPMessageDirectionOutgoing]];
+    [messages addObject:[self makePPMessageWithAudioDuration:5 withDirection:PPMessageDirectionOutgoing]];
+    [messages addObject:[self makePPMessageWithAudioDuration:60 withDirection:PPMessageDirectionOutgoing]];
+    [messages addObject:[self makePPMessageWithAudioDuration:100 withDirection:PPMessageDirectionOutgoing]];
     
     return messages;
 }
@@ -172,6 +185,23 @@
     fileMessage.direction = direction;
     
     return fileMessage;
+}
+
+- (PPMessage*)makePPMessageWithAudioDuration:(CGFloat)duration
+                               withDirection:(PPMessageDirection)direction {
+    PPMessage *audioMessage = [[PPMessage alloc] init];
+    audioMessage.identifier = PPRandomUUID();
+    audioMessage.type = PPMessageTypeAudio;
+    
+    PPMessageAudioMediaPart *audioMediaPart = [[PPMessageAudioMediaPart alloc] init];
+    audioMediaPart.duration = duration;
+    audioMediaPart.fileUUID = PPRandomUUID();
+    
+    audioMessage.mediaPart = audioMediaPart;
+    audioMessage.fromUser = [self getUserForMessageDirection:direction];
+    audioMessage.direction = direction;
+    
+    return audioMessage;
 }
 
 - (PPUser*)makeUserWithName:(NSString*)userName

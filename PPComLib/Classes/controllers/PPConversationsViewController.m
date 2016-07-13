@@ -36,6 +36,7 @@
 #import "UIViewController+PPAnimating.h"
 
 #import "PPTestData.h"
+#import "PPVoiceRecord.h"
 
 @interface PPConversationsViewController () <PPSDKDelegate>
 

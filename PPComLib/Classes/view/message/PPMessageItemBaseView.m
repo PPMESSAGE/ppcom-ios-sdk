@@ -19,6 +19,8 @@
 #import "PPMessageItemRightLargeTxtView.h"
 #import "PPMessageItemLeftUnknownView.h"
 #import "PPMessageItemRightUnknownView.h"
+#import "PPMessageItemLeftVoiceView.h"
+#import "PPMessageItemRightVoiceView.h"
 
 #import "PPMessageUtils.h"
 #import "PPSDKUtils.h"
@@ -182,6 +184,21 @@ CGFloat const PPMessageItemViewTimestampHeight = 22;
                         
                     case PPMessageDirectionOutgoing:
                         cellBodySize = [PPMessageItemRightLargeTxtView cellBodySizeForMessage:message];
+                        break;
+                        
+                    case PPMessageDirectionUnknown:
+                        break;
+                }
+                break;
+                
+            case PPMessageTypeAudio:
+                switch (message.direction) {
+                    case PPMessageDirectionIncoming:
+                        cellBodySize = [PPMessageItemLeftVoiceView cellBodySizeForMessage:message];
+                        break;
+                        
+                    case PPMessageDirectionOutgoing:
+                        cellBodySize = [PPMessageItemRightVoiceView cellBodySizeForMessage:message];
                         break;
                         
                     case PPMessageDirectionUnknown:

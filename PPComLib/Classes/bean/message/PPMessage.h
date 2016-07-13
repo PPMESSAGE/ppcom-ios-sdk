@@ -18,7 +18,8 @@ typedef NS_ENUM(NSInteger, PPMessageType) {
     PPMessageTypeFile,
     PPMessageTypeImage,
     PPMessageTypeText,
-    PPMessageTypeTxt
+    PPMessageTypeTxt,
+    PPMessageTypeAudio
 };
 
 typedef NS_ENUM(NSInteger, PPMessageDirection) {

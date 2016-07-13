@@ -32,4 +32,20 @@
     return [self pp_imageForName:@"File-50"];
 }
 
++ (UIImage*)pp_defaultAudioImage {
+    return [self pp_imageForName:@"voice"];
+}
+
++ (UIImage*)pp_defaultAudioHighlightImage {
+    return [self pp_imageForName:@"voice_HL"];
+}
+
++ (UIImage*)pp_defaultKeyboardImage {
+    return [self pp_imageForName:@"keyboard"];
+}
+
++ (UIImage*)pp_defaultKeyboardHighlightImage {
+    return [self pp_imageForName:@"keyboard_HL"];
+}
+
 @end

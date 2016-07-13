@@ -19,4 +19,11 @@ extern CGFloat const PPMessageItemLeftViewDefaultBubbleCornerRadius;
 @property (nonatomic) UIColor *bubbleColor;
 @property (nonatomic) CGFloat bubbleCornerRadius;
 
+//
+// [icon view][right column view][right view]
+//
+// Override it's getter method to provide your own rightView
+// Default is nil
+@property (nonatomic) UIView *rightView;
+
 @end

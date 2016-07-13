@@ -18,6 +18,7 @@
 
 "File Msg Summary" = "[文件]";
 "Image Msg Summary" = "[图片]";
+"Audio Msg Summary" = "[语音]";
 "Unknown Msg Summary" = "[未知消息]";
 
 "Yesterday" = "昨天";
@@ -32,3 +33,9 @@
 "Error" = "错误";
 
 "Enter Message" = "输入信息";
+
+"HoldToTalk" = "按住说话";
+"ReleaseToSend" = "放开发送";
+"SlideToCancel" = "向上滑动取消";
+"ReleaseToCancel" = "松开取消";
+"SendAMessage" = "发送新消息";

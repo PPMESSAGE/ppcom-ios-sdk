@@ -14,6 +14,17 @@
 
 CGFloat const PPButtonCornerRadius = 5;
 
++ (PPButton *)buttonWithImage:(UIImage *)image
+           withHighlightImage:(UIImage *)hlImage {
+    PPButton *button = [self new];
+    if (image)
+        [button setBackgroundImage:image forState:UIControlStateNormal];
+    if (hlImage)
+        [button setBackgroundImage:hlImage forState:UIControlStateHighlighted];
+    
+    return button;
+}
+
 - (instancetype)init {
     self = [super init];
     if (self) {

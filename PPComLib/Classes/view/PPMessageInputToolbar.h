@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+
 #import "PPComposeTextView.h"
+#import "PPButton.h"
 
 extern CGFloat const PPChattingViewTextViewBaseLineHeight;
 
@@ -19,9 +21,37 @@ extern CGFloat const PPChattingViewTextViewBaseLineHeight;
 - (void)didHeightChanged:(PPMessageInputToolbar*)inputToolbar
                   height:(CGFloat)height
               heightDiff:(CGFloat)heightDiff;
+
+// prepare record
+- (void)prepareRecordingVoiceActionWithCompletion:(BOOL (^)(void))completion;
+
+// Start record
+- (void)didStartRecordingVoiceAction;
+
+// Slide up to cancel record
+- (void)didCancelRecordingVoiceAction;
+
+// release finger finish record
+- (void)didFinishRecoingVoiceAction;
+
+// finger drag out side record button
+- (void)didDragOutsideAction;
+
+// finger enter inside record button
+- (void)didDragInsideAction;
+
 @end
 
 @interface PPMessageInputToolbar : UIToolbar
+
+// Hold to talk button
+@property (nonatomic) PPButton *holdToTalkButton;
+
+// Audio Button
+@property (nonatomic) PPButton *audioButton;
+
+// Keyboard Button
+@property (nonatomic) PPButton *keyboardButton;
 
 /**
  * @abstract An automatically resizing message composition field.

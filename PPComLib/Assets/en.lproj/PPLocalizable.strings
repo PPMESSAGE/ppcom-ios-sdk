@@ -18,6 +18,7 @@
 
 "File Msg Summary" = "[File]";
 "Image Msg Summary" = "[Image]";
+"Audio Msg Summary" = "[Audio]";
 "Unknown Msg Summary" = "[Unknown Msg]";
 
 "Yesterday" = "Yesterday";
@@ -32,3 +33,9 @@
 "Error" = "Error";
 
 "Enter Message" = "Enter Message";
+
+"HoldToTalk" = "Hold to talk";
+"ReleaseToSend" = "Release to send";
+"SlideToCancel" = "Slide up to cancel";
+"ReleaseToCancel" = "Release to cancel";
+"SendAMessage" = "Send a message";

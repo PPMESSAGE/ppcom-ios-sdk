@@ -82,11 +82,7 @@ static NSString *const PPPlaceholderText = @"Enter Message";
 
 - (void)setText:(NSString *)text {
     [super setText:text];
-    
-    if (PPIsNull(text) ||
-        [text isEqualToString:@""]) {
-        [self onTextViewTextChanged];
-    }
+    [self onTextViewTextChanged];
 }
 
 #pragma mark - Notification Handlers

@@ -14,6 +14,7 @@
 extern CGFloat const PPMessageMaxContentWidthRatio;
 extern CGFloat const PPMessageFileIconHeight;
 extern NSUInteger const PPMessageTextMaxLengthLimit;
+extern CGFloat const PPMessageItemVoiceViewMinimumLength;
 
 typedef NS_ENUM(NSInteger, PPTableViewScrollDirection) {
     PPTableViewScrollDirectionNone,
@@ -24,6 +25,7 @@ typedef NS_ENUM(NSInteger, PPTableViewScrollDirection) {
 CGFloat PPMaxCellWidth();
 CGFloat PPMaxImageMessageCellHeight();
 CGSize PPImageCellTargetSize(CGSize originImageSize);
+CGSize PPVoiceMessageCellWidth(CGFloat duration);
 
 CGSize PPTextPlainSize(NSString *text, UIFont *font);
 

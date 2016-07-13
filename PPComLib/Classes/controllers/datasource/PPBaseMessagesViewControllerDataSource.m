@@ -23,6 +23,8 @@
 #import "PPMessageItemRightLargeTxtView.h"
 #import "PPMessageItemLeftUnknownView.h"
 #import "PPMessageItemRightUnknownView.h"
+#import "PPMessageItemLeftVoiceView.h"
+#import "PPMessageItemRightVoiceView.h"
 
 #import "PPBaseMessagesViewController.h"
 
@@ -76,6 +78,10 @@
                     cellIdentifier = PPMessageItemLeftUnknownViewIdentifier;
                     break;
                     
+                case PPMessageTypeAudio:
+                    cellIdentifier = PPMessageItemLeftVoiceViewIdentifier;
+                    break;
+                    
                 default:
                     break;
             }
@@ -101,6 +107,10 @@
                     
                 case PPMessageTypeUnknown:
                     cellIdentifier = PPMessageItemRightUnknownViewIdentifier;
+                    break;
+                    
+                case PPMessageTypeAudio:
+                    cellIdentifier = PPMessageItemRightVoiceViewIdentifier;
                     break;
                     
                 default:

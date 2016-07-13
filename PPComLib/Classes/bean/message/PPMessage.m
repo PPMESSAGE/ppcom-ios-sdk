@@ -20,6 +20,7 @@
 #import "PPMessageTxtMediaPart.h"
 #import "PPMessageFileMediaPart.h"
 #import "PPMessageImageMediaPart.h"
+#import "PPMessageAudioMediaPart.h"
 
 #import "PPConversationItem.h"
 
@@ -139,6 +140,9 @@ NSString *const PPMessageSubTypeAudio = @"AUDIO";
         case PPMessageTypeUnknown:
             return PPLocalizedString(@"Unknown Msg Summary");
             
+        case PPMessageTypeAudio:
+            return PPLocalizedString(@"Audio Msg Summary");
+            
         default:
             return @" ";
     }
@@ -179,6 +183,10 @@ NSString *const PPMessageSubTypeAudio = @"AUDIO";
         
                 case PPMessageTypeImage:
                     mediaPart = [PPMessageImageMediaPart mediaPartWithJSONString:messageBody];
+                    break;
+                    
+                case PPMessageTypeAudio:
+                    mediaPart = [PPMessageAudioMediaPart mediaPartWithJSONString:messageBody];
                     break;
                     
                 default:
@@ -266,6 +274,10 @@ NSString *const PPMessageSubTypeAudio = @"AUDIO";
     
     if ([msgSubType isEqualToString:PPMessageSubTypeFile]) {
         return PPMessageTypeFile;
+    }
+    
+    if ([msgSubType isEqualToString:PPMessageSubTypeAudio]) {
+        return PPMessageTypeAudio;
     }
     
     return PPMessageTypeUnknown;

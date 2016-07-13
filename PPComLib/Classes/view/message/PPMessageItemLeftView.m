@@ -13,6 +13,7 @@
 #import "PPLog.h"
 #import "PPConstants.h"
 #import "UIImage+PPSDK.h"
+#import "UIView+PPBorder.h"
 
 #import "PPUser.h"
 
@@ -77,11 +78,19 @@ CGFloat const PPMessageItemLeftViewDefaultBubbleCornerRadius = 17.0f;
     }
     [_rightColumnView addSubview:_msgContentView];
     
+    if (self.rightView) {
+        self.rightView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addSubview:self.rightView];
+    }
+    
     [self configureMessageTimestampLayoutConstraints];
     [self configureAvatarImageViewLayoutConstraints];
     [self configureRightColumnViewLayoutConstraints];
     [self configureNameLabelLayoutConstraints];
     [self configureMessageContentLayoutConstraints];
+    if (self.rightView) {
+        [self configureRightViewLayoutConstraints];
+    }
     
 }
 
@@ -191,6 +200,17 @@ CGFloat const PPMessageItemLeftViewDefaultBubbleCornerRadius = 17.0f;
     
     [_rightColumnView addConstraint:_messageContentViewConstraintWidth];
     [_rightColumnView addConstraint:_messageContentViewConstraintHeight];
+    
+}
+
+- (void)configureRightViewLayoutConstraints {
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.rightView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:8.0]];
+    
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.rightView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.messageContentView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:8.0]];
+    
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.rightView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-8.0]];
+    
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.rightView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.messageContentView attribute:NSLayoutAttributeHeight multiplier:1.0 constant:.0]];
     
 }
 

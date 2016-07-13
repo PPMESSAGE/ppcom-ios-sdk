@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+#import "PPVoiceRecord.h"
+
 @class PPConversationItem, PPMessage, PPBaseMessagesViewControllerDataSource;
 
 @interface PPBaseMessagesViewController : UIViewController <UITableViewDelegate>
@@ -16,6 +18,7 @@
 @property (nonatomic) NSString *conversationUUID;
 
 @property (nonatomic) UIRefreshControl *refreshControl;
+@property (nonatomic) PPVoiceRecord *voiceRecordHUD;
 
 - (void)applicationIsActive:(NSNotification *)notification;
 - (void)applicationEnteredForeground:(NSNotification *)notification;

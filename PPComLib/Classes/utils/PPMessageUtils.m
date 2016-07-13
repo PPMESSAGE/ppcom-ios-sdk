@@ -9,6 +9,7 @@
 #import "PPMessageUtils.h"
 #import "PPLog.h"
 #import "PPMessage.h"
+#import "PPVoiceRecordHelper.h"
 
 #pragma mark - Max Cell Dimensions
 
@@ -16,6 +17,7 @@ CGFloat const PPMessageMaxContentWidthRatio = 0.7;
 CGFloat const PPMessageFileIconHeight = 64;
 NSUInteger const PPMessageTextMaxLengthLimit = 128;
 NSInteger const PPMessageTimestampDelay = 5 * 60; // 300s
+CGFloat const PPMessageItemVoiceViewMinimumLength = 42;
 
 #pragma mark - Private
 BOOL pp_shouldShowTimestamp(double bigTimestamp, double smallTimestamp) {
@@ -24,6 +26,7 @@ BOOL pp_shouldShowTimestamp(double bigTimestamp, double smallTimestamp) {
 
 #pragma mark - Public
 CGFloat PPMaxCellWidth() {
+    // 58 = width(avatar) + padding * 2
     return ( [UIScreen mainScreen].bounds.size.width - 58 ) * PPMessageMaxContentWidthRatio;
 }
 
@@ -64,6 +67,17 @@ CGSize PPImageCellTargetSize(CGSize originImageSize) {
     targetSize.height = finalHeight;
     
     return targetSize;
+}
+
+CGSize PPVoiceMessageCellWidth(CGFloat duration) {
+    CGFloat fixDuration = MIN(PPVoiceRecorderTotalTime, MAX(duration, 0));
+    CGFloat baseWidth = PPMessageItemVoiceViewMinimumLength;
+    // assume 48 = width(durationLabel) + width(unreadDot)
+    CGFloat maxAudioCellWidth = PPMaxCellWidth() - 48;
+    CGFloat width = baseWidth + (maxAudioCellWidth - baseWidth) * fixDuration / PPVoiceRecorderTotalTime;
+    // assume cell height = 36
+    CGFloat height = 36;
+    return CGSizeMake(width, height);
 }
 
 NSUInteger PPTextViewLineNumber(UITextView *textView) {
