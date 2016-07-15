@@ -10,6 +10,8 @@
 
 #import "PPMessageItemLeftImageView.h"
 #import "PPMessageItemRightImageView.h"
+#import "PPMessageItemLeftVoiceView.h"
+#import "PPMessageItemRightVoiceView.h"
 
 #import "PPBaseMessagesViewController.h"
 
@@ -20,6 +22,7 @@
 #import "PPSDKUtils.h"
 
 #import "PPMessageImageMediaPart.h"
+#import "PPMessageAudioMediaPart.h"
 
 #import "JTSImageInfo.h"
 #import "JTSImageViewController.h"
@@ -28,9 +31,14 @@
 #import "SDWebImageDownloader.h"
 #import "SDWebImageManager.h"
 
+#import "PPAudioPlayerHelper.h"
+#import "PPBaseMessagesViewController+PPVoiceMessage.h"
+#import "PPDownloader.h"
+
 @interface PPMessageItemBaseView () <
     JTSImageViewControllerInteractionsDelegate,
-    JTSImageViewControllerDownloaderDelegate
+    JTSImageViewControllerDownloaderDelegate,
+    PPAudioPlayerHelperDelegate
 >
 
 @end
@@ -58,10 +66,127 @@
             }
             break;
             
+        case PPMessageTypeAudio:
+            switch (message.direction) {
+                case PPMessageDirectionIncoming:
+                    [self pp_onTappedLeftVoiceMessage:message forTableViewCell:(PPMessageItemLeftVoiceView*)self];
+                    break;
+                    
+                case PPMessageDirectionOutgoing:
+                    [self pp_onTappedRightVoiceMessage:message forTableViewCell:(PPMessageItemRightVoiceView*)self];
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+            
         default:
             break;
     }
 }
+
+// ================================
+// Audio Message Click Event
+// ================================
+
+- (void)pp_onTappedLeftVoiceMessage:(PPMessage *)message
+                   forTableViewCell:(PPMessageItemLeftVoiceView*)leftVoiceViewCell {
+    PPMessageAudioMediaPart *audioMediaPart = message.mediaPart;
+    if (audioMediaPart.unread) {
+        audioMediaPart.unread = NO;
+    }
+    
+    [self pp_onTappedVoiceMessage:message
+                forAudioMediaPart:(PPMessageAudioMediaPart*)message.mediaPart];
+}
+
+- (void)pp_onTappedRightVoiceMessage:(PPMessage *)message
+                    forTableViewCell:(PPMessageItemRightVoiceView*)rightVoiceViewCell {
+    [self pp_onTappedVoiceMessage:message
+                forAudioMediaPart:(PPMessageAudioMediaPart*)message.mediaPart];
+}
+
+- (void)pp_onTappedVoiceMessage:(PPMessage *)message
+              forAudioMediaPart:(PPMessageAudioMediaPart *)audioMediaPart {
+    
+    PPMessage *messageOnPlaying = [self.messagesViewController pp_messageOnPlayingVoice];
+    PPMessageAudioMediaPart *audioMediaPartNeedToPlay = nil;
+    if (messageOnPlaying) {
+        if (message == messageOnPlaying) {
+            audioMediaPart.isAudioPlaying = NO;
+            [[PPAudioPlayerHelper shareInstance] stopAudio];
+        } else {
+            PPMessageAudioMediaPart *mediaPartOnPlaying = messageOnPlaying.mediaPart;
+            mediaPartOnPlaying.isAudioPlaying = NO;
+            [[PPAudioPlayerHelper shareInstance] stopAudio];
+            
+            audioMediaPartNeedToPlay = audioMediaPart;
+            audioMediaPart.isAudioPlaying = YES;
+        }
+    } else {
+        audioMediaPartNeedToPlay = audioMediaPart;
+        audioMediaPart.isAudioPlaying = YES;
+    }
+    
+    [self.messagesViewController reloadTableView];
+    
+    // Playing
+    if (audioMediaPartNeedToPlay) {
+        __weak typeof(self) wself = self;
+        [PPAudioPlayerHelper shareInstance].delegate = wself;
+        PPDownloader *audioDownloader = [PPDownloader new];
+        // Local play
+        if (audioMediaPartNeedToPlay.localFilePath) {
+            [[PPAudioPlayerHelper shareInstance] managerAudioWithFileName:audioMediaPartNeedToPlay.localFilePath toPlay:YES];
+        } else {
+            PPDownloader *downloader = [PPDownloader new];
+            [downloader queryDiskCacheForFileUUID:audioMediaPartNeedToPlay.fileUUID done:^(id obj, NSString *fileUUID, NSString *fileDiskPath) {
+                
+                if (!wself) return;
+                
+                if (obj) {
+                    [[PPAudioPlayerHelper shareInstance] managerAudioWithFileName:fileDiskPath toPlay:YES];
+                } else {
+                    
+                    // Begin to download
+                    [downloader downloadWithFileUUID:audioMediaPartNeedToPlay.fileUUID withBlock:^(id obj, NSString *fileUUID, NSString *fileDiskPath) {
+                        if (!wself || !wself.messagesViewController) {
+                            [downloader cancel];
+                            return;
+                        }
+                        
+                        // Is there another voice playing ...
+                        PPMessage *anotherMessageIsAnimating = [wself.messagesViewController pp_messageOnPlayingVoice];
+                        if (anotherMessageIsAnimating != nil &&
+                            anotherMessageIsAnimating.mediaPart != audioMediaPartNeedToPlay) {
+                            return;
+                        }
+                        
+                        if (obj) {
+                            [[PPAudioPlayerHelper shareInstance] managerAudioWithFileName:fileDiskPath toPlay:YES];
+                        } else {
+                            audioMediaPartNeedToPlay.isAudioPlaying = NO;
+                            [wself.messagesViewController reloadTableView];
+                        }
+                        
+                    }];
+                    
+                }
+                
+            }];
+        }
+    }
+}
+
+- (void)didAudioPlayerStopPlay:(AVAudioPlayer*)audioPlayer {
+    [self.messagesViewController pp_stopOnPlayingVoice];
+    [self.messagesViewController reloadTableView];
+}
+
+// ================================
+// Image Message Click Event
+// ================================
 
 - (void)pp_onTappedLeftImageMessage:(PPMessage *)message
                    forTableViewCell:(PPMessageItemLeftImageView*)leftImageViewCell {

@@ -53,6 +53,11 @@ CGFloat const PPMessageItemVoiceUnreadDotSize = 8;
     
     self.durationLabel.text = [NSString stringWithFormat:@"%.1f\"", audioMediaPart.duration];
     self.unreadDot.hidden = !audioMediaPart.unread;
+    if (audioMediaPart.isAudioPlaying) {
+        [self.animationVoiceImageView startAnimating];
+    } else {
+        [self.animationVoiceImageView stopAnimating];
+    }
     
     self.messageContentViewSize = [PPMessageItemLeftVoiceView cellBodySizeForMessage:message];
 }
@@ -108,6 +113,11 @@ CGFloat const PPMessageItemVoiceUnreadDotSize = 8;
     
     PPPadding(_unreadDot, _voiceDescriptionView, PPMessageItemVoiceUnreadDotSize, PPPaddingMaskWidth | PPPaddingMaskHeight);
     PPPadding(_unreadDot, _voiceDescriptionView, 0, PPPaddingMaskCenterY);
+}
+
+#pragma mark - 
+- (BOOL)addTapGestureRecognizer {
+    return YES;
 }
 
 @end

@@ -20,16 +20,17 @@
 - (instancetype)initWithJSONString:(NSString*)jsonString {
     if (self = [super init]) {
         NSDictionary *audioDictionary = PPJSONStringToDictionary(jsonString);
-        self.duration = [audioDictionary[@"dura"] floatValue];
+        self.duration = [audioDictionary[@"dura"] doubleValue];
         self.fileUUID = [audioDictionary[@"fid"] string];
         self.unread = YES;
+        self.isAudioPlaying = NO;
     }
     return self;
 }
 
 - (NSString*)toJSONString {
     return @{ @"fid": PPSafeString(self.fileUUID),
-              @"mime": @"audio/mp4a-latm",
+              @"mime": @"audio/m4a",
               @"dura": @(self.duration) };
 }
 

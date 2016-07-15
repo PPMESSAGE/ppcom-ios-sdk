@@ -7,10 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-
 #import "PPVoiceRecord.h"
 
-@class PPConversationItem, PPMessage, PPBaseMessagesViewControllerDataSource;
+@class PPConversationItem, PPMessage, PPBaseMessagesViewControllerDataSource, PPMessageItemBaseView;
 
 @interface PPBaseMessagesViewController : UIViewController <UITableViewDelegate>
 

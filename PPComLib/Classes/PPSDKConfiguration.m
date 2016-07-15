@@ -29,7 +29,7 @@
     
     self.webSockeUrl = [wsHost stringByAppendingString:@"/pcsocket/WS"];
     self.downloadUrl = [self.hostUrl stringByAppendingString:@"/download/download/"];
-    self.uploadUrl = [self.hostUrl stringByAppendingString:@"/upload"];
+    self.uploadUrl = [self.hostUrl stringByAppendingString:@"/upload/"];
     self.authUrl = [self.hostUrl stringByAppendingString:@"/ppauth"];
     self.apiUrl = [self.hostUrl stringByAppendingString:@"/api"];
     

@@ -64,14 +64,26 @@ CGFloat const PPMessageItemLeftVoiceViewTrailing = 8.0;
 
 - (void)presentMessage:(PPMessage *)message {
     [super presentMessage:message];
+    
     PPMessageAudioMediaPart *audioMediaPart = message.mediaPart;
     self.durationLabel.text = [NSString stringWithFormat:@"%.1f\"", audioMediaPart.duration];
+    if (audioMediaPart.isAudioPlaying) {
+        [self.animationVoiceImageView startAnimating];
+    } else {
+        [self.animationVoiceImageView stopAnimating];
+    }
+    
     self.messageContentViewSize = [PPMessageItemRightVoiceView cellBodySizeForMessage:message];
 }
 
 - (void)configureAnimationVoiceImageViewLayoutConstraints {
     PPPadding(_animationVoiceImageView, _voiceContainerView, PPMessageItemLeftVoiceViewTrailing, PPPaddingMaskTrailing);
     PPPadding(_animationVoiceImageView, _voiceContainerView, 0, PPPaddingMaskCenterY);
+}
+
+#pragma mark -
+- (BOOL)addTapGestureRecognizer {
+    return YES;
 }
 
 @end

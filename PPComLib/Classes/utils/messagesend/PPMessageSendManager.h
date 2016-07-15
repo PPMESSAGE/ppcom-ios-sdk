@@ -29,4 +29,16 @@ typedef void(^PPMessageSendStateBlock)(PPMessage *message, id obj, PPMessageSend
 withConversation:(NSString*)conversationUUID
       completion:(PPMessageSendStateBlock)block;
 
+/**
+ * Send audio 
+ *
+ * @param audioFilePath disk audio path
+ * @param audioDuration audio duration
+ * @param conversation conversation uuid
+ */
+- (void)sendAudio:(NSString*)audioFilePath
+    audioDuration:(CGFloat)duration
+     conversation:(NSString*)conversationUUID
+       completion:(PPMessageSendStateBlock)block;
+
 @end

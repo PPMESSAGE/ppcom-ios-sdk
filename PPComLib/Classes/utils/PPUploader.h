@@ -18,7 +18,7 @@
 
 - (void)uploadWithFilePath:(NSString *)filePath
                toURLString:(NSString *)serverURLString
-                 completed:(void (^)(NSDictionary *, NSError *))completedHandler;
+                 completed:(void (^)(NSDictionary *response, NSError *error))completedHandler;
 
 - (void)uploadWithFileData:(NSData *)fileData
               withFileName:(NSString *)fileName

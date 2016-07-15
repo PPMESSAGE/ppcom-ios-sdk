@@ -12,13 +12,16 @@
 
 #import "PPMessageUtils.h"
 #import "PPTxtUploader.h"
+#import "PPUploader.h"
 #import "PPLog.h"
+#import "PPSDKUtils.h"
 
 #import "PPWebSocketPool.h"
 
 #import "PPApiMessage.h"
 #import "PPMessage.h"
 #import "PPMessageTxtMediaPart.h"
+#import "PPMessageAudioMediaPart.h"
 
 @implementation PPMessageWebSocketSender
 
@@ -71,6 +74,10 @@
             [self pp_prepareTxtMessageToSend:message completed:completed];
             break;
             
+        case PPMessageTypeAudio:
+            [self pp_prepareAudioMessageToSend:message completed:completed];
+            break;
+            
         default:
             break;
     }
@@ -91,6 +98,21 @@
             if (completed) completed(NO);
         } else {
             txtMediaPart.txtFid = response[@"fuuid"];
+            if (completed) completed(YES);
+        }
+    }];
+}
+
+- (void)pp_prepareAudioMessageToSend:(PPMessage*)message
+                           completed:(void (^)(BOOL prepareOK))completed {
+    PPUploader *uploader = [PPUploader new];
+    PPMessageAudioMediaPart *audioMediaPart = message.mediaPart;
+    NSString *serverURLString = [PPSDK sharedSDK].configuration.uploadUrl;
+    [uploader uploadWithFilePath:audioMediaPart.localFilePath toURLString:serverURLString completed:^(NSDictionary *response, NSError *error) {
+        if (error) {
+            if (completed) completed(NO);
+        } else {
+            audioMediaPart.fileUUID = response[@"fuuid"];
             if (completed) completed(YES);
         }
     }];

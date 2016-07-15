@@ -10,8 +10,10 @@
 
 @interface PPMessageAudioMediaPart : PPMessageBaseMediaPart
 
+@property (nonatomic) BOOL isAudioPlaying;
 @property (nonatomic) BOOL unread;
-@property (nonatomic) CGFloat duration;
+
+@property (nonatomic) NSTimeInterval duration;
 @property (nonatomic) NSString *fileUUID;
 @property (nonatomic) NSString *fileURL;
 @property (nonatomic) NSString *localFilePath;

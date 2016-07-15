@@ -31,6 +31,7 @@
 #import "PPLog.h"
 #import "UIImage+PPSDK.h"
 #import "UIViewController+PPAnimating.h"
+#import "PPBaseMessagesViewController+PPVoiceMessage.h"
 
 #import "PPMessage.h"
 #import "PPConversationItem.h"
@@ -48,6 +49,7 @@
 #import "PPMessagesStore.h"
 
 #import "PPVoiceRecordHelper.h"
+#import "PPAudioPlayerHelper.h"
 
 #import "PPTestData.h"
 
@@ -57,6 +59,7 @@
 @property (nonatomic) UIImage *imagePlaceholder;
 
 @property (nonatomic) UITableView *tableView;
+@property (nonatomic) NSMutableArray *testMessages;
 
 @property (nonatomic) PPMessageControllerKeyboardDelegate *keyboardDelegate;
 
@@ -127,6 +130,12 @@
     [self removePPSDKObserver];
     [self removeApplicationObserver];
     [self removeKeyboardObserver];
+    
+    // Audio
+    [PPAudioPlayerHelper shareInstance].delegate = nil;
+    [[PPAudioPlayerHelper shareInstance] stopAudio];
+    [self pp_stopOnPlayingVoice];
+    
 }
 
 - (void)setupTableView {
@@ -141,6 +150,7 @@
     self.chattingView.inputToolbar.inputToolbarDelegate = nil;
     self.chattingView.inputToolbar.textInputView.delegate = nil;
     self.keyboardDelegate = nil;
+    [PPAudioPlayerHelper shareInstance].delegate = nil;
 }
 
 #pragma mark -
@@ -240,30 +250,54 @@
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     if ([text isEqualToString:@"\n"]) {
-        // 发送文本信息
-        [[PPMessageSendManager getInstance] sendText:textView.text withConversation:self.conversationUUID completion:^(PPMessage *message, id obj, PPMessageSendState state) {
-            switch (state) {
-                case PPMessageSendStateErrorNoConversationId:
-                    break;
-                    
-                case PPMessageSendStateBeforeSend:
-                    PPAddTimestampIfNeedToMessage([self.messagesDataSource messages], message); // add timestamp if need
-                    break;
-                    
-                case PPMessageSendStateSendOut:
-                    [self reloadTableViewWithMessages:obj scrollToBottom:YES];
-                    [self.keyboardDelegate moveUpTableView];
-                    break;
-                    
-                case PPMessageSendStateError:
-                    [self reloadTableView];
-                    break;
-            }
-        }];
+        [self sendText:textView.text];
         textView.text = @"";
         return NO;
     }
     return YES;
+}
+
+// =========================
+// Send Message
+// =========================
+
+- (void)sendText:(NSString*)text {
+    __weak typeof(self) wself = self;
+    [[PPMessageSendManager getInstance] sendText:text
+                                withConversation:self.conversationUUID
+                                      completion:^(PPMessage *message, id obj, PPMessageSendState state) {
+        [wself handleMessage:message sendState:state extraObj:obj];
+    }];
+}
+
+- (void)sendAudioWithFilePath:(NSString*)audioFilePath withAudioDuration:(NSTimeInterval)duration {
+    __weak typeof(self) wself = self;
+    [[PPMessageSendManager getInstance] sendAudio:audioFilePath
+                                    audioDuration:duration
+                                     conversation:self.conversationUUID
+                                       completion:^(PPMessage *message, id obj, PPMessageSendState state) {
+        [wself handleMessage:message sendState:state extraObj:obj];
+    }];
+}
+
+- (void)handleMessage:(PPMessage*)message sendState:(PPMessageSendState)state extraObj:(id)obj {
+    switch (state) {
+        case PPMessageSendStateErrorNoConversationId:
+            break;
+            
+        case PPMessageSendStateBeforeSend:
+            PPAddTimestampIfNeedToMessage([self.messagesDataSource messages], message); // add timestamp if need
+            break;
+            
+        case PPMessageSendStateSendOut:
+            [self reloadTableViewWithMessages:obj scrollToBottom:YES];
+            [self.keyboardDelegate moveUpTableView];
+            break;
+            
+        case PPMessageSendStateError:
+            [self reloadTableView];
+            break;
+    }
 }
 
 // ===========================
@@ -436,7 +470,11 @@
 
 - (NSMutableArray*)messagesInMemory {
 //    return [self.messagesStore messagesInCovnersation:self.conversationUUID autoCreate:YES];
-    return [[PPTestData sharedInstance] getMessages];
+    if (!_testMessages) {
+        _testMessages = [[PPTestData sharedInstance] getMessages];
+        [self.messagesStore setMessageList:_testMessages forConversation:self.conversationUUID];
+    }
+    return _testMessages;
 }
 
 // =================
@@ -473,7 +511,8 @@
         PPFastLog(@"Send voice message: %@, voice duration: %@",
                   weakSelf.voiceRecordHelper.recordPath,
                   weakSelf.voiceRecordHelper.recordDuration);
-//        [weakSelf didSendMessageWithVoice:weakSelf.voiceRecordHelper.recordPath voiceDuration:weakSelf.voiceRecordHelper.recordDuration];
+        [weakSelf sendAudioWithFilePath:weakSelf.voiceRecordHelper.recordPath
+                      withAudioDuration:[weakSelf.voiceRecordHelper.recordDuration doubleValue]];
     }];
 }
 

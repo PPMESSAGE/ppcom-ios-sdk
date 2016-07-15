@@ -34,46 +34,41 @@
     
     PPFastLog(@"[MessageArrived] message arrived: %@", message);
     
-    PPSDK *sdk = [PPSDK sharedSDK];
-    PPStoreManager *storeManager = [PPStoreManager instanceWithClient:sdk];
-    PPConversationsStore *conversationsStore = storeManager.conversationStore;
-    
-    // Find conversation
-    [conversationsStore asyncFindConversationWithConversationUUID:message.conversationUUID
-                                                        withBlock:^(PPConversationItem *conversationItem) {
-                                                            if (conversationItem) {
-                                                                PPFastLog(@"[MessageArrived] find conversation:%@.", conversationItem);
-                                                                
-                                                                // Ack message
-                                                                // make callback
-                                                                switch (message.type) {
-                                                                    case PPMessageTypeText:
-                                                                    case PPMessageTypeFile:
-                                                                    case PPMessageTypeImage:
-                                                                        [self ackMessageWithPushID:message.pushID];
-                                                                        [self makeResponseWithMessage:message
-                                                                                              success:YES
-                                                                                          withHandler:completedHandler];
-                                                                        break;
-                                                                        
-                                                                    case PPMessageTypeTxt: {
-                                                                        [self pp_handleTxtMessage:message
-                                                                                  handleCompleted:^(id obj, BOOL success) {
-                                                                            [self makeResponseWithMessage:message
-                                                                                                  success:success
-                                                                                              withHandler:completedHandler];
-                                                                        }];
-                                                                    }
-                                                                        break;
-                                                                        
-                                                                    default:
-                                                                        break;
-                                                                }
-
-                                                                
-                                                            } else {
-                                                                PPFastLog(@"[MessageArrived] cannot get conversation with messageUUID:%@, ignore this message", message.identifier);
-                                                            }
+    [self findConversationItemWithUUID:message.conversationUUID done:^(PPConversationItem *conversationItem) {
+        if (conversationItem) {
+            PPFastLog(@"[MessageArrived] find conversation:%@.", conversationItem);
+            
+            // Ack message
+            // make callback
+            switch (message.type) {
+                case PPMessageTypeAudio:
+                case PPMessageTypeText:
+                case PPMessageTypeFile:
+                case PPMessageTypeImage:
+                    [self ackMessageWithPushID:message.pushID];
+                    [self makeResponseWithMessage:message
+                                          success:YES
+                                      withHandler:completedHandler];
+                    break;
+                    
+                case PPMessageTypeTxt: {
+                    [self pp_handleTxtMessage:message
+                              handleCompleted:^(id obj, BOOL success) {
+                                  [self makeResponseWithMessage:message
+                                                        success:success
+                                                    withHandler:completedHandler];
+                              }];
+                }
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            
+        } else {
+            PPFastLog(@"[MessageArrived] cannot get conversation with messageUUID:%@, ignore this message", message.identifier);
+        }
     }];
     
 }
@@ -102,6 +97,14 @@
     // We don't care about the ack result
     [ackMessageModel ackMessageWithMessagePushUUID:pushId withBlock:nil];
 
+}
+
+- (void)findConversationItemWithUUID:(NSString*)conversationUUID
+                                done:(void (^)(PPConversationItem *conversationItem))aBlock {
+    PPSDK *sdk = [PPSDK sharedSDK];
+    PPStoreManager *storeManager = [PPStoreManager instanceWithClient:sdk];
+    PPConversationsStore *conversationsStore = storeManager.conversationStore;
+    [conversationsStore asyncFindConversationWithConversationUUID:conversationUUID withBlock:aBlock];
 }
 
 #pragma mark -

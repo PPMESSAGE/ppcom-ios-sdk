@@ -20,6 +20,8 @@
 #import "PPConversationsStore.h"
 #import "PPMessagesStore.h"
 
+#import "PPMessageAudioMediaPart.h"
+
 @implementation PPMessageSendManager
 
 + (instancetype)getInstance {
@@ -31,43 +33,90 @@
     return manager;
 }
 
+- (void)sendMessage:(PPMessage *)message
+         completion:(PPMessageSendStateBlock)block {
+    PPSDK *sdk = [PPSDK sharedSDK];
+    
+    NSString *conversationUUID = message.conversationUUID;
+    PPMessagesStore *messagesStore = [PPStoreManager instanceWithClient:sdk].messagesStore;
+    [messagesStore updateWithNewMessage:message];
+    if (block) block(message, [messagesStore messagesInCovnersation:conversationUUID], PPMessageSendStateSendOut);
+    
+    id<PPMessageSendProtocol> messageSender = sdk.messageSender;
+    [messageSender sendMessage:message withBlock:^(BOOL quickError) {
+        if (quickError) {
+            [messagesStore updateMessageStatus:PPMessageStatusError
+                            messageIndentifier:message.identifier
+                              conversationUUID:conversationUUID];
+            if (block) block(message, [messagesStore messages], PPMessageSendStateError);
+        }
+    }];
+}
+
 - (void)sendText:(NSString *)textContent
 withConversation:(NSString *)conversationUUID
       completion:(PPMessageSendStateBlock)block {
-    
-    NSString *textToBeSend = textContent;
-    
-    PPSDK *sdk = [PPSDK sharedSDK];
-    
-    PPUser *toUser = [[PPUser alloc] initWithUuid:conversationUUID];
-    toUser.userType = @"AG";
-    
-    PPConversationsStore *conversationsStore = [PPStoreManager instanceWithClient:sdk].conversationStore;
-    PPMessagesStore *messagesStore = [PPStoreManager instanceWithClient:sdk].messagesStore;
-    
-    [conversationsStore asyncFindConversationWithConversationUUID:conversationUUID withBlock:^(PPConversationItem *conversationItem) {
-        if (conversationItem) {
-            PPMessage *message = [PPMessage messageForSend:PPRandomUUID() text:textToBeSend conversation:conversationItem toUser:toUser];
-            
-            [messagesStore updateWithNewMessage:message];
-            if (block) block(message, [messagesStore messagesInCovnersation:conversationUUID], PPMessageSendStateSendOut);
-            
-            id<PPMessageSendProtocol> messageSender = sdk.messageSender;
-            [messageSender sendMessage:message withBlock:^(BOOL quickError) {
-                if (quickError) {
-                    [messagesStore updateMessageStatus:PPMessageStatusError
-                                    messageIndentifier:message.identifier
-                                      conversationUUID:conversationUUID];
-                    if (block) block(message, [messagesStore messages], PPMessageSendStateError);
-                }
-            }];
-            
-        } else {
-            PPFastLog(@"[PPMessageSendManager] Try send text:%@, but can not find conversation:%@, ignore it", textToBeSend, conversationUUID);
+    __weak typeof(self) wself = self;
+    [self findWithConversationUUID:conversationUUID done:^(PPConversationItem *conversationItem) {
+        if (!conversationItem) {
             if (block) block(nil, nil, PPMessageSendStateErrorNoConversationId);
+        } else {
+            [wself sendMessage:[wself buildMessageWithText:textContent
+                                      withConversationItem:conversationItem]
+                   completion:block];
         }
     }];
+}
 
+- (void)sendAudio:(NSString *)audioFilePath
+    audioDuration:(NSTimeInterval)duration
+     conversation:(NSString *)conversationUUID
+       completion:(PPMessageSendStateBlock)block {
+    __weak typeof(self) wself = self;
+    [self findWithConversationUUID:conversationUUID done:^(PPConversationItem *conversationItem) {
+        if (!conversationItem) {
+            if (block) block(nil, nil, PPMessageSendStateErrorNoConversationId);
+        } else {
+            [wself sendMessage:[wself buildMessageWithAudioFilePath:audioFilePath
+                                                  withAudioDuration:duration
+                                               withConversationItem:conversationItem]
+                    completion:block];
+        }
+    }];
+}
+
+// ==============
+// Helper
+// ==============
+- (void)findWithConversationUUID:(NSString*)conversationUUID
+                            done:(void (^)(PPConversationItem *conversationItem))aBlock {
+    if (!aBlock) return;
+    
+    PPSDK *sdk = [PPSDK sharedSDK];
+    PPConversationsStore *conversationsStore = [PPStoreManager instanceWithClient:sdk].conversationStore;
+    
+    [conversationsStore asyncFindConversationWithConversationUUID:conversationUUID withBlock:^(PPConversationItem *conversationItem) {
+        aBlock(conversationItem);
+    }];
+}
+
+- (PPMessage*)buildMessageWithText:(NSString*)text
+              withConversationItem:(PPConversationItem*)conversationItem {
+    return [PPMessage messageForSend:PPRandomUUID()
+                                text:text
+                        conversation:conversationItem];
+}
+
+- (PPMessage*)buildMessageWithAudioFilePath:(NSString*)audioFilePath
+                          withAudioDuration:(NSTimeInterval)audioDuration
+                       withConversationItem:(PPConversationItem*)conversationItem {
+    PPMessageAudioMediaPart *audioMediaPart = [PPMessageAudioMediaPart new];
+    audioMediaPart.localFilePath = audioFilePath;
+    audioMediaPart.duration = audioDuration;
+    return [PPMessage messageForSend:PPRandomUUID()
+                                text:nil
+                        conversation:conversationItem
+                           mediaPart:audioMediaPart];
 }
 
 @end

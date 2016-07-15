@@ -9,9 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "PPMessageMediaPart.h"
 
-@class PPUser;
-@class PPApiMessage;
-@class PPConversationItem;
+@class PPUser, PPApiMessage, PPConversationItem;
 
 typedef NS_ENUM(NSInteger, PPMessageType) {
     PPMessageTypeUnknown,
@@ -62,19 +60,15 @@ extern NSString *const PPMessageSubTypeAudio;
 + (PPMessage*)messageForSend:(NSString*)messageUUID
                         text:(NSString*)text
             conversationUUID:(NSString*)conversationUUID
-            conversationType:(NSString*)conversationType
-                      toUser:(PPUser*)toUser;
+            conversationType:(NSString*)conversationType;
+
++ (PPMessage*)messageForSend:(NSString *)messageUUID
+                        text:(NSString *)text
+                conversation:(PPConversationItem *)conversation;
 
 + (PPMessage*)messageForSend:(NSString *)messageUUID
                         text:(NSString *)text
                 conversation:(PPConversationItem *)conversation
-                      toUser:(PPUser *)toUser;
-
-+ (PPMessage*)messageForSend:(NSString *)messageUUID
-                        text:(NSString *)text
-                conversation:(PPConversationItem *)conversation
-                      toUser:(PPUser *)toUser
-                     apiType:(NSString *)apiType
                    mediaPart:(id<PPMessageMediaPart>)mediaPart;
 
 + (NSString*)summaryInMessage:(PPMessage*)message;

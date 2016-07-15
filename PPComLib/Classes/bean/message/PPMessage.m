@@ -68,51 +68,46 @@ NSString *const PPMessageSubTypeAudio = @"AUDIO";
 + (PPMessage*)messageForSend:(NSString *)messageUUID
                         text:(NSString *)text
             conversationUUID:(NSString *)conversationUUID
-            conversationType:(NSString *)conversationType
-                      toUser:(PPUser *)toUser {
+            conversationType:(NSString *)conversationType {
     
     PPConversationItem *conversation = [PPConversationItem new];
     conversation.uuid = conversationUUID;
     conversation.conversationType = conversationType;
     
-    return [PPMessage messageForSend:messageUUID text:text conversation:conversation toUser:toUser];
+    return [PPMessage messageForSend:messageUUID text:text conversation:conversation];
 }
 
 + (PPMessage*)messageForSend:(NSString *)messageUUID
                         text:(NSString *)text
-                conversation:(PPConversationItem *)conversation
-                      toUser:(PPUser *)toUser {
-    NSString *apiType = PPMessageSubTypeText;
+                conversation:(PPConversationItem *)conversation {
     id<PPMessageMediaPart> mediaPart = nil;
     if (PPIsLargeTxtMessage(text)) {
-        apiType = PPMessageSubTypeTxt;
-        
         mediaPart = [PPMessageTxtMediaPart new];
         PPMessageTxtMediaPart *txtMediaPart = (PPMessageTxtMediaPart*)mediaPart;
         txtMediaPart.txtContent = text;
     }
-    return [PPMessage messageForSend:messageUUID text:text conversation:conversation toUser:toUser apiType:apiType mediaPart:mediaPart];
+    return [PPMessage messageForSend:messageUUID text:text conversation:conversation mediaPart:mediaPart];
 }
 
 + (PPMessage*)messageForSend:(NSString *)messageUUID
                         text:(NSString *)text
                 conversation:(PPConversationItem *)conversation
-                      toUser:(PPUser *)toUser
-                     apiType:(NSString *)apiType
                    mediaPart:(id<PPMessageMediaPart>)mediaPart {
     PPMessage *message = [PPMessage new];
     
     message.identifier = messageUUID;
     message.direction = PPMessageDirectionOutgoing;
     message.timestamp = PPCurrentTimestamp();
-    message.apiType = apiType;
-    message.type = [self pp_typeFromApiMessageSubType:apiType];
+    message.apiType = [self detectApiTypeForText:text forMediaPart:mediaPart];
+    message.type = [self pp_typeFromApiMessageSubType:message.apiType];
     message.body = text;
     message.mediaPart = mediaPart;
     
     message.conversationUUID = conversation.uuid;
     message.conversationType = conversation.conversationType;
     
+    PPUser *toUser = [[PPUser alloc] initWithUuid:conversation.uuid];
+    toUser.userType = @"DU";
     message.toUser = toUser;
     
     // Make a copy here
@@ -281,6 +276,27 @@ NSString *const PPMessageSubTypeAudio = @"AUDIO";
     }
     
     return PPMessageTypeUnknown;
+}
+
++ (NSString*)detectApiTypeForText:(NSString*)text
+                     forMediaPart:(id<PPMessageMediaPart>)mediaPart {
+    if (text) {
+        if (PPIsLargeTxtMessage(text)) {
+            return PPMessageSubTypeTxt;
+        }
+        return PPMessageSubTypeText;
+    } else {
+        if ([mediaPart isKindOfClass:[PPMessageImageMediaPart class]]) {
+            return PPMessageSubTypeImage;
+        }
+        if ([mediaPart isKindOfClass:[PPMessageAudioMediaPart class]]) {
+            return PPMessageSubTypeAudio;
+        }
+        if ([mediaPart isKindOfClass:[PPMessageFileMediaPart class]]) {
+            return PPMessageSubTypeFile;
+        }
+    }
+    return PPMessageSubTypeText;
 }
 
 - (PPMessageDirection)pp_messageDirectionWithFromUserUUID:(NSString *)userUUID {
