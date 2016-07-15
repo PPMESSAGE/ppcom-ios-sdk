@@ -29,9 +29,9 @@
 }
 
 - (NSString*)toJSONString {
-    return @{ @"fid": PPSafeString(self.fileUUID),
+    return PPDictionaryToJsonString(@{ @"fid": PPSafeString(self.fileUUID),
               @"mime": @"audio/m4a",
-              @"dura": @(self.duration) };
+              @"dura": @(self.duration) });
 }
 
 // Helper
