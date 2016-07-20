@@ -20,6 +20,10 @@
 
 + (UIImage*)pp_defaultMessgaeFileImage;
 
++ (UIImage*)pp_defaultMoreImage;
+
++ (UIImage*)pp_defaultMoreHighlightImage;
+
 + (UIImage*)pp_defaultAudioImage;
 
 + (UIImage*)pp_defaultAudioHighlightImage;

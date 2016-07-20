@@ -213,7 +213,7 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 
 // After update inner data states, we will post this websocket message as a Notification.
 // You can receive these Notification in the `UIViewController` to update view
-// And don't forget to removeObserver when the `UIViewController` become invisible
+// And don't forget to remove Observer when the `UIViewController` become invisible
 - (void)postWebSocketMessageNotificationWithObject:(id)object
                                            forName:(NSString*)notificationName {
     PPFastLog(@"[PPSDK] post notification with name: %@", notificationName);

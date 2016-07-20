@@ -32,6 +32,14 @@
     return [self pp_imageForName:@"File-50"];
 }
 
++ (UIImage*)pp_defaultMoreImage {
+    return [self pp_imageForName:@"multiMedia"];
+}
+
++ (UIImage*)pp_defaultMoreHighlightImage {
+    return [self pp_imageForName:@"multiMedia_HL"];
+}
+
 + (UIImage*)pp_defaultAudioImage {
     return [self pp_imageForName:@"voice"];
 }

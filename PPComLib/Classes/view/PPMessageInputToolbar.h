@@ -47,6 +47,9 @@ extern CGFloat const PPChattingViewTextViewBaseLineHeight;
 // Hold to talk button
 @property (nonatomic) PPButton *holdToTalkButton;
 
+// more Button
+@property (nonatomic) PPButton *moreButton;
+
 // Audio Button
 @property (nonatomic) PPButton *audioButton;
 

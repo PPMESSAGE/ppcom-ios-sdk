@@ -469,12 +469,12 @@
 }
 
 - (NSMutableArray*)messagesInMemory {
-//    return [self.messagesStore messagesInCovnersation:self.conversationUUID autoCreate:YES];
-    if (!_testMessages) {
-        _testMessages = [[PPTestData sharedInstance] getMessages];
-        [self.messagesStore setMessageList:_testMessages forConversation:self.conversationUUID];
-    }
-    return _testMessages;
+    return [self.messagesStore messagesInCovnersation:self.conversationUUID autoCreate:YES];
+//    if (!_testMessages) {
+//        _testMessages = [[PPTestData sharedInstance] getMessages];
+//        [self.messagesStore setMessageList:_testMessages forConversation:self.conversationUUID];
+//    }
+//    return _testMessages;
 }
 
 // =================

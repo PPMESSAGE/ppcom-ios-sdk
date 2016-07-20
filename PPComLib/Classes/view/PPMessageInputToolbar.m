@@ -60,6 +60,11 @@ CGFloat const PPKeyboardButtonDefaultHeight = 32;
     _textInputView.lineNumberDelegate = self;
     [self addSubview:self.textInputView];
     
+    // test more button
+    _moreButton = [PPButton buttonWithImage:[UIImage pp_defaultMoreImage] withHighlightImage:[UIImage pp_defaultMoreHighlightImage]];
+    [self addSubview:_moreButton];
+    [_moreButton addTarget:self action:@selector(didMoreButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    
     _audioButton = [PPButton buttonWithImage:[UIImage pp_defaultAudioImage]
                           withHighlightImage:[UIImage pp_defaultAudioHighlightImage]];
     [self addSubview:_audioButton];
@@ -90,6 +95,9 @@ CGFloat const PPKeyboardButtonDefaultHeight = 32;
 
 - (void)layoutSubviews {
     [super layoutSubviews];
+    
+    // more Position
+    self.moreButton.frame = [self positionForMoreButton];
     
     // Audio Position
     self.audioButton.frame = [self positionForAudioButton];
@@ -157,6 +165,14 @@ CGFloat const PPKeyboardButtonDefaultHeight = 32;
     return CGRectMake(point.x, point.y, size.width, size.height);
 }
 
+- (CGRect)positionForMoreButton {
+    CGRect toolbarFrame = self.frame;
+    CGPoint point = CGPointMake(toolbarFrame.size.width - PPTextInputViewPadding - PPAudioButtonDefaultWidth,
+                                (toolbarFrame.size.height - PPAudioButtonDefaultHeight - PPTextInputViewPadding));
+    CGSize size = CGSizeMake(PPAudioButtonDefaultWidth, PPAudioButtonDefaultHeight);
+    return CGRectMake(point.x, point.y, size.width, size.height);
+}
+
 - (CGRect)positionForAudioButton {
     return [self positionForLeftButton];
 }
@@ -166,7 +182,7 @@ CGFloat const PPKeyboardButtonDefaultHeight = 32;
 }
 
 - (CGRect)positionForHoldToTalkButton {
-    CGFloat width = self.frame.size.width - PPTextInputViewPadding * 3 - PPTextInputViewBorderWidth * 2 - self.audioButton.frame.size.width;
+    CGFloat width = self.frame.size.width - PPTextInputViewPadding * 4 - PPTextInputViewBorderWidth * 2 - self.audioButton.frame.size.width - self.moreButton.frame.size.width;
     CGFloat height = PPChattingViewTextViewBaseLineHeight - PPTextInputViewPadding * 2;
     CGFloat x = PPTextInputViewPadding + self.audioButton.frame.origin.x + self.audioButton.frame.size.width;
     CGFloat y = PPTextInputViewPadding;
@@ -180,12 +196,57 @@ CGFloat const PPKeyboardButtonDefaultHeight = 32;
     }
     
     CGRect frame = self.textInputView.frame;
-    frame.size.width = self.frame.size.width - PPTextInputViewPadding * 3 - PPTextInputViewBorderWidth * 2 - self.audioButton.frame.size.width;
+    frame.size.width = self.frame.size.width - PPTextInputViewPadding * 4 - PPTextInputViewBorderWidth * 2 - self.audioButton.frame.size.width - self.moreButton.frame.size.width;
     frame.size.height = self.frame.size.height - PPTextInputViewPadding * 2 - PPTextInputViewBorderWidth * 2;
     frame.origin.x = PPTextInputViewPadding + self.audioButton.frame.origin.x + self.audioButton.frame.size.width;
     frame.origin.y = PPTextInputViewPadding;
     return frame;
 }
+
+// =============================
+// More Button Click Event
+// =============================
+
+// more button pressed
+- (void)didMoreButtonPressed:(UIButton *)sender {
+    [self.textInputView endEditing:YES];
+
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@""
+                                                       delegate:self
+                                              cancelButtonTitle:@"Cancel"
+                                         destructiveButtonTitle:nil
+                                              otherButtonTitles:@"Take Photo", @"Choose Picture", nil];
+    [sheet showFromToolbar:self];
+}
+
+// action sheet
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == actionSheet.cancelButtonIndex) {
+        return;
+    }
+    
+    switch (buttonIndex) {
+        case 0:
+            [self takePhoto];
+            break;
+        case 1:
+            [self choosePicture];
+            break;
+        default:
+            break;
+    }
+}
+
+// take photo
+- (void)takePhoto {
+
+}
+
+// choose picture
+-(void)choosePicture {
+    
+}
+
 
 // =============================
 // Audio Button Click Event
