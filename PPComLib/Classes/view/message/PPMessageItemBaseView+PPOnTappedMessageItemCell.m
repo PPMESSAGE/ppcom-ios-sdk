@@ -206,8 +206,14 @@
     
     // Create image info
     JTSImageInfo *imageInfo = [[JTSImageInfo alloc] init];
-    imageInfo.image = [[SDWebImageManager sharedManager].imageCache imageFromMemoryCacheForKey:imageMediaPart.imageUrl.absoluteString];
-    imageInfo.imageURL = imageMediaPart.imageUrl;
+
+    if (imageMediaPart.imageLocalPath) {
+        imageInfo.image = imageView.image;
+    } else {
+        imageInfo.image = [[SDWebImageManager sharedManager].imageCache imageFromMemoryCacheForKey:imageMediaPart.imageUrl.absoluteString];
+        imageInfo.imageURL = imageMediaPart.imageUrl;
+    }
+
     imageInfo.referenceRect = imageView.frame;
     imageInfo.referenceView = imageView.superview;
     

@@ -26,7 +26,13 @@
             }
         }
     }];
-    
+}
+
+- (void)loadWithLocaUrl:(NSString *)url {
+    UIImage *image = [UIImage imageWithContentsOfFile:url];
+    if (image) {
+        self.image = image;
+    }
 }
 
 @end

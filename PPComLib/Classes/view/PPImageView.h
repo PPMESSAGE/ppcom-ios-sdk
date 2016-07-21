@@ -12,4 +12,6 @@
 
 - (void)loadWithUrl:(NSURL*)imageUrl placeHolderImage:(UIImage*)placeHolderImage completionHandler:(void(^)(UIImage *image))completionHandler;
 
+- (void)loadWithLocaUrl:(NSString *)url;
+
 @end

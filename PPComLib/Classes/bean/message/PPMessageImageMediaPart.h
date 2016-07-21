@@ -33,4 +33,5 @@ typedef NS_ENUM(NSInteger, PPImageType) {
 @property (nonatomic) NSString *imageLocalPath;
 @property (nonatomic) NSString *imageMimeType;
 
++ (PPMessageImageMediaPart *)mediaPartWithUIImage:(UIImage *)image;
 @end

@@ -40,6 +40,9 @@ extern CGFloat const PPChattingViewTextViewBaseLineHeight;
 // finger enter inside record button
 - (void)didDragInsideAction;
 
+// open Action sheet
+- (void)openActionSheet;
+
 @end
 
 @interface PPMessageInputToolbar : UIToolbar

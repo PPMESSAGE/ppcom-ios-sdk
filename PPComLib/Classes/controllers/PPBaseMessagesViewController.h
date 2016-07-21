@@ -42,4 +42,7 @@
 - (void)showLoadingView;
 - (void)dismissLoadingView;
 
+// send
+- (void)sendImage:(UIImage *)image;
+
 @end

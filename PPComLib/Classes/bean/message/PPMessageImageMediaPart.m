@@ -49,6 +49,21 @@
     return mediaPart;
 }
 
++ (PPMessageImageMediaPart *) mediaPartWithUIImage:(UIImage *)image {
+    PPMessageImageMediaPart *mediaPart = [PPMessageImageMediaPart new];
+    mediaPart.imageSize = [image size];
+    mediaPart.thumbImageSize = [image size];
+
+    // create path & save image
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *fileName = [PPRandomUUID() stringByAppendingString:@".jpeg"];
+    NSString *filePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:fileName];
+    [UIImageJPEGRepresentation(image, 100) writeToFile:filePath atomically:YES];
+
+    mediaPart.imageLocalPath = filePath;
+    return mediaPart;
+}
+
 - (instancetype)init {
     self = [super init];
     if (self) {

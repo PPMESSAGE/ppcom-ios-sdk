@@ -21,6 +21,7 @@
 #import "PPMessagesStore.h"
 
 #import "PPMessageAudioMediaPart.h"
+#import "PPMessageImageMediaPart.h"
 
 @implementation PPMessageSendManager
 
@@ -68,6 +69,21 @@ withConversation:(NSString *)conversationUUID
     }];
 }
 
+- (void)sendImage:(UIImage *)image
+withConversation:(NSString *)conversationUUID
+      completion:(PPMessageSendStateBlock)block {
+    __weak typeof(self) wself = self;
+    [self findWithConversationUUID:conversationUUID done:^(PPConversationItem *conversationItem) {
+        if (!conversationItem) {
+            if (block) block(nil, nil, PPMessageSendStateErrorNoConversationId);
+        } else {
+            [wself sendMessage:[wself buildMessageWithImage:image
+                                      withConversationItem:conversationItem]
+                    completion:block];
+        }
+    }];
+}
+
 - (void)sendAudio:(NSString *)audioFilePath
     audioDuration:(NSTimeInterval)duration
      conversation:(NSString *)conversationUUID
@@ -105,6 +121,15 @@ withConversation:(NSString *)conversationUUID
     return [PPMessage messageForSend:PPRandomUUID()
                                 text:text
                         conversation:conversationItem];
+}
+
+- (PPMessage *)buildMessageWithImage:(UIImage *)image
+                withConversationItem:(PPConversationItem *)conversationItem {
+    PPMessageImageMediaPart *imageMediaPart = [PPMessageImageMediaPart mediaPartWithUIImage:image];
+    return [PPMessage messageForSend:PPRandomUUID()
+                                text:nil
+                        conversation:conversationItem
+                           mediaPart:imageMediaPart];
 }
 
 - (PPMessage*)buildMessageWithAudioFilePath:(NSString*)audioFilePath

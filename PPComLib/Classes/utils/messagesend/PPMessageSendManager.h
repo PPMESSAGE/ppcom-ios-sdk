@@ -25,7 +25,13 @@ typedef void(^PPMessageSendStateBlock)(PPMessage *message, id obj, PPMessageSend
 
 + (instancetype)getInstance;
 
+// send text
 - (void)sendText:(NSString*)textContent
+withConversation:(NSString*)conversationUUID
+      completion:(PPMessageSendStateBlock)block;
+
+// send image
+- (void)sendImage:(UIImage *)image
 withConversation:(NSString*)conversationUUID
       completion:(PPMessageSendStateBlock)block;
 

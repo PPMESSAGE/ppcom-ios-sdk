@@ -18,6 +18,9 @@ CGFloat const PPMessageFileIconHeight = 64;
 NSUInteger const PPMessageTextMaxLengthLimit = 128;
 NSInteger const PPMessageTimestampDelay = 5 * 60; // 300s
 CGFloat const PPMessageItemVoiceViewMinimumLength = 42;
+CGFloat const PPMaxImageMessageWidth = 120;
+CGFloat const PPMaxImageMessageHeight = 160;
+
 
 #pragma mark - Private
 BOOL pp_shouldShowTimestamp(double bigTimestamp, double smallTimestamp) {
@@ -30,8 +33,12 @@ CGFloat PPMaxCellWidth() {
     return ( [UIScreen mainScreen].bounds.size.width - 58 ) * PPMessageMaxContentWidthRatio;
 }
 
+CGFloat PPMaxImageMessageCellWidth() {
+    return PPMaxImageMessageWidth;
+}
+
 CGFloat PPMaxImageMessageCellHeight() {
-    return 300;
+    return PPMaxImageMessageHeight;
 }
 
 CGSize PPTextPlainSize(NSString *text, UIFont *font) {
@@ -45,7 +52,7 @@ CGSize PPTextPlainSize(NSString *text, UIFont *font) {
 CGSize PPImageCellTargetSize(CGSize originImageSize) {
     CGSize targetSize = CGSizeZero;
     
-    CGFloat maxCellWidth = PPMaxCellWidth();
+    CGFloat maxCellWidth = PPMaxImageMessageCellWidth();
     CGFloat maxCellHeight = PPMaxImageMessageCellHeight();
     CGFloat imgWidth = originImageSize.width;
     CGFloat imgHeight = originImageSize.height;

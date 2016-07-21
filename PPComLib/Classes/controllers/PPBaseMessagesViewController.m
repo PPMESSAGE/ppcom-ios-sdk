@@ -32,6 +32,7 @@
 #import "UIImage+PPSDK.h"
 #import "UIViewController+PPAnimating.h"
 #import "PPBaseMessagesViewController+PPVoiceMessage.h"
+#import "PPBaseMessagesViewController+PPActionSheet.h"
 
 #import "PPMessage.h"
 #import "PPConversationItem.h"
@@ -246,6 +247,10 @@
     [self pauseRecord];
 }
 
+- (void)openActionSheet {
+    [self pp_openActionSheet];
+}
+
 #pragma mark - TextView Delegate
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
@@ -269,6 +274,16 @@
         [wself handleMessage:message sendState:state extraObj:obj];
     }];
 }
+
+- (void)sendImage:(UIImage *)image {
+    __weak typeof(self) wself = self;
+    [[PPMessageSendManager getInstance] sendImage:image
+                                withConversation:self.conversationUUID
+                                      completion:^(PPMessage *message, id obj, PPMessageSendState state) {
+        [wself handleMessage:message sendState:state extraObj:obj];
+    }];
+}
+
 
 - (void)sendAudioWithFilePath:(NSString*)audioFilePath withAudioDuration:(NSTimeInterval)duration {
     __weak typeof(self) wself = self;

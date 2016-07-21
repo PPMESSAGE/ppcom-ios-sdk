@@ -203,48 +203,19 @@ CGFloat const PPKeyboardButtonDefaultHeight = 32;
     return frame;
 }
 
+
 // =============================
 // More Button Click Event
 // =============================
 
 // more button pressed
 - (void)didMoreButtonPressed:(UIButton *)sender {
+
     [self.textInputView endEditing:YES];
-
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@""
-                                                       delegate:self
-                                              cancelButtonTitle:@"Cancel"
-                                         destructiveButtonTitle:nil
-                                              otherButtonTitles:@"Take Photo", @"Choose Picture", nil];
-    [sheet showFromToolbar:self];
-}
-
-// action sheet
-- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == actionSheet.cancelButtonIndex) {
-        return;
-    }
     
-    switch (buttonIndex) {
-        case 0:
-            [self takePhoto];
-            break;
-        case 1:
-            [self choosePicture];
-            break;
-        default:
-            break;
+    if (self.inputToolbarDelegate && [self.inputToolbarDelegate respondsToSelector:@selector(openActionSheet)]) {
+        [self.inputToolbarDelegate openActionSheet];
     }
-}
-
-// take photo
-- (void)takePhoto {
-
-}
-
-// choose picture
--(void)choosePicture {
-    
 }
 
 
