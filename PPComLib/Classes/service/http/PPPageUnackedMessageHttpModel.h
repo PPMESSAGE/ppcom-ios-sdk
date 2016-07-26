@@ -12,10 +12,10 @@
 
 @class PPSDK;
 
-@interface PPGetUnackedMessagesHttpModel : NSObject
+@interface PPPageUnackedMessageHttpModel : NSObject
 
 - (instancetype)initWithSDK:(PPSDK*)sdk;
 
-- (void)getUnackeMessagesWithBlock:(PPHttpModelCompletedBlock)aBlock;
+- (void)pageUnackeMessageWithBlock:(PPHttpModelCompletedBlock)aBlock;
 
 @end

@@ -37,8 +37,8 @@ static NSString *const PPDownloaderDiskCacheFolder = @"PPFileCache";
                    withBlock:(PPDownloadFileCompletedBlock)aBlock {
     if (!aBlock) return;
     
-    NSString *fileURLPath = [self fileURLPathWithUUID:fileUUID];
-    NSString *md5Key = [self MD5KeyForFileUUID:fileUUID];
+    // NSString *fileURLPath = [self fileURLPathWithUUID:fileUUID];
+    // NSString *md5Key = [self MD5KeyForFileUUID:fileUUID];
     
     // Look at cache and disk
     __weak typeof(self) wself = self;
@@ -151,7 +151,7 @@ static NSString *const PPDownloaderDiskCacheFolder = @"PPFileCache";
     NSString *md5Key = [self MD5KeyForFileUUID:fileUUID];
     NSString *filePath = [self fileDiskPathWithMD5Key:md5Key];
     // transform to NSUrl
-    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+    // NSURL *fileURL = [NSURL fileURLWithPath:filePath];
     [[NSFileManager defaultManager] createFileAtPath:filePath contents:obj attributes:nil];
 }
 

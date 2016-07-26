@@ -18,7 +18,7 @@
 #import "PPMessageUtils.h"
 
 #import "PPGetUserDetailInfoHttpModel.h"
-#import "PPGetUnackedMessagesHttpModel.h"
+#import "PPPageUnackedMessageHttpModel.h"
 
 #import "PPStoreManager.h"
 #import "PPUsersStore.h"
@@ -26,6 +26,9 @@
 static const NSTimeInterval PPGetUnackedMessageDelayTime = 0.5;
 
 @interface PPFetchUnackedMessagesTask ()
+
+@property NSInteger pageOffset;
+@property BOOL noMoreUnackedMessage;
 
 @property NSUInteger unackedMessagesIndex;
 @property BOOL cancelled;
@@ -44,6 +47,8 @@ static const NSTimeInterval PPGetUnackedMessageDelayTime = 0.5;
         self.sdk = sdk;
         self.unackedMessagesIndex = 0;
         self.cancelled = NO;
+        self.pageOffset = 0;
+        self.noMoreUnackedMessage = false;
     }
     return self;
 }
@@ -80,10 +85,10 @@ static const NSTimeInterval PPGetUnackedMessageDelayTime = 0.5;
 
 - (void)receiveUnackedMessages {
     PPFastLog(@"[PPFetchUnackedMessagesTask] receive unacked messages");
-    PPGetUnackedMessagesHttpModel *getUnackedMessagesHttpModel = [[PPGetUnackedMessagesHttpModel alloc] initWithSDK:self.sdk];
-    [getUnackedMessagesHttpModel getUnackeMessagesWithBlock:^(id obj, NSDictionary *response, NSError *error) {
+    PPPageUnackedMessageHttpModel *pageUnackedMessageHttpModel = [[PPPageUnackedMessageHttpModel alloc] initWithSDK:self.sdk];
+    [pageUnackedMessageHttpModel pageUnackeMessageWithBlock:^(id obj, NSDictionary *response, NSError *error) {
         if (obj) {
-            self.unackedMessagesArray = obj;
+            self.unackedMessagesArray = [[[obj reverseObjectEnumerator] allObjects] mutableCopy];
             [self startTimer];
         }
         NSUInteger count = self.unackedMessagesArray ? [self.unackedMessagesArray count] : 0;

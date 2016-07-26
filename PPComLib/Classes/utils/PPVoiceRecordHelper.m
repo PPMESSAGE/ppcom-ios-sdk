@@ -267,7 +267,7 @@ CGFloat const PPVoiceRecorderTotalTime = 60.0;
         self.recordDuration = @"";
     } else {
         PPFastLog(@"时长:%f", play.duration);
-        self.recordDuration = [NSString stringWithFormat:@"%.1f", play.duration];
+        self.recordDuration = [NSString stringWithFormat:@"%d", (int)(play.duration + 0.5)];
     }
 }
 

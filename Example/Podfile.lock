@@ -17,7 +17,7 @@ PODS:
   - PPComLib (0.1.5):
     - AFNetworking (~> 3.0)
     - PPJTSImageViewController
-    - SDWebImage (~> 3.7)
+    - SDWebImage (~> 3.8.1)
     - SocketRocket
   - PPJTSImageViewController (1.5.2)
   - SDWebImage (3.8.1):
@@ -34,7 +34,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
-  PPComLib: cbfa04b67897b9219447fc862084935ab52322d9
+  PPComLib: 3a8971c97c3ebb53dee7bc8f52eccb60d9db7664
   PPJTSImageViewController: a5427285638e8e4c9c6840c0ecf75a981e2ec1a1
   SDWebImage: 35f9627a3e44b4f292a8a8ce6a531fa488239b91
   SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531

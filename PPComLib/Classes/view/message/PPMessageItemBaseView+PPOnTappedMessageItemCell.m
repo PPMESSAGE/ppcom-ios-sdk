@@ -38,6 +38,7 @@
 @interface PPMessageItemBaseView () <
     JTSImageViewControllerInteractionsDelegate,
     JTSImageViewControllerDownloaderDelegate,
+    JTSImageViewControllerDismissalDelegate,
     PPAudioPlayerHelperDelegate
 >
 
@@ -135,7 +136,6 @@
     if (audioMediaPartNeedToPlay) {
         __weak typeof(self) wself = self;
         [PPAudioPlayerHelper shareInstance].delegate = wself;
-        PPDownloader *audioDownloader = [PPDownloader new];
         // Local play
         if (audioMediaPartNeedToPlay.localFilePath) {
             [[PPAudioPlayerHelper shareInstance] managerAudioWithFileName:audioMediaPartNeedToPlay.localFilePath toPlay:YES];
@@ -224,6 +224,7 @@
                                            backgroundStyle:JTSImageViewControllerBackgroundOption_Scaled
                                            downloaderDelegate:self];
     imageViewer.interactionsDelegate = self;
+    imageViewer.dismissalDelegate = self;
     
     // Present the view controller.
     if (self.messagesViewController) {
@@ -267,6 +268,19 @@
 }
 
 //--------------------------------------------------------------------------------
+// JTSImageViewControllerDismissalDelegate
+//--------------------------------------------------------------------------------
+
+- (void)imageViewerDidDismiss:(JTSImageViewController *)imageViewer {
+    PPMessageImageMediaPart *imageMediaPart = self.message.mediaPart;
+    UIImage *image = [[SDWebImageManager sharedManager].imageCache imageFromMemoryCacheForKey:imageMediaPart.imageUrl.absoluteString];
+    if (image && imageMediaPart.showThumb) {
+        imageMediaPart.showThumb = NO;
+        [self.messagesViewController reloadTableView];
+    }
+}
+
+//--------------------------------------------------------------------------------
 //JTSImageViewControllerDownloadDelegate
 //--------------------------------------------------------------------------------
 
@@ -303,9 +317,7 @@
 
 - (void)downloadImage:(void (^)(UIImage *))completion {
     if (self.imageInfo.image) {
-        if (completion) {
-            completion(self.imageInfo.image);
-        }
+        completion(self.imageInfo.image);
         return;
     }
     
@@ -317,10 +329,9 @@
     } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
         
         if (image) {
-            
-            if (completion) {
-                completion(image);
-            }
+            completion(image);
+        } else {
+            completion(nil);
         }
         
     }];

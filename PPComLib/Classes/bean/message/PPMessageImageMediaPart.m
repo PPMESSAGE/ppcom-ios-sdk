@@ -22,6 +22,7 @@
     PPMessageImageMediaPart *mediaPart = [PPMessageImageMediaPart new];
     mediaPart.thumbUrl = [NSURL URLWithString:PPFileURL(dictionary[@"thum"])];
     mediaPart.imageUrl = [NSURL URLWithString:PPFileURL(dictionary[@"orig"])];
+    mediaPart.showThumb = YES;
     
     NSString *mimeType = [dictionary[@"mime"] lowercaseString];
     if ([mimeType isEqualToString:@"image/jpeg"]) {
@@ -53,6 +54,7 @@
     PPMessageImageMediaPart *mediaPart = [PPMessageImageMediaPart new];
     mediaPart.imageSize = [image size];
     mediaPart.thumbImageSize = [image size];
+    mediaPart.showThumb = NO;
 
     // create path & save image
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);

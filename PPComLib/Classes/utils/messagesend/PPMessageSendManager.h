@@ -43,7 +43,7 @@ withConversation:(NSString*)conversationUUID
  * @param conversation conversation uuid
  */
 - (void)sendAudio:(NSString*)audioFilePath
-    audioDuration:(CGFloat)duration
+    audioDuration:(NSTimeInterval)duration
      conversation:(NSString*)conversationUUID
        completion:(PPMessageSendStateBlock)block;
 

@@ -217,8 +217,8 @@ static NSString *const kPPHeaderTypePPCom = @"PPCOM";
     [self baseRequest:@"/PP_GET_CONVERSATION_INFO" with:params configuration:nil completionHandler:completionHandler];
 }
 
-- (void)getUnackedMessages:(NSDictionary *)params completionHandler:(PPAPICompletedBlock)completionHandler {
-    [self baseRequest:@"/GET_UNACKED_MESSAGES" with:params configuration:nil completionHandler:completionHandler];
+- (void)pageUnackedMessage:(NSDictionary *)params completionHandler:(PPAPICompletedBlock)completionHandler {
+    [self baseRequest:@"/PP_PAGE_UNACKED_MESSAGE" with:params configuration:nil completionHandler:completionHandler];
 }
 
 - (void)createConversation:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {

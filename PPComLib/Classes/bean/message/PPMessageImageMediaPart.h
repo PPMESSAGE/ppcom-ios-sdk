@@ -28,6 +28,7 @@ typedef NS_ENUM(NSInteger, PPImageType) {
 @property (nonatomic) PPImageType imageType;
 @property (nonatomic) NSURL *imageUrl;
 @property (nonatomic) NSURL *thumbUrl;
+@property (nonatomic) BOOL showThumb;
 
 @property (nonatomic) NSString *imageFileId;
 @property (nonatomic) NSString *imageLocalPath;

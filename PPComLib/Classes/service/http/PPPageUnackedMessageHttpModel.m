@@ -6,7 +6,7 @@
 //
 //
 
-#import "PPGetUnackedMessagesHttpModel.h"
+#import "PPPageUnackedMessageHttpModel.h"
 
 #import "PPSDK.h"
 #import "PPAPI.h"
@@ -15,13 +15,13 @@
 
 #import "PPMessageUtils.h"
 
-@interface PPGetUnackedMessagesHttpModel ()
+@interface PPPageUnackedMessageHttpModel ()
 
 @property (nonatomic) PPSDK *sdk;
 
 @end
 
-@implementation PPGetUnackedMessagesHttpModel
+@implementation PPPageUnackedMessageHttpModel
 
 - (instancetype)initWithSDK:(PPSDK *)sdk {
     if (self = [super init]) {
@@ -30,31 +30,22 @@
     return self;
 }
 
-- (void)getUnackeMessagesWithBlock:(PPHttpModelCompletedBlock)aBlock {
+- (void)pageUnackeMessageWithBlock:(PPHttpModelCompletedBlock)aBlock {
     // Build param
-    NSDictionary *params = nil;
-    if (self.sdk.user &&
-        self.sdk.user.userUuid &&
-        self.sdk.user.mobileDeviceUuid &&
-        self.sdk.app.appUuid) {
-        params = @{@"from_uuid": self.sdk.user.userUuid,
-                   @"device_uuid": self.sdk.user.mobileDeviceUuid,
-                   @"app_uuid": self.sdk.app.appUuid};
-    }
-    
-    if (params) {
-        [self.sdk.api getUnackedMessages:params completionHandler:^(NSDictionary *response, NSDictionary *error) {
-            NSMutableArray *webSocketMessages = nil;
-            if (!error) {
-                webSocketMessages = [self parseUnackedMessagesFromResponse:response];
-            }
-            if (aBlock) {
-                aBlock(webSocketMessages, response, [NSError errorWithDomain:PPErrorDomain
-                                                                        code:PPErrorCodeAPIError
-                                                                    userInfo:error]);
-            }
-        }];
-    }
+    NSDictionary *params = @{ @"user_uuid": self.sdk.user.userUuid,
+                              @"app_uuid": self.sdk.app.appUuid };
+
+    [self.sdk.api pageUnackedMessage:params completionHandler:^(NSDictionary *response, NSDictionary *error) {
+        NSMutableArray *webSocketMessages = nil;
+        if (!error) {
+            webSocketMessages = [self parseUnackedMessagesFromResponse:response];
+        }
+        if (aBlock) {
+            aBlock(webSocketMessages, response, [NSError errorWithDomain:PPErrorDomain
+                                                                    code:PPErrorCodeAPIError
+                                                                userInfo:error]);
+        }
+    }];
 }
 
 // =============

@@ -66,7 +66,7 @@ CGFloat const PPMessageItemLeftVoiceViewTrailing = 8.0;
     [super presentMessage:message];
     
     PPMessageAudioMediaPart *audioMediaPart = message.mediaPart;
-    self.durationLabel.text = [NSString stringWithFormat:@"%.1f\"", audioMediaPart.duration];
+    self.durationLabel.text = [NSString stringWithFormat:@"%d\"", (int)(audioMediaPart.duration + 0.5)];
     if (audioMediaPart.isAudioPlaying) {
         [self.animationVoiceImageView startAnimating];
     } else {

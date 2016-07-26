@@ -63,7 +63,7 @@ NSString *const PPMessageItemRightImageViewIdentifier = @"PPMessageItemRightImag
     if (imageMediaPart.imageLocalPath) {
         [self.rightImageView loadWithLocaUrl:imageMediaPart.imageLocalPath];
     } else {
-        NSURL *imageURL = [self.class usingThumbImageURLForMessage:message] ? imageMediaPart.thumbUrl : imageMediaPart.imageUrl;
+        NSURL *imageURL = imageMediaPart.showThumb ? imageMediaPart.thumbUrl : imageMediaPart.imageUrl;
         _rightImageView.loading = YES;
         [self.rightImageView loadWithUrl:imageURL placeHolderImage: PPImageWithColor([UIColor grayColor]) completionHandler:^(UIImage *image) {
             if (image) _rightImageView.loading = NO;

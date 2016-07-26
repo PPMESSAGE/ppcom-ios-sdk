@@ -20,8 +20,9 @@
 - (instancetype)initWithJSONString:(NSString*)jsonString {
     if (self = [super init]) {
         NSDictionary *audioDictionary = PPJSONStringToDictionary(jsonString);
+        audioDictionary = audioDictionary[@"m4a"];
+        self.fileUUID = audioDictionary[@"fid"];
         self.duration = [audioDictionary[@"dura"] doubleValue];
-        self.fileUUID = [audioDictionary[@"fid"] string];
         self.unread = YES;
         self.isAudioPlaying = NO;
     }
