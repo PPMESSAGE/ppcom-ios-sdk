@@ -2,6 +2,8 @@ tag=$1
 
 git tag -a "$1" -m "tag $1" 
 
+git push
+
 git push --tags
 
 pod spec lint PPComLib.podspec
