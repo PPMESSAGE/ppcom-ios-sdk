@@ -6,6 +6,13 @@
 //  Copyright © 2016 PPMessage. All rights reserved.
 //
 
+#import <SDWebImage/SDImageCache.h>
+#import <SDWebImage/SDWebImageManager.h>
+#import <SDWebImage/SDWebImageDownloader.h>
+
+#import <PPJTSImageViewController/JTSImageInfo.h>
+#import <PPJTSImageViewController/JTSImageViewController.h>
+
 #import "PPMessageItemBaseView+PPOnTappedMessageItemCell.h"
 
 #import "PPMessageItemLeftImageView.h"
@@ -24,18 +31,11 @@
 #import "PPMessageImageMediaPart.h"
 #import "PPMessageAudioMediaPart.h"
 
-#import "JTSImageInfo.h"
-#import "JTSImageViewController.h"
-
-#import "SDImageCache.h"
-#import "SDWebImageDownloader.h"
-#import "SDWebImageManager.h"
-
 #import "PPAudioPlayerHelper.h"
 #import "PPBaseMessagesViewController+PPVoiceMessage.h"
 #import "PPDownloader.h"
 
-@interface PPMessageItemBaseView () <
+@interface PPMessageItemBaseView (PPOnTappedTableViewCell) <
     JTSImageViewControllerInteractionsDelegate,
     JTSImageViewControllerDownloaderDelegate,
     JTSImageViewControllerDismissalDelegate,

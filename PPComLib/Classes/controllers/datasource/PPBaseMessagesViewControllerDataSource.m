@@ -83,6 +83,7 @@
                     break;
                     
                 default:
+                    cellIdentifier = PPMessageItemLeftUnknownViewIdentifier;
                     break;
             }
             break;
@@ -114,19 +115,19 @@
                     break;
                     
                 default:
+                    cellIdentifier = PPMessageItemRightUnknownViewIdentifier;
                     break;
             }
             break;
             
         default:
+            cellIdentifier = PPMessageItemLeftUnknownViewIdentifier;
             break;
     }
     
-    if (cellIdentifier) {
-        cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
-        cell.messagesViewController = self.viewController;
-        [cell presentMessage:message];
-    }
+    cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+    cell.messagesViewController = self.viewController;
+    [cell presentMessage:message];
     
     return cell;
 }
