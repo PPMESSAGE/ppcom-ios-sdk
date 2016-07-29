@@ -31,9 +31,11 @@
 }
 
 - (void)pageUnackeMessageWithBlock:(PPHttpModelCompletedBlock)aBlock {
-    // Build param
-    NSDictionary *params = @{ @"user_uuid": self.sdk.user.userUuid,
-                              @"app_uuid": self.sdk.app.appUuid };
+
+    NSDictionary *params = @{ @"page_offset": @0,
+                              @"page_size": @30,
+                              @"app_uuid": self.sdk.app.appUuid,
+                              @"user_uuid": self.sdk.user.userUuid };
 
     [self.sdk.api pageUnackedMessage:params completionHandler:^(NSDictionary *response, NSDictionary *error) {
         NSMutableArray *webSocketMessages = nil;

@@ -80,6 +80,7 @@ static NSInteger const kPPSocketRocketDelayBetweenEachReconnect = 10; // after 1
             [self.activeWebSocket close];
         }
         [self.socketPool removeObject:self.activeWebSocket];
+        self.activeWebSocket = nil;
     }
     [self snapshot];
 }
@@ -175,6 +176,7 @@ static NSInteger const kPPSocketRocketDelayBetweenEachReconnect = 10; // after 1
     if (self.webSocketPoolDelegate && [self.webSocketPoolDelegate respondsToSelector:@selector(didSocketClosed:)]) {
         [self.webSocketPoolDelegate didSocketClosed:self];
     }
+
     [self onSocketClosed:webSocket];
     [self tryReconnectWhenLossConnection];
 }
@@ -201,6 +203,13 @@ static NSInteger const kPPSocketRocketDelayBetweenEachReconnect = 10; // after 1
         [self.webSocketPoolDelegate didSocketClosed:self];
     }
     [self onSocketClosed:webSocket];
+
+    // if network is down, don't waste time in reconnecting socket.
+    if (error.code == 50) {
+        PPFastLog(@"Network is down, stop reconnecting socket");
+        return;
+    }
+
     [self tryReconnectWhenLossConnection];
 }
 
@@ -240,6 +249,9 @@ static NSInteger const kPPSocketRocketDelayBetweenEachReconnect = 10; // after 1
 }
 
 - (void)onSocketClosed:(SRWebSocket*)webSocket {
+    if (self.activeWebSocket == webSocket) {
+        self.activeWebSocket = nil;
+    }
     [self.socketPool removeObject:webSocket];
 }
 

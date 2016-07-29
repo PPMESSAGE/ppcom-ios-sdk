@@ -31,8 +31,8 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 
 @interface PPSDK () <PPWebSocketPoolDelegate, PPSDKStartUpHelperDelegate>
 
-@property (nonatomic, readwrite) PPSDKConfiguration* configuration;
-@property (nonatomic) PPSDKStartUpHelper* startUpHelper;
+@property (nonatomic, readwrite) PPSDKConfiguration *configuration;
+@property (nonatomic) PPSDKStartUpHelper *startUpHelper;
 
 @property (nonatomic) PPStoreManager *storeManager;
 @property (nonatomic) PPMessagesStore *messagesStore;

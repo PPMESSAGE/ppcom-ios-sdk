@@ -27,13 +27,11 @@ static const NSTimeInterval PPGetUnackedMessageDelayTime = 0.5;
 
 @interface PPFetchUnackedMessagesTask ()
 
-@property NSInteger pageOffset;
+@property BOOL cancelled;
 @property BOOL noMoreUnackedMessage;
 
-@property NSUInteger unackedMessagesIndex;
-@property BOOL cancelled;
-@property (nonatomic) NSMutableArray *unackedMessagesArray;
 @property (nonatomic) NSTimer *timer;
+@property (nonatomic) NSMutableArray *unackedMessagesArray;
 
 @property (nonatomic) PPSDK *sdk;
 @property (nonatomic) PPUsersStore *usersStore;
@@ -45,10 +43,8 @@ static const NSTimeInterval PPGetUnackedMessageDelayTime = 0.5;
 - (instancetype)initWithSDK:(PPSDK *)sdk {
     if (self = [super init]) {
         self.sdk = sdk;
-        self.unackedMessagesIndex = 0;
         self.cancelled = NO;
-        self.pageOffset = 0;
-        self.noMoreUnackedMessage = false;
+        self.noMoreUnackedMessage = NO;
     }
     return self;
 }
@@ -59,6 +55,7 @@ static const NSTimeInterval PPGetUnackedMessageDelayTime = 0.5;
 
 - (void)cancel {
     self.cancelled = YES;
+    self.noMoreUnackedMessage = NO;
     [self stopTimer];
 }
 
@@ -84,15 +81,20 @@ static const NSTimeInterval PPGetUnackedMessageDelayTime = 0.5;
 // ======================================
 
 - (void)receiveUnackedMessages {
-    PPFastLog(@"[PPFetchUnackedMessagesTask] receive unacked messages");
+    
     PPPageUnackedMessageHttpModel *pageUnackedMessageHttpModel = [[PPPageUnackedMessageHttpModel alloc] initWithSDK:self.sdk];
     [pageUnackedMessageHttpModel pageUnackeMessageWithBlock:^(id obj, NSDictionary *response, NSError *error) {
-        if (obj) {
-            self.unackedMessagesArray = [[[obj reverseObjectEnumerator] allObjects] mutableCopy];
-            [self startTimer];
+
+        self.unackedMessagesArray = obj ? obj : @[];
+        PPFastLog(@"[PPFetchUnackedMessagesTask] receive %@ unacked messages", @(self.unackedMessagesArray.count));
+
+        if (self.unackedMessagesArray.count == 0) {
+            self.noMoreUnackedMessage = YES;
+            return;
         }
-        NSUInteger count = self.unackedMessagesArray ? [self.unackedMessagesArray count] : 0;
-        PPFastLog(@"[PPFetchUnackedMessagesTask] receive %@ unacked messages", [NSNumber numberWithUnsignedInteger:count]);
+
+        self.noMoreUnackedMessage = NO;
+        [self startTimer];
     }];
 }
 
@@ -117,23 +119,22 @@ static const NSTimeInterval PPGetUnackedMessageDelayTime = 0.5;
 }
 
 - (void)messageArrived:(id)userInfo {
-    if (self.cancelled ||
-        !self.unackedMessagesArray ||
-        self.unackedMessagesArray.count == 0 ||
-        self.unackedMessagesIndex >= self.unackedMessagesArray.count) {
-        PPFastLog(@"[PPFetchUnackedMessagesTask] cancelled, index:%@, total count:%@",
-                  @(self.unackedMessagesIndex),
-                  @(self.unackedMessagesArray ? self.unackedMessagesArray.count : 0));
+    if (self.cancelled || !self.unackedMessagesArray || self.unackedMessagesArray.count == 0) {
         [self stopTimer];
+
+        // re-run
+        if (!self.cancelled && !self.noMoreUnackedMessage) {
+            [self receiveUnackedMessages];
+        }
         return;
     }
     
-    NSMutableDictionary *msg = self.unackedMessagesArray[self.unackedMessagesIndex++];
+    NSMutableDictionary *msg = [self.unackedMessagesArray firstObject];
+    [self.unackedMessagesArray removeObjectAtIndex:0];
+
     __weak PPFetchUnackedMessagesTask *wself = self;
     [self addFromUserForMessageDictionary:msg completed:^(NSMutableDictionary *msg) {
-    
         [wself simulateArrivedWebSocketMessage:msg];
-        
     }];
 }
 

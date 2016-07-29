@@ -29,7 +29,7 @@ pod "PPComLib"
 
 ## Author
 
-PPMessage, kun.zhao@yvertical.com
+kun.zhao@ppmessage.com, jin.he@ppmessage.com
 
 ## License
 

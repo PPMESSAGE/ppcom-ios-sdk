@@ -14,6 +14,7 @@
 #import "PPUpdateDeviceHttpModel.h"
 #import "PPCreateAnonymousUserHttpModel.h"
 
+#import "PPNetworkHelper.h"
 #import "PPWebSocketPool.h"
 #import "PPSDKUtils.h"
 #import "PPSDK.h"
@@ -29,6 +30,7 @@
 @interface PPSDKStartUpHelper ()
 
 @property (nonatomic) PPSDK *sdk;
+@property (nonatomic) PPNetworkHelper *networkHelper;
 
 @end
 
@@ -40,6 +42,13 @@
         self.status = START_STATUS_INITIAL;
     }
     return self;
+}
+
+- (PPNetworkHelper *)networkHelper {
+    if (!_networkHelper) {
+        _networkHelper = [PPNetworkHelper new];
+    }
+    return _networkHelper;
 }
 
 /*
@@ -56,10 +65,12 @@
 */
 - (void)start {
     [self onStartBegin];
+    [self network];
     [self app:^{
         [self user:^{
             [self device:^{
                 [self socket];
+                [self onStartSuccess];
             }];
         }];
     }];
@@ -177,7 +188,10 @@
 - (void)socket {
     self.sdk.user.accessToken = self.sdk.api.accessToken;
     [self.sdk.webSocket open];
-    [self onStartSuccess];
+}
+
+- (void)network {
+    [self.networkHelper startNotifier];
 }
 
 @end
