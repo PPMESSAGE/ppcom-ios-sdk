@@ -30,7 +30,6 @@
 @interface PPSDKStartUpHelper ()
 
 @property (nonatomic) PPSDK *sdk;
-@property (nonatomic) PPNetworkHelper *networkHelper;
 
 @end
 
@@ -42,13 +41,6 @@
         self.status = START_STATUS_INITIAL;
     }
     return self;
-}
-
-- (PPNetworkHelper *)networkHelper {
-    if (!_networkHelper) {
-        _networkHelper = [PPNetworkHelper new];
-    }
-    return _networkHelper;
 }
 
 /*
@@ -87,6 +79,10 @@
 // ========================
 // Private
 // ========================
+
+- (void)network {
+    [self.sdk.networkHelper startNotifier];
+}
 
 - (BOOL)isEmailUser {
     return self.sdk.configuration.email != nil;
@@ -188,10 +184,6 @@
 - (void)socket {
     self.sdk.user.accessToken = self.sdk.api.accessToken;
     [self.sdk.webSocket open];
-}
-
-- (void)network {
-    [self.networkHelper startNotifier];
 }
 
 @end

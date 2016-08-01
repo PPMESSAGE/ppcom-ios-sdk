@@ -6,15 +6,25 @@
 //
 //
 
+#import "PPSDK.h"
+#import "PPLog.h"
 #import "PPNetworkHelper.h"
 
 @interface PPNetworkHelper ()
 
+@property PPSDK *sdk;
 @property PPReachability *reachability;
 
 @end
 
 @implementation PPNetworkHelper
+
+-(instancetype)initWithSDK:(PPSDK *)sdk {
+    if (self = [super init]) {
+        self.sdk = sdk;
+    }
+    return self;
+}
 
 - (void) startNotifier {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
@@ -35,20 +45,20 @@
 - (void)setNetworkStatus: (NetworkStatus)netStatus {
     switch (netStatus) {
         case NotReachable:
-            NSLog(@"---------network not reachable");
-            if ([self.networkHelperDelegate respondsToSelector:@selector(didNetworkUnreachable)]) {
+            PPFastLog(@"network not reachable");
+            if (self.networkHelperDelegate && [self.networkHelperDelegate respondsToSelector:@selector(didNetworkUnreachable)]) {
                 [self.networkHelperDelegate didNetworkUnreachable];
             }
             break;
         case ReachableViaWiFi:
-            NSLog(@"---------network reachable via wifi");
-            if ([self.networkHelperDelegate respondsToSelector:@selector(didNetworkReachable)]) {
+            PPFastLog(@"network reachable via wifi");
+            if (self.networkHelperDelegate && [self.networkHelperDelegate respondsToSelector:@selector(didNetworkReachable:)]) {
                 [self.networkHelperDelegate didNetworkReachable:netStatus];
             }
             break;
         case ReachableViaWWAN:
-            NSLog(@"---------network reachable via wwan");
-            if ([self.networkHelperDelegate respondsToSelector:@selector(didNetworkReachable)]) {
+            PPFastLog(@"network reachable via wwan");
+            if (self.networkHelperDelegate && [self.networkHelperDelegate respondsToSelector:@selector(didNetworkReachable:)]) {
                 [self.networkHelperDelegate didNetworkReachable:netStatus];
             }
         default:

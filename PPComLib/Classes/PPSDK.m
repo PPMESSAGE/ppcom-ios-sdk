@@ -8,9 +8,11 @@
 
 #import "PPSDK.h"
 #import "PPAPI.h"
+
 #import "PPWebSocketPool.h"
 #import "PPReceiver.h"
 #import "PPSDKStartUpHelper.h"
+#import "PPNetworkHelper.h"
 #import "PPMessageWebSocketSender.h"
 
 #import "PPStoreManager.h"
@@ -29,7 +31,7 @@ NSString *const PPSDKMessageSendSucceed = @"PPSDKMessageSendSucceed";
 // Notification: Message send failed
 NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 
-@interface PPSDK () <PPWebSocketPoolDelegate, PPSDKStartUpHelperDelegate>
+@interface PPSDK () <PPWebSocketPoolDelegate, PPSDKStartUpHelperDelegate, PPNetworkHelperDelegate>
 
 @property (nonatomic, readwrite) PPSDKConfiguration *configuration;
 @property (nonatomic) PPSDKStartUpHelper *startUpHelper;
@@ -113,6 +115,14 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
         _startUpHelper.startUpDelegate = self;
     }
     return _startUpHelper;
+}
+
+- (PPNetworkHelper*)networkHelper {
+    if (!_networkHelper) {
+        _networkHelper = [PPNetworkHelper new];
+        _networkHelper.networkHelperDelegate = self;
+    }
+    return _networkHelper;
 }
 
 - (PPStoreManager*)storeManager {
@@ -229,6 +239,17 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 
 - (void)didSDKStartUpFailed:(PPSDKStartUpHelper*)startUpHelper errorInfo:(id)errorInfo {
     [self notifyStartUpFailedWithErrorInfo:errorInfo];
+}
+
+// ==============================
+// PPSDKStartUpHelperDelegate
+// ==============================
+- (void)didNetworkReachable:(NetworkStatus)netStaus {
+    [self.webSocket open];
+}
+
+- (void)didNetworkUnreachable {
+    [self.webSocket close];
 }
 
 // ==============================

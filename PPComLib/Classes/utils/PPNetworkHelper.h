@@ -8,8 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-#import "PPSDK.h"
 #import "PPReachability.h"
+
+@class PPSDK;
 
 @protocol PPNetworkHelperDelegate <NSObject>
 
@@ -26,6 +27,8 @@
 
 @property (nonatomic) NetworkStatus netStatus;
 @property (nonatomic, weak) id<PPNetworkHelperDelegate> networkHelperDelegate;
+
+-(instancetype)initWithSDK:(PPSDK *)sdk;
 
 - (void)startNotifier;
 

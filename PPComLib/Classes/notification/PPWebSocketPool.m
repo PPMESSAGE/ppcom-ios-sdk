@@ -224,10 +224,12 @@ static NSInteger const kPPSocketRocketDelayBetweenEachReconnect = 10; // after 1
     PPApp *app = self.sdk.app;
     if (!user || !user.accessToken || !user.userUuid || !user.mobileDeviceUuid) {
         PPFastLog(@"authWithWebSocket illegal user:%@", user);
+        [self onSocketClosed:webSocket];
         return;
     }
     if (!app || !app.appUuid) {
         PPFastLog(@"authWithWebSocket illegal app:%@", app);
+        [self onSocketClosed:webSocket];
         return;
     }
     NSDictionary *params = @{ @"type": @"auth",

@@ -29,10 +29,10 @@
 //     sdkConfiguration.email = @"test_user@gamil.com";
     
     sdkConfiguration.hostUrl = @"http://192.168.0.52:8945";
-    sdkConfiguration.apiKey = @"ZGEwYjExYzFkOGI1N2YxYTRiNGI5MGYzMzQwZjQ3NTllZmY2MWMzNw==";
-    sdkConfiguration.apiSecret = @"NTEyYmJhOWM3NTZhYWRlNjhhYjA1ODljODU0YjlhODUwZDViZDAyYw==";
-    sdkConfiguration.appUUID = @"6892a540-4439-11e6-98b2-ac87a30c6610";
-    sdkConfiguration.email = @"test_user@gamil.com";
+    sdkConfiguration.apiKey = @"YmIyMGM4ZThhNTZhMDVmOTZiOGMwYWY1YzQyOWNkZTViZDI1MjNlMg==";
+    sdkConfiguration.apiSecret = @"NzBkMWNiMmQ1OWFmMzYzYjJkNjVlMWRjMDNmNTg4ODNmYjk0OTUwZg==";
+    sdkConfiguration.appUUID = @"568bd914-53d1-11e6-b4f5-ac87a30c6610";
+    sdkConfiguration.email = @"ThreeKingdoms@gamil.com";
     
     [[PPSDK sharedSDK] configure:sdkConfiguration];
     
