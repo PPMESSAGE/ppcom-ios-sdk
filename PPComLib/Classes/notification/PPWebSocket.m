@@ -120,12 +120,6 @@ static const NSInteger kMaxReconnectTimes = 10;
 
 -(void) openWebSocket {
     
-    if (self.webSocket && self.webSocket.readyState == SR_CLOSED) {
-        [self onSocketConnecting];
-        [self.webSocket open];
-        return;
-    }
-    
     NSURL *url = [NSURL URLWithString:self.sdk.configuration.webSockeUrl];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
 
