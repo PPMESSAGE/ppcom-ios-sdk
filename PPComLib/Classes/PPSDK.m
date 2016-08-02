@@ -9,7 +9,7 @@
 #import "PPSDK.h"
 #import "PPAPI.h"
 
-#import "PPWebSocketPool.h"
+#import "PPWebSocket.h"
 #import "PPReceiver.h"
 #import "PPSDKStartUpHelper.h"
 #import "PPNetworkHelper.h"
@@ -31,7 +31,7 @@ NSString *const PPSDKMessageSendSucceed = @"PPSDKMessageSendSucceed";
 // Notification: Message send failed
 NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 
-@interface PPSDK () <PPWebSocketPoolDelegate, PPSDKStartUpHelperDelegate, PPNetworkHelperDelegate>
+@interface PPSDK () <PPWebSocketDelegate, PPSDKStartUpHelperDelegate, PPNetworkHelperDelegate>
 
 @property (nonatomic, readwrite) PPSDKConfiguration *configuration;
 @property (nonatomic) PPSDKStartUpHelper *startUpHelper;
@@ -101,10 +101,10 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
     return _api;
 }
 
-- (PPWebSocketPool*)webSocket {
+- (PPWebSocket*)webSocket {
     if (!_webSocket) {
-        _webSocket = [[PPWebSocketPool alloc] initWithPPSDK:self];
-        _webSocket.webSocketPoolDelegate = self;
+        _webSocket = [[PPWebSocket alloc] initWithPPSDK:self];
+        _webSocket.delegate = self;
     }
     return _webSocket;
 }
@@ -169,7 +169,7 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 // PPWebSocketPoolDelegate
 // ==============================
 
-- (void)didMessageArrived:(PPWebSocketPool *)webSocket message:(id)obj {
+- (void)didMessageArrived:(PPWebSocket *)webSocket message:(id)obj {
     [[PPReceiver sharedReceiver] handle:obj handleCompleted:^(id obj, PPReceiverMessageType type, BOOL success) {
         if (!success) {
             PPFastLog(@"[PPSDK] PPReciver receive webSocket message:%@, but parse it failed, ignore this message.", obj);
@@ -197,7 +197,7 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
     }];
 }
 
-- (void)didSocketAuthed:(PPWebSocketPool*)webSocketPool {
+- (void)didSocketAuthed:(PPWebSocket*)webSocket {
     [self.fetchUnackedMessagesTask run];
 }
 
@@ -242,14 +242,21 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 }
 
 // ==============================
-// PPSDKStartUpHelperDelegate
+// PPSDKNetworkHelperDelegate
 // ==============================
 - (void)didNetworkReachable:(NetworkStatus)netStaus {
-    [self.webSocket open];
+    
+    // Socket reconnection interval may be running right now, so we can't
+    // call [self.webSocket open] directly, we join current reconnection
+    // interval or create a new interval.
+    [self.webSocket reconnect];
 }
 
 - (void)didNetworkUnreachable {
-    [self.webSocket close];
+    
+    // Socket will automatically close and start reconnecting.
+    // When it fails to reconnect because network is down, it
+    // will stop reconnecting.
 }
 
 // ==============================

@@ -11,7 +11,7 @@
 #import "PPSDK.h"
 #import "PPServiceUser.h"
 #import "PPAPI.h"
-#import "PPWebSocketPool.h"
+#import "PPWebSocket.h"
 
 #import "PPSDKUtils.h"
 #import "PPLog.h"
@@ -139,10 +139,9 @@ static const NSTimeInterval PPGetUnackedMessageDelayTime = 0.5;
 }
 
 - (void)simulateArrivedWebSocketMessage:(NSMutableDictionary*)msg {
-    PPWebSocketPool *webSocket = [PPSDK sharedSDK].webSocket;
-    id<PPWebSocketPoolDelegate> webSocketDelegate = webSocket.webSocketPoolDelegate;
-    if (webSocketDelegate) {
-        [webSocketDelegate didMessageArrived:webSocket message:[self convertToWebSocketMessageWithMsg:msg]];
+    PPWebSocket *webSocket = [PPSDK sharedSDK].webSocket;
+    if (webSocket.delegate) {
+        [webSocket.delegate didMessageArrived:webSocket message:[self convertToWebSocketMessageWithMsg:msg]];
     }
 }
 

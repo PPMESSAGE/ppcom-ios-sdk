@@ -42,10 +42,10 @@
 @interface PPWebSocketPool : NSObject
 
 /** try auto reconnect when websocket loss connect, default is YES **/
-@property (nonatomic) BOOL autoReconnectWhenLossConnect;
+@property (nonatomic) BOOL autoReconnectWhenLostConnect;
 
 /** maximum try re-connect limit, default is 3 **/
-@property (nonatomic) NSInteger maximumTryReconnectLimit;
+@property (nonatomic) NSInteger maxTryReconnectLimit;
 
 @property (nonatomic, weak) id<PPWebSocketPoolDelegate> webSocketPoolDelegate;
 

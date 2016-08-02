@@ -15,7 +15,7 @@
 #import "PPCreateAnonymousUserHttpModel.h"
 
 #import "PPNetworkHelper.h"
-#import "PPWebSocketPool.h"
+#import "PPWebSocket.h"
 #import "PPSDKUtils.h"
 #import "PPSDK.h"
 #import "PPLog.h"

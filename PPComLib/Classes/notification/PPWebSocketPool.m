@@ -45,9 +45,9 @@ static NSInteger const kPPSocketRocketDelayBetweenEachReconnect = 10; // after 1
         self.socketPool = [NSMutableArray array];
         self.closed = NO;
         self.currentTryReconnectCount = 0;
-        self.autoReconnectWhenLossConnect = YES;
+        self.autoReconnectWhenLostConnect = YES;
         self.inReconnecting = NO;
-        self.maximumTryReconnectLimit = kPPSocketRocketMaxmiumTryReconnectLimit;
+        self.maxTryReconnectLimit = kPPSocketRocketMaxmiumTryReconnectLimit;
     }
     return self;
 }
@@ -135,14 +135,14 @@ static NSInteger const kPPSocketRocketDelayBetweenEachReconnect = 10; // after 1
 - (BOOL)canStartAutoReconnectTask {
     BOOL canStart = NO;
     
-    if (!self.autoReconnectWhenLossConnect) {
-        PPFastLog(@"Not allowed auto reconnect when loss connection, cancel reconnect task");
+    if (!self.autoReconnectWhenLostConnect) {
+        PPFastLog(@"Not allowed auto reconnect when lost connection, cancel reconnect task");
     } else if (self.closed) {
         PPFastLog(@"Self closed, cancel reconnect task");
     } else if ([self isOpen]) {
         PPFastLog(@"Self has opened, cancel reconnect task");
-    } else if (self.currentTryReconnectCount >= self.maximumTryReconnectLimit) {
-        PPFastLog(@"try reconnect count has limited to %ld, cancel reconnect task", self.maximumTryReconnectLimit);
+    } else if (self.currentTryReconnectCount >= self.maxTryReconnectLimit) {
+        PPFastLog(@"try reconnect count has limited to %ld, cancel reconnect task", self.maxTryReconnectLimit);
     } else {
         canStart = YES;
     }

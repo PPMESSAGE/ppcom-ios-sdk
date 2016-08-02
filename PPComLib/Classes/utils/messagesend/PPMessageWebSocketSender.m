@@ -16,7 +16,7 @@
 #import "PPLog.h"
 #import "PPSDKUtils.h"
 
-#import "PPWebSocketPool.h"
+#import "PPWebSocket.h"
 
 #import "PPApiMessage.h"
 #import "PPMessage.h"
@@ -33,7 +33,7 @@
 - (void)sendMessage:(PPMessage *)message withBlock:(PPMessageSendCompletedBlock)quickErrorNotifyBlock {
     
     PPSDK *sdk = [PPSDK sharedSDK];
-    PPWebSocketPool *webSocket = sdk.webSocket;
+    PPWebSocket *webSocket = sdk.webSocket;
     
     if (![webSocket isOpen]) {
         PPFastLog(@"webSocket is Not Open");

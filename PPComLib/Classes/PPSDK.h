@@ -13,7 +13,7 @@
 #import "PPSDKConfiguration.h"
 #import "PPMessageSendProtocol.h"
 
-@class PPSDK, PPAPI, PPServiceUser, PPWebSocketPool, PPNetworkHelper;
+@class PPSDK, PPAPI, PPServiceUser, PPWebSocket, PPNetworkHelper;
 
 // Notification: A new message arrived
 FOUNDATION_EXPORT NSString *const PPSDKMessageArrived;
@@ -40,7 +40,7 @@ FOUNDATION_EXPORT NSString *const PPSDKMessageSendFailed;
 
 @property (nonatomic) PPApp *app;
 @property (nonatomic) PPAPI *api;
-@property (nonatomic) PPWebSocketPool *webSocket;
+@property (nonatomic) PPWebSocket *webSocket;
 @property (nonatomic) PPServiceUser *user;
 @property (nonatomic) PPNetworkHelper *networkHelper;
 @property (nonatomic) id<PPMessageSendProtocol> messageSender;
