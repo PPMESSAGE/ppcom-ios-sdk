@@ -108,16 +108,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    PPComMessagesViewController *controller = [[PPComMessagesViewController alloc] init];
     PPConversationItem *item = [self.conversationsDataSource objectAtIndex:indexPath];
     
-    controller.conversationUUID = item.uuid;
-    controller.conversationTitle = item.conversationName;
-    
-    [self removeAllObservers];
-    
-    [self.navigationController pushViewController:controller animated:YES];
-    
+    [self openConversationWithConversationItem:item];
 }
 
 #pragma mark - reload data
@@ -195,9 +188,23 @@
     PPFastLog(@"StartUpError:%@", errorInfo);
 }
 
+#pragma mark - conversation helpers
+
 // ================================================================================================
 // PPConversation - Get default conversation | Waiting | Show/Hide Loading View
 // ================================================================================================
+
+- (void)openConversationWithConversationItem:(PPConversationItem *)item {
+    
+    PPComMessagesViewController *controller = [[PPComMessagesViewController alloc] init];
+    
+    controller.conversationUUID = item.uuid;
+    controller.conversationTitle = item.conversationName;
+    
+    [self removeAllObservers];
+    
+    [self.navigationController pushViewController:controller animated:YES];
+}
 
 - (void)getDefaultConversation {
     PPStoreManager *storeManager = [PPStoreManager instanceWithClient:[PPSDK sharedSDK]];
@@ -251,6 +258,8 @@
         [wself.tableView reloadData];
         [wself endLoading];
         
+        // open latest conversation immediately
+        [self openConversationWithConversationItem:conversations[0]];
     }];
 }
 
