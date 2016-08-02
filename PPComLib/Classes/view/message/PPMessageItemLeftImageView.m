@@ -58,9 +58,9 @@ NSString *const PPMessageItemLeftImageViewIdentifier = @"PPMessageItemLeftImageV
     [super presentMessage:message];
     
     PPMessageImageMediaPart *imageMediaPart = message.mediaPart;
-    NSURL *imageURL = imageMediaPart.showThumb ? imageMediaPart.thumbUrl : imageMediaPart.imageUrl;
+
     _leftImageView.loading = YES;
-    [self.leftImageView loadWithUrl:imageURL placeHolderImage: PPImageWithColor([UIColor grayColor]) completionHandler:^(UIImage *image) {
+    [self.leftImageView loadWithImageMediaPart:imageMediaPart placeHolderImage: PPImageWithColor([UIColor grayColor]) completionHandler:^(UIImage *image) {
         if (image) _leftImageView.loading = NO;
     }];
     

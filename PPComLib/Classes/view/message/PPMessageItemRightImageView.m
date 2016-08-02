@@ -60,15 +60,13 @@ NSString *const PPMessageItemRightImageViewIdentifier = @"PPMessageItemRightImag
     
     PPMessageImageMediaPart *imageMediaPart = message.mediaPart;
     
-    if (imageMediaPart.imageLocalPath) {
-        [self.rightImageView loadWithLocaUrl:imageMediaPart.imageLocalPath];
-    } else {
-        NSURL *imageURL = imageMediaPart.showThumb ? imageMediaPart.thumbUrl : imageMediaPart.imageUrl;
-        _rightImageView.loading = YES;
-        [self.rightImageView loadWithUrl:imageURL placeHolderImage: PPImageWithColor([UIColor grayColor]) completionHandler:^(UIImage *image) {
-            if (image) _rightImageView.loading = NO;
-        }];
-    }
+    _rightImageView.loading = YES;
+    [self.rightImageView loadWithImageMediaPart:imageMediaPart
+                               placeHolderImage: PPImageWithColor([UIColor grayColor])
+                              completionHandler:^(UIImage *image) {
+        if (image) _rightImageView.loading = NO;
+    }];
+
     CGSize imageSize = [PPMessageItemRightImageView cellBodySizeForMessage:message];
     self.messageContentViewSize = imageSize;
     
