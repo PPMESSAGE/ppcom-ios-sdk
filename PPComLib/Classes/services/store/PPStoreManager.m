@@ -9,7 +9,7 @@
 #import "PPStoreManager.h"
 
 #import "PPConversationsStore.h"
-#import "PPGroupMembersStore.h"
+#import "PPConversationMembersStore.h"
 #import "PPMessagesStore.h"
 #import "PPUsersStore.h"
 
@@ -29,7 +29,7 @@
 - (instancetype)initWithClient:(PPSDK*)client {
     if (self = [super init]) {
         self.conversationStore = [PPConversationsStore storeWithClient:client];
-        self.groupMembersStore = [PPGroupMembersStore storeWithClient:client];
+        self.conversationMembersStore = [PPConversationMembersStore storeWithClient:client];
         self.messagesStore = [PPMessagesStore storeWithClient:client];
         self.usersStore = [PPUsersStore storeWithClient:client];
     }

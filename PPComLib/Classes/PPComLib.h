@@ -9,14 +9,8 @@
 #import <Foundation/Foundation.h>
 
 #import "PPSDK.h"
-
-#import "PPConversationItem.h"
 #import "PPMessage.h"
-
-// =====================
-// Controllers
-// =====================
-
+#import "PPConversationItem.h"
+#import "PPConversationViewController.h"
 #import "PPConversationsViewController.h"
-#import "PPComMessagesViewController.h"
-#import "PPGroupMembersViewController.h"
+#import "PPConversationMembersViewController.h"
