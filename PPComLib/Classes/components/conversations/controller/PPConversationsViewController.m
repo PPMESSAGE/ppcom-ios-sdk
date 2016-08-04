@@ -1,5 +1,5 @@
 //
-//  PPConversationListViewController.m
+//  PPConversationsViewController.m
 //  PPMessage
 //
 //  Created by PPMessage on 2/4/16.
@@ -7,37 +7,34 @@
 //
 
 #import "PPConversationsViewController.h"
-
-#import "PPComConversationViewController.h"
-
-#import "PPConversationItemViewCell.h"
-#import "PPComLoadingView.h"
-
-#import "PPConversationItem.h"
-
-#import "PPLog.h"
-#import "PPSDKUtils.h"
-#import "PPMessageUtils.h"
-#import "PPPolling.h"
-
-#import "PPSDK.h"
-#import "PPServiceUser.h"
-#import "PPMessage.h"
+#import "PPConversationsViewControllerDataSource.h"
 
 #import "PPStoreManager.h"
 #import "PPConversationsStore.h"
 
-#import "PPConversationsViewControllerDataSource.h"
+#import "PPConversationItem.h"
+#import "PPConversationItemViewCell.h"
 #import "PPConversationItemViewCell+PPConfigureForConversationItem.h"
+
+#import "PPComConversationViewController.h"
 
 #import "PPGetConversationInfoHttpModel.h"
 #import "PPGetWaitingQueueLengthHttpModel.h"
 
+#import "PPSDK.h"
+#import "PPLog.h"
+#import "PPPolling.h"
+#import "PPSDKUtils.h"
+#import "PPMessage.h"
+#import "PPMessageUtils.h"
+#import "PPVoiceRecord.h"
+#import "PPServiceUser.h"
+#import "PPComLoadingView.h"
+
 #import "NSString+PPSDK.h"
 #import "UIViewController+PPAnimating.h"
 
-#import "PPTestData.h"
-#import "PPVoiceRecord.h"
+// #import "PPTestData.h"
 
 @interface PPConversationsViewController () <PPSDKDelegate>
 
@@ -213,28 +210,28 @@
     PPStoreManager *storeManager = [PPStoreManager instanceWithClient:[PPSDK sharedSDK]];
     __weak PPConversationsViewController *wself = self;
     [storeManager.conversationStore asyncGetDefaultConversationWithCompletedBlock:^(PPConversationItem *conversation) {
-        if (!conversation) {
-            [self onFailedGetDefaultConversation:wself];
-        } else {
-            [self getAllConversations:wself storeManager:storeManager];
-        }
-    }];
+            if (!conversation) {
+                [self onFailedGetDefaultConversation:wself];
+            } else {
+                [self getAllConversations:wself storeManager:storeManager];
+            }
+        }];
 }
 
 - (void) setDefaultConversationByUUID:(__weak PPConversationsViewController *)wself conversationUUID:(NSString *)conversationUUID {
     PPGetConversationInfoHttpModel *model = [[PPGetConversationInfoHttpModel alloc] initWithClient:[PPSDK sharedSDK]];
     [model getWithConversationUUID:conversationUUID completedBlock:^(PPConversationItem *conversation, NSDictionary *response, NSError *error) {
-        if (conversation) {
-            PPConversationsStore *conversationStore = [PPStoreManager instanceWithClient:[PPSDK sharedSDK]].conversationStore;
-            if (![conversationStore isDefaultConversationAvaliable]) {
-                [conversationStore addDefaultConversation:conversation];
-            }
+            if (conversation) {
+                PPConversationsStore *conversationStore = [PPStoreManager instanceWithClient:[PPSDK sharedSDK]].conversationStore;
+                if (![conversationStore isDefaultConversationAvaliable]) {
+                    [conversationStore addDefaultConversation:conversation];
+                }
             
-            [self getAllConversations:self storeManager:[PPStoreManager instanceWithClient:[PPSDK sharedSDK]]];
-        } else {
-            // Should not be here ... if goes here, just keep current loading state ...
-        }
-    }];
+                [self getAllConversations:self storeManager:[PPStoreManager instanceWithClient:[PPSDK sharedSDK]]];
+            } else {
+                // Should not be here ... if goes here, just keep current loading state ...
+            }
+        }];
 }
 
 - (void)onFailedGetDefaultConversation:(__weak PPConversationsViewController *)wself {

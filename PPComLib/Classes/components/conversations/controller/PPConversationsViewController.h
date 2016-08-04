@@ -1,5 +1,5 @@
 //
-//  PPConversationListViewController.h
+//  PPConversationsViewController.h
 //  PPMessage
 //
 //  Created by PPMessage on 2/4/16.
