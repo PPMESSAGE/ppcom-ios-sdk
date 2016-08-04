@@ -200,7 +200,8 @@
     
     controller.conversationUUID = item.uuid;
     controller.conversationTitle = item.conversationName;
-    
+
+
     [self removeAllObservers];
     
     [self.navigationController pushViewController:controller animated:YES];

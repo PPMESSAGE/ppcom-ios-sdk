@@ -32,7 +32,7 @@
 #import "UIImage+PPSDK.h"
 #import "UIViewController+PPAnimating.h"
 #import "PPBaseMessagesViewController+PPVoiceMessage.h"
-#import "PPBaseMessagesViewController+PPActionSheet.h"
+#import "PPImagePicker.h"
 
 #import "PPMessage.h"
 #import "PPConversationItem.h"
@@ -248,7 +248,9 @@
 }
 
 - (void)openActionSheet {
-    [self pp_openActionSheet];
+
+    PPImagePicker *imagePicker = [PPImagePicker new];
+    [imagePicker openActionSheetFromViewController:self];
 }
 
 #pragma mark - TextView Delegate

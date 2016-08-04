@@ -7,12 +7,20 @@
 //
 
 #import <MobileCoreServices/MobileCoreServices.h>
-#import "PPBaseMessagesViewController+PPActionSheet.h"
+
+#import "PPImagePicker.h"
+
 #import "PPSDKUtils.h"
 
-@implementation PPBaseMessagesViewController (PPCamera)
+@interface PPImagePicker () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
-- (void) pp_openActionSheet {
+@end
+
+@implementation PPImagePicker
+
+#pragma mark - actionSheet
+
+- (void) openActionSheetFromViewController: (UIViewController *)controller {
     
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
                                                                              message:nil
@@ -21,13 +29,13 @@
     UIAlertAction *takePhotoAction = [UIAlertAction actionWithTitle:PPLocalizedString(@"Take Photo")
                                                               style:UIAlertActionStyleDefault
                                                             handler:^(UIAlertAction * _Nonnull action) {
-                                                                [self pp_takePhoto];
+                                                                [self openCameraFromViewController:controller];
                                                             }];
     
     UIAlertAction *choosePictureAction = [UIAlertAction actionWithTitle:PPLocalizedString(@"Choose Picture")
                                                                   style:UIAlertActionStyleDefault
                                                                 handler:^(UIAlertAction * _Nonnull action) {
-                                                                    [self pp_choosePicture];
+                                                                    [self openPhotoLibraryFromViewController:controller];
                                                                 }];
     
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:PPLocalizedString(@"cancel")
@@ -38,22 +46,26 @@
     [alertController addAction:choosePictureAction];
     [alertController addAction:cancelAction];
     
-    [self presentViewController:alertController animated:YES completion:nil];
+    [controller presentViewController:alertController animated:YES completion:nil];
 }
 
-- (void) pp_takePhoto {
-    [self pp_startMediaControllerFromViewController:self
-                                      usingDelegate:self
-                                     withSourceType:UIImagePickerControllerSourceTypeCamera];
+#pragma mark - open UIImagePicker
+
+- (void) openCameraFromViewController: (UIViewController *)controller {
+
+    [self openMediaControllerFromViewController:controller
+                                  usingDelegate:self
+                                 withSourceType:UIImagePickerControllerSourceTypeCamera];
 }
 
-- (void) pp_choosePicture {
-    [self pp_startMediaControllerFromViewController:self
-                                      usingDelegate:self
-                                     withSourceType:UIImagePickerControllerSourceTypeSavedPhotosAlbum];
+- (void) openPhotoLibraryFromViewController: (UIViewController *)controller {
+
+    [self openMediaControllerFromViewController:controller
+                                  usingDelegate:self
+                                 withSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
 }
 
-- (BOOL) pp_startMediaControllerFromViewController: (UIViewController *)controller
+- (BOOL) openMediaControllerFromViewController: (UIViewController *)controller
                                   usingDelegate: (id <UIImagePickerControllerDelegate, UINavigationControllerDelegate>) delegate
                                  withSourceType: (UIImagePickerControllerSourceType) sourceType {
 
@@ -63,17 +75,19 @@
     }
 
     UIImagePickerController *mediaUI = [UIImagePickerController new];
-    mediaUI.sourceType = sourceType;
-    // mediaUI.mediaTypes = [UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeSavedPhotosAlbum];
-    mediaUI.mediaTypes = [[NSArray alloc] initWithObjects:(NSString *) kUTTypeImage, nil];
+
     mediaUI.allowsEditing = NO;
     mediaUI.delegate = delegate;
-    
+    mediaUI.sourceType = sourceType;
+    mediaUI.modalPresentationStyle = UIModalPresentationCurrentContext;
+    mediaUI.mediaTypes = [[NSArray alloc] initWithObjects:(NSString *) kUTTypeImage, nil];
+
     [controller presentViewController:mediaUI animated:YES completion:nil];
+
     return YES;
 }
 
-// camera & media delegate
+#pragma mark - UIImagePickerControllerDelegate
 
 - (void) imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     
@@ -95,8 +109,10 @@
         } else {
             imageToUse = originalImage;
         }
-        
-        [self sendImage:imageToUse];
+
+        if ([self.delegate respondsToSelector:@selector(didFinishingPickingImage:)]) {
+            [self.delegate didFinishingPickingImage:imageToUse];
+        }
     }
     
     [picker dismissViewControllerAnimated:YES completion:nil];
