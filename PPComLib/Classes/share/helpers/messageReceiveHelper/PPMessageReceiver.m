@@ -103,7 +103,7 @@
                                 done:(void (^)(PPConversationItem *conversationItem))aBlock {
     PPSDK *sdk = [PPSDK sharedSDK];
     PPStoreManager *storeManager = [PPStoreManager instanceWithClient:sdk];
-    PPConversationsStore *conversationsStore = storeManager.conversationStore;
+    PPConversationsStore *conversationsStore = storeManager.conversationsStore;
     [conversationsStore asyncFindConversationWithConversationUUID:conversationUUID withBlock:aBlock];
 }
 

@@ -65,7 +65,7 @@
     PPAddTimestampIfNeedToMessage(messages, message);
     
     [self.messageUUIDArray addObject:message.identifier];
-    [[PPStoreManager instanceWithClient:self.sdk].conversationStore updateConversationsWithMessage:message];
+    [[PPStoreManager instanceWithClient:self.sdk].conversationsStore updateConversationsWithMessage:message];
     return YES;
 }
 

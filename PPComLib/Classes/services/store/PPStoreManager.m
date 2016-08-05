@@ -28,7 +28,7 @@
 
 - (instancetype)initWithClient:(PPSDK*)client {
     if (self = [super init]) {
-        self.conversationStore = [PPConversationsStore storeWithClient:client];
+        self.conversationsStore = [PPConversationsStore storeWithClient:client];
         self.conversationMembersStore = [PPConversationMembersStore storeWithClient:client];
         self.messagesStore = [PPMessagesStore storeWithClient:client];
         self.usersStore = [PPUsersStore storeWithClient:client];

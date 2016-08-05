@@ -9,12 +9,10 @@
 #import "PPConversationsViewController.h"
 #import "PPConversationsViewControllerDataSource.h"
 
-#import "PPStoreManager.h"
 #import "PPConversationsStore.h"
 
 #import "PPConversationItem.h"
 #import "PPConversationItemViewCell.h"
-#import "PPConversationItemViewCell+PPConfigureForConversationItem.h"
 
 #import "PPComConversationViewController.h"
 
@@ -38,8 +36,9 @@
 
 @interface PPConversationsViewController () <PPSDKDelegate>
 
-@property (nonatomic) PPConversationsStore *conversationsStore;
-@property (nonatomic) PPConversationsViewControllerDataSource *conversationsDataSource;
+@property (nonatomic) PPSDK *sdk;
+@property (nonatomic) PPConversationsStore *store;
+@property (nonatomic) PPConversationsViewControllerDataSource *dataSource;
 
 @property (nonatomic) PPComLoadingView *loadingView;
 @property (nonatomic) PPPolling *pollingConversation;
@@ -47,6 +46,19 @@
 @end
 
 @implementation PPConversationsViewController
+
+- (instancetype) init {
+    if (self = [super init]) {
+        self.sdk = [PPSDK sharedSDK];
+        self.sdk.sdkDelegate = self;
+        self.store = [PPConversationsStore storeWithClient:self.sdk];
+        self.dataSource = [[PPConversationsViewControllerDataSource alloc] initWithCellIdentifier:PPConversationItemViewCellIdentifier];
+    }
+    return self;
+}
+
+
+#pragma mark - UITableView events
 
 - (void)loadView {
     [super loadView];
@@ -58,34 +70,21 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.tableView.dataSource = self.dataSource;
     self.title = [NSString pp_LocaliziedStringForKey:@"Conversations Controller Title"];
-    [self setupTableView];
-    
-}
-
-- (void)setupTableView {
-    PPConversationsTableViewConfigureBlock configureCell = ^(PPConversationItemViewCell *cell, PPConversationItem *conversationItem) {
-        [cell configureForConversationItem:conversationItem];
-    };
-    self.conversationsDataSource = [[PPConversationsViewControllerDataSource alloc] initWithCellIdentifier:PPConversationItemViewCellIdentifier
-                                                                                            configureBlock:configureCell];
-    self.tableView.dataSource = self.conversationsDataSource;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [PPSDK sharedSDK].sdkDelegate = self;
     
     [self addPPSDKObservers];
     [self addApplicationObservers];
     
-    if ([[PPSDK sharedSDK] isStarted]) {
-        [self.conversationsDataSource updateItemsWithConversations:[NSOrderedSet orderedSetWithArray:[self.conversationsStore sortedConversations]]];
-        [self.tableView reloadData];
+    if ([self.sdk isStarted]) {
+        [self reloadTableView];
     } else {
         [self showActivityIndicatorViewLoading];
     }
-    
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -99,6 +98,7 @@
     [self cancelPolling];
 }
 
+
 #pragma mark - UITableView delegates
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -107,17 +107,25 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    PPConversationItem *item = [self.conversationsDataSource objectAtIndex:indexPath];
+    PPConversationItem *item = [self.dataSource objectAtIndex:indexPath];
     
     [self openConversationWithConversationItem:item];
 }
 
-#pragma mark - reload data
 
-- (void)reloadTableViewWithArray:(NSOrderedSet*)conversations {
-    [self.conversationsDataSource updateItemsWithConversations:conversations];
+#pragma mark - UITableView helpers
+
+- (void)reloadTableView {
+
+    NSArray *sortedConversations = [self.store sortedConversations];
+    NSOrderedSet *orderedConversations = [NSOrderedSet orderedSetWithArray:sortedConversations];
+
+    [self.dataSource updateItemsWithConversations:orderedConversations];
     [self.tableView reloadData];
 }
+
+
+#pragma mark - Observers
 
 // ===================
 // Notification
@@ -173,12 +181,16 @@
 // Back Button Pressed
 // ===========================
 - (void)onBackButtonPressed {
-    [[PPSDK sharedSDK] reset];
+    [self.sdk reset];
 }
+
+
+#pragma mark - SDK Delegates
 
 // ===========================
 // PPSDK Delegate
 // ===========================
+
 - (void)didPPSDKStartUpSucceded:(PPSDK*)sdk {
     [self getDefaultConversation];
 }
@@ -187,7 +199,8 @@
     PPFastLog(@"StartUpError:%@", errorInfo);
 }
 
-#pragma mark - conversation helpers
+
+#pragma mark - Conversation Helpers
 
 // ================================================================================================
 // PPConversation - Get default conversation | Waiting | Show/Hide Loading View
@@ -200,67 +213,81 @@
     controller.conversationUUID = item.uuid;
     controller.conversationTitle = item.conversationName;
 
-
     [self removeAllObservers];
     
     [self.navigationController pushViewController:controller animated:YES];
 }
 
 - (void)getDefaultConversation {
-    PPStoreManager *storeManager = [PPStoreManager instanceWithClient:[PPSDK sharedSDK]];
+
     __weak PPConversationsViewController *wself = self;
-    [storeManager.conversationStore asyncGetDefaultConversationWithCompletedBlock:^(PPConversationItem *conversation) {
-            if (!conversation) {
-                [self onFailedGetDefaultConversation:wself];
-            } else {
-                [self getAllConversations:wself storeManager:storeManager];
-            }
-        }];
+
+    [self.store asyncGetDefaultConversationWithCompletedBlock:^(PPConversationItem *conversation) {
+
+        if (conversation) {
+            [self getAllConversations];
+        } else {
+            [self onFailedGetDefaultConversation];
+        }
+    }];
 }
 
-- (void) setDefaultConversationByUUID:(__weak PPConversationsViewController *)wself conversationUUID:(NSString *)conversationUUID {
-    PPGetConversationInfoHttpModel *model = [[PPGetConversationInfoHttpModel alloc] initWithClient:[PPSDK sharedSDK]];
+- (void) setDefaultConversationByUUID:(NSString *)conversationUUID {
+
+    PPGetConversationInfoHttpModel *model = [[PPGetConversationInfoHttpModel alloc] initWithClient:self.sdk];
+    
     [model getWithConversationUUID:conversationUUID completedBlock:^(PPConversationItem *conversation, NSDictionary *response, NSError *error) {
-            if (conversation) {
-                PPConversationsStore *conversationStore = [PPStoreManager instanceWithClient:[PPSDK sharedSDK]].conversationStore;
-                if (![conversationStore isDefaultConversationAvaliable]) {
-                    [conversationStore addDefaultConversation:conversation];
-                }
-            
-                [self getAllConversations:self storeManager:[PPStoreManager instanceWithClient:[PPSDK sharedSDK]]];
-            } else {
-                // Should not be here ... if goes here, just keep current loading state ...
+
+        if (!conversation) {
+            // Should not be here ... if goes here, just keep current loading state ...
+            return;
+        }
+
+        if (![self.store isDefaultConversationAvaliable]) {
+            [self.store addDefaultConversation:conversation];
+        }
+
+        [self getAllConversations];
+    }];
+}
+
+- (void)onFailedGetDefaultConversation {
+
+    [self showLoadingView];
+
+    self.pollingConversation = [[PPPolling alloc] initWithClient:self.sdk];
+    
+    [self.pollingConversation runWithExecutingCode:^{
+
+        __weak PPConversationsViewController *wself = self;
+
+        PPGetWaitingQueueLengthHttpModel *getWaitingQueueLengthTask = [PPGetWaitingQueueLengthHttpModel modelWithClient:self.sdk];
+
+        [getWaitingQueueLengthTask getWaitingQueueLengthWithCompletedBlock:^(NSNumber *waitingQueueLength, NSDictionary *response, NSError *error) {
+
+            NSString *conversationUUID = response[@"conversation_uuid"];
+
+            if (PPIsNotNull(conversationUUID)) {
+                [wself setDefaultConversationByUUID:conversationUUID];
+                [wself cancelPolling];
+                [wself dismissLoadingView];
             }
         }];
+    }];
 }
 
-- (void)onFailedGetDefaultConversation:(__weak PPConversationsViewController *)wself {
-    [self showLoadingView];
-    self.pollingConversation = [[PPPolling alloc] initWithClient:[PPSDK sharedSDK]];
-    [self.pollingConversation runWithExecutingCode:^{
-            PPGetWaitingQueueLengthHttpModel *getWaitingQueueLengthTask = [PPGetWaitingQueueLengthHttpModel modelWithClient:[PPSDK sharedSDK]];
-            [getWaitingQueueLengthTask getWaitingQueueLengthWithCompletedBlock:^(NSNumber *waitingQueueLength, NSDictionary *response, NSError *error) {
-                    NSString *conversationUUID = response[@"conversation_uuid"];
-                    if (PPIsNotNull(conversationUUID)) {
-                        [wself setDefaultConversationByUUID:wself conversationUUID:conversationUUID];
-                        [self cancelPolling];
-                        [self dismissLoadingView];
-                        return;
-                    }
-                }];
-        }];
-}
+- (void)getAllConversations {
 
-- (void)getAllConversations:(__weak PPConversationsViewController *)wself storeManager:(PPStoreManager *)storeManager {
-    [storeManager.conversationStore sortedConversationsWithBlock:^(NSArray *conversations, NSError *error) {
-        
-            [wself.conversationsDataSource updateItemsWithConversations:[NSOrderedSet orderedSetWithArray:conversations]];
-            [wself.tableView reloadData];
-            [wself endLoading];
-        
-            // open latest conversation immediately
-            [self openConversationWithConversationItem:conversations[0]];
-        }];
+    __weak PPConversationsViewController *wself = self;
+    
+    [wself.store sortedConversationsWithBlock:^(NSArray *conversations, NSError *error) {
+
+        [wself reloadTableView];
+        [wself endLoading];
+
+        // open latest conversation immediately
+        [wself openConversationWithConversationItem:conversations[0]];
+    }];
 }
 
 - (void)cancelPolling {
@@ -273,6 +300,8 @@
 // ===========================
 // Loading
 // ===========================
+
+#pragma mark - loading
 
 - (void)showLoadingView {
     [self.view addSubview:self.loadingView];
@@ -305,13 +334,6 @@
         _loadingView.center = CGPointMake([UIScreen mainScreen].bounds.size.width / 2, [UIScreen mainScreen].bounds.size.height / 2);
     }
     return _loadingView;
-}
-
-- (PPConversationsStore*)conversationsStore {
-    if (!_conversationsStore) {
-        _conversationsStore = [PPStoreManager instanceWithClient:[PPSDK sharedSDK]].conversationStore;
-    }
-    return _conversationsStore;
 }
 
 @end

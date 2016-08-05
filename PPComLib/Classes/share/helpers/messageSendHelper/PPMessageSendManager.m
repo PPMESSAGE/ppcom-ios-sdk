@@ -109,7 +109,7 @@ withConversation:(NSString *)conversationUUID
     if (!aBlock) return;
     
     PPSDK *sdk = [PPSDK sharedSDK];
-    PPConversationsStore *conversationsStore = [PPStoreManager instanceWithClient:sdk].conversationStore;
+    PPConversationsStore *conversationsStore = [PPStoreManager instanceWithClient:sdk].conversationsStore;
     
     [conversationsStore asyncFindConversationWithConversationUUID:conversationUUID withBlock:^(PPConversationItem *conversationItem) {
         aBlock(conversationItem);

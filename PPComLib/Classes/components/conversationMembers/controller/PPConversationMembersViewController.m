@@ -166,7 +166,7 @@ typedef void(^findConversationBlock)(PPConversationItem *conversation, BOOL succ
 
 - (PPConversationsStore*)conversationsStore {
     if (!_conversationsStore) {
-        _conversationsStore = [PPStoreManager instanceWithClient:self.sdk].conversationStore;
+        _conversationsStore = [PPStoreManager instanceWithClient:self.sdk].conversationsStore;
     }
     return _conversationsStore;
 }

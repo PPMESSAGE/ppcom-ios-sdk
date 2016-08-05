@@ -28,7 +28,7 @@
     sdkConfiguration.apiKey = @"YmIyMGM4ZThhNTZhMDVmOTZiOGMwYWY1YzQyOWNkZTViZDI1MjNlMg==";
     sdkConfiguration.apiSecret = @"NzBkMWNiMmQ1OWFmMzYzYjJkNjVlMWRjMDNmNTg4ODNmYjk0OTUwZg==";
     sdkConfiguration.appUUID = @"568bd914-53d1-11e6-b4f5-ac87a30c6610";
-    sdkConfiguration.email = @"ThreeKingdoms@gamil.com";
+    sdkConfiguration.email = @"WeiKingdoms@gamil.com";
 
     [sdk configure:sdkConfiguration];
 

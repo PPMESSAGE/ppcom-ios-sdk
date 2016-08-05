@@ -14,7 +14,7 @@
 
 + (instancetype)instanceWithClient:(PPSDK*)client;
 
-@property (nonatomic) PPConversationsStore *conversationStore;
+@property (nonatomic) PPConversationsStore *conversationsStore;
 @property (nonatomic) PPConversationMembersStore *conversationMembersStore;
 @property (nonatomic) PPMessagesStore *messagesStore;
 @property (nonatomic) PPUsersStore *usersStore;

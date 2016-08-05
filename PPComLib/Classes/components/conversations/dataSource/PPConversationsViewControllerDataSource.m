@@ -8,9 +8,13 @@
 
 #import "PPConversationsViewControllerDataSource.h"
 
+#import "PPConversationItem.h"
+#import "PPConversationItemViewCell.h"
+#import "PPConversationItemViewCell+PPConfigureForConversationItem.h"
+
+
 @interface PPConversationsViewControllerDataSource ()
 
-@property (nonatomic, copy) PPConversationsTableViewConfigureBlock configureBlock;
 @property (nonatomic) NSString *cellIdentifier;
 @property (nonatomic) NSOrderedSet *conversationList;
 
@@ -18,11 +22,9 @@
 
 @implementation PPConversationsViewControllerDataSource
 
-- (instancetype)initWithCellIdentifier:(NSString *)cellIdentifier
-                        configureBlock:(PPConversationsTableViewConfigureBlock)block {
+- (instancetype)initWithCellIdentifier:(NSString *)cellIdentifier {
     if (self = [super init]) {
         self.cellIdentifier = cellIdentifier;
-        self.configureBlock = [block copy];
         self.conversationList = [NSOrderedSet orderedSet];
     }
     return self;
@@ -37,8 +39,11 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
-    self.configureBlock(cell, [self objectAtIndex:indexPath]);
+    PPConversationItemViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    PPConversationItem *item = [self objectAtIndex:indexPath];
+
+    [cell configureForConversationItem:item];
+
     return cell;
 }
 

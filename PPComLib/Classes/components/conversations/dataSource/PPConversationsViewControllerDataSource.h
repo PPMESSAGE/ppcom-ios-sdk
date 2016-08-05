@@ -16,12 +16,12 @@ typedef void (^PPConversationsTableViewConfigureBlock)(id cell, id item);
  */
 @interface PPConversationsViewControllerDataSource : NSObject <UITableViewDataSource>
 
-- (instancetype)initWithCellIdentifier:(NSString*)cellIdentifier
-configureBlock:(PPConversationsTableViewConfigureBlock)block;
+- (instancetype)initWithCellIdentifier:(NSString*)cellIdentifier;
 
 - (id)objectAtIndex:(NSIndexPath*)indexPath;
 
 - (NSOrderedSet*)conversations;
+
 - (void)updateItemsWithConversations:(NSOrderedSet*)conversations;
 
 @end
