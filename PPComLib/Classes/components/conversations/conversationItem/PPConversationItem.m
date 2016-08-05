@@ -25,11 +25,11 @@ NSString *const PPConversationItemTypeS2P = @"P2S";
 
 @implementation PPConversationItem
 
-+ (PPConversationItem*)conversationWithDictionary:(NSDictionary*)dictionary {
-    PPConversationItem* conversationItem = [[PPConversationItem alloc] init];
-    
-    NSDictionary *conversationDataDict = dictionary[@"conversation_data"];
++ (PPConversationItem *)conversationWithDictionary:(NSDictionary*)dictionary {
 
+    PPConversationItem *conversationItem = [PPConversationItem new]; 
+    NSDictionary *conversationDataDict = dictionary[@"conversation_data"];
+    
     if (conversationDataDict) {
         conversationItem.conversationIcon = PPFileURL(conversationDataDict[@"conversation_icon"]);
         conversationItem.conversationStatus = conversationDataDict[@"conversation_status"];

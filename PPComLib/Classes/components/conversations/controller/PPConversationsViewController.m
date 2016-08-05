@@ -52,7 +52,7 @@
         self.sdk = [PPSDK sharedSDK];
         self.sdk.sdkDelegate = self;
         self.store = [PPConversationsStore storeWithClient:self.sdk];
-        self.dataSource = [[PPConversationsViewControllerDataSource alloc] initWithCellIdentifier:PPConversationItemViewCellIdentifier];
+        self.dataSource = [PPConversationsViewControllerDataSource new];
     }
     return self;
 }
@@ -62,7 +62,7 @@
 
 - (void)loadView {
     [super loadView];
-    
+
     self.tableView.tableFooterView = [UIView new];
     [self.tableView registerClass:[PPConversationItemViewCell class] forCellReuseIdentifier:PPConversationItemViewCellIdentifier];
 }
@@ -118,9 +118,9 @@
 - (void)reloadTableView {
 
     NSArray *sortedConversations = [self.store sortedConversations];
-    NSOrderedSet *orderedConversations = [NSOrderedSet orderedSetWithArray:sortedConversations];
 
-    [self.dataSource updateItemsWithConversations:orderedConversations];
+    self.dataSource.conversations = [NSOrderedSet orderedSetWithArray:sortedConversations];
+
     [self.tableView reloadData];
 }
 

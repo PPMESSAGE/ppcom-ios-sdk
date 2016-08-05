@@ -19,14 +19,11 @@
 
 @implementation PPConversationItemViewCell (PPConfigureForConversationItem)
 
-- (void)configureForConversationItem:(PPConversationItem *)conversationItem {
+- (void)configureForConversationItem:(PPConversationItem *)conversation {
     
-    PPConversationItem *conversation = conversationItem;
-    
-    PPMessage *latestMessage = conversation.latestMessage;
-    
+    PPMessage *latestMessage = conversation.latestMessage; 
     NSString *displayName = conversation.conversationName;
-    NSString *messageSummary = [self determineSummaryForConveresation:conversationItem];
+    NSString *messageSummary = [self determineSummaryForConveresation:conversation];
     NSString *messageTimestamp = PPFormatTimestampToHumanReadableStyle(conversation.updateTimestamp, NO);
     NSString *avatarUrl = PPIsNotNull(conversation.conversationIcon) ? conversation.conversationIcon : @"";
     
@@ -38,8 +35,8 @@
             if (txtMediaPart.txtURL) {
                 self.msgSummaryLabel.text = messageSummary;
                 [[PPTxtLoader sharedLoader] loadTxtWithURL:txtMediaPart.txtURL completed:^(NSString *text, NSError *error, NSURL *txtURL) {
-                    self.msgSummaryLabel.text = text != nil ? text : messageSummary;
-                }];
+                        self.msgSummaryLabel.text = text != nil ? text : messageSummary;
+                    }];
             } else {
                 self.msgSummaryLabel.text = [self fixSummary:latestMessage.body];
             }

@@ -9,19 +9,16 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-typedef void (^PPConversationsTableViewConfigureBlock)(id cell, id item);
+
+@class PPConversationItem;
 
 /**
  * 为`PPConversationsViewController`提供`DataSource`
  */
 @interface PPConversationsViewControllerDataSource : NSObject <UITableViewDataSource>
 
-- (instancetype)initWithCellIdentifier:(NSString*)cellIdentifier;
+@property (nonatomic) NSOrderedSet *conversations;
 
-- (id)objectAtIndex:(NSIndexPath*)indexPath;
-
-- (NSOrderedSet*)conversations;
-
-- (void)updateItemsWithConversations:(NSOrderedSet*)conversations;
+- (PPConversationItem *)objectAtIndex:(NSIndexPath*)indexPath;
 
 @end

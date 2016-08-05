@@ -7,8 +7,8 @@
 //
 
 #import "PPConversationItemViewCell.h"
-#import "PPLog.h"
 
+#import "PPLog.h"
 #import "PPBadgeSquareImageView.h"
 
 NSString *const PPConversationItemViewCellIdentifier = @"PPConversationItemViewCellIdentifier";
@@ -23,26 +23,22 @@ CGFloat const PPAvatarWidth = 48;
 CGFloat const PPTimestampWidth = 100;
 CGFloat const PPConversationItemViewHeight = 64;
 
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
+- (instancetype)init {
+    if (self = [super init]) {
         [self pp_init];
     }
     return self;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
-    if (self) {
+    if (self = [super initWithCoder:aDecoder]) {
         [self pp_init];
     }
     return self;
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
+    if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         [self pp_init];
     }
     return self;

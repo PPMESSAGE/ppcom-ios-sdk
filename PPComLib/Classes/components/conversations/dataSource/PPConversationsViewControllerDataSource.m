@@ -15,31 +15,30 @@
 
 @interface PPConversationsViewControllerDataSource ()
 
-@property (nonatomic) NSString *cellIdentifier;
-@property (nonatomic) NSOrderedSet *conversationList;
-
 @end
 
 @implementation PPConversationsViewControllerDataSource
 
-- (instancetype)initWithCellIdentifier:(NSString *)cellIdentifier {
+- (instancetype)init {
     if (self = [super init]) {
-        self.cellIdentifier = cellIdentifier;
-        self.conversationList = [NSOrderedSet orderedSet];
+        self.conversations = [NSOrderedSet orderedSet];
     }
     return self;
 }
+
+#pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.conversationList count];;
+    return [self.conversations count];;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    PPConversationItemViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    PPConversationItemViewCell *cell = [tableView dequeueReusableCellWithIdentifier:PPConversationItemViewCellIdentifier
+                                                                       forIndexPath:indexPath];
     PPConversationItem *item = [self objectAtIndex:indexPath];
 
     [cell configureForConversationItem:item];
@@ -47,16 +46,10 @@
     return cell;
 }
 
-- (id)objectAtIndex:(NSIndexPath *)indexPath {
-    return self.conversationList[indexPath.row];
-}
+#pragma mark - helpers
 
-- (NSOrderedSet*)conversations {
-    return self.conversationList;
-}
-
-- (void)updateItemsWithConversations:(NSOrderedSet *)conversations {
-    self.conversationList = conversations;
+- (PPConversationItem* )objectAtIndex:(NSIndexPath *)indexPath {
+    return self.conversations[indexPath.row];
 }
 
 @end
