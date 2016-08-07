@@ -44,20 +44,16 @@
                 case PPMessageTypeAudio:
                 case PPMessageTypeText:
                 case PPMessageTypeFile:
-                case PPMessageTypeImage:
+                case PPMessageTypeImage: {
                     [self ackMessageWithPushID:message.pushID];
-                    [self makeResponseWithMessage:message
-                                          success:YES
-                                      withHandler:completedHandler];
+                    [self makeResponseWithMessage:message success:YES withHandler:completedHandler];
+                }
                     break;
-                    
                 case PPMessageTypeTxt: {
-                    [self pp_handleTxtMessage:message
-                              handleCompleted:^(id obj, BOOL success) {
-                                  [self makeResponseWithMessage:message
-                                                        success:success
-                                                    withHandler:completedHandler];
-                              }];
+                    [self handleTxtMessage:message withBlock:^(id obj, BOOL success) {
+                        [self ackMessageWithPushID:message.pushID];
+                        [self makeResponseWithMessage:message success:success withHandler:completedHandler];
+                    }];
                 }
                     break;
                     
@@ -73,15 +69,17 @@
     
 }
 
-- (void)pp_handleTxtMessage:(PPMessage*)txtMessage
-            handleCompleted:(PPArrivedMsgHandleCompletedBlock)completedHandler {
+- (void)handleTxtMessage:(PPMessage*)txtMessage withBlock:(PPArrivedMsgHandleCompletedBlock)block {
+
     PPMessageTxtMediaPart *txtMediaPart = txtMessage.mediaPart;
+
     [[PPTxtLoader sharedLoader] loadTxtWithURL:txtMediaPart.txtURL completed:^(NSString *text, NSError *error, NSURL *txtURL) {
+
         if (!error) {
             txtMediaPart.txtContent = text;
-            [self ackMessageWithPushID:txtMessage.pushID];
         }
-        if (completedHandler) completedHandler(txtMessage, !error);
+
+        if (block) block(txtMessage, !error);
     }];
 }
 

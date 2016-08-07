@@ -9,6 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "PPReceiverProtocol.h"
 
+@class PPMessage, PPArrivedMsgHandlerCompleteBlock;
+
 @interface PPMessageReceiver : NSObject<PPReceiverProtocol>
+
+- (void)handleTxtMessage:(PPMessage*)txtMessage withBlock:(PPArrivedMsgHandleCompletedBlock)block;
 
 @end

@@ -55,18 +55,21 @@
 
 #import "PPTestData.h"
 
-@interface PPConversationViewController ()<UITextViewDelegate, PPConversationViewInputToolbarDelegate>
+@interface PPConversationViewController () <UITextViewDelegate, PPConversationViewInputToolbarDelegate, PPImagePickerDelegate>
 
 @property (nonatomic) PPConversationView *conversationView;
 @property (nonatomic) UIImage *imagePlaceholder;
+
+@property (nonatomic) PPImagePicker *imagePicker;
+@property (nonatomic) PPMessageSendManager *messageSender;
 
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) NSMutableArray *testMessages;
 
 @property (nonatomic) PPConversationViewControllerKeyboardDelegate *keyboardDelegate;
 
-@property (nonatomic) PPConversationViewControllerDataSource *messagesDataSource;
 @property (nonatomic) PPMessagesStore *messagesStore;
+@property (nonatomic) PPConversationViewControllerDataSource *messagesDataSource;
 
 // Manage record tools
 @property (nonatomic) PPVoiceRecordHelper *voiceRecordHelper;
@@ -77,45 +80,60 @@
 
 @implementation PPConversationViewController
 
+- (instancetype) init {
+    if (self = [super init]) {
+        self.imagePlaceholder = [UIImage pp_defaultAvatarImage];
+        self.messageSender = [PPMessageSendManager getInstance];
+        self.messagesStore = [PPStoreManager instanceWithClient:[PPSDK sharedSDK]].messagesStore;
+        self.messagesDataSource = [[PPConversationViewControllerDataSource alloc] initWithController:self]; 
+        self.voiceRecordHUD = [[PPVoiceRecord alloc] initWithFrame:CGRectMake(0, 0, 140, 140)];
+    }
+    return self;
+}
+
+
+#pragma mark - UIViewController
+
 - (void)loadView {
     [super loadView];
 
     self.conversationView = [PPConversationView new];
     self.conversationView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addSubview:self.conversationView];
-    PPPaddingAll(self.conversationView, self.view, 0);
-    
-    self.tableView = self.conversationView.conversationViewMessages;
-    self.tableView.contentOffset = CGPointZero;
-    
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    self.edgesForExtendedLayout = UIRectEdgeNone;
-    self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
-    
-    self.refreshControl = [UIRefreshControl new];
-    [self.refreshControl addTarget:self action:@selector(onPagePullToRefreshAction) forControlEvents:UIControlEventValueChanged];
-    [self.tableView addSubview:self.refreshControl];
-    
-    self.tableView.delegate = self;
     self.conversationView.inputToolbar.inputToolbarDelegate = self;
     self.conversationView.inputToolbar.textInputView.delegate = self;
     
     // 键盘回车键用来发送
     self.conversationView.inputToolbar.textInputView.returnKeyType = UIReturnKeySend;
     self.conversationView.inputToolbar.textInputView.enablesReturnKeyAutomatically = YES;
+
+    [self.view addSubview:self.conversationView];
+
+    PPPaddingAll(self.conversationView, self.view, 0);
     
+    self.tableView = self.conversationView.conversationViewMessages;
+    self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
+    self.tableView.dataSource = self.messagesDataSource;
+    self.tableView.delegate = self;
+
+    self.keyboardDelegate = [[PPConversationViewControllerKeyboardDelegate alloc] initWithTableView:self.tableView
+                                                                                       inputToolbar:self.conversationView.inputToolbar];
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    
+    self.refreshControl = [UIRefreshControl new];
+    [self.refreshControl addTarget:self action:@selector(onPagePullToRefreshAction) forControlEvents:UIControlEventValueChanged];
+    [self.tableView addSubview:self.refreshControl];
+
     [self registerCellClass];
-    [self setupTableView];
-    
+
     if (self.conversationUUID) {
         [self.messagesDataSource updateWithMessages:[self messagesInMemory]];
         [self.keyboardDelegate keepTableViewContentAtBottomQuickly];
     }
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -140,10 +158,6 @@
     
 }
 
-- (void)setupTableView {
-    self.messagesDataSource = [[PPConversationViewControllerDataSource alloc] initWithController:self];
-    self.tableView.dataSource = self.messagesDataSource;
-}
 
 #pragma mark - Init Methods
 
@@ -181,7 +195,7 @@
     [self.keyboardDelegate scrollToBottomAnimated:animated];
 }
 
-#pragma mark -
+#pragma mark - UITableView Helpers
 
 - (void)reloadTableView {
     [self reloadTableViewWithMessages:[self.messagesDataSource messages]];
@@ -191,8 +205,7 @@
     [self reloadTableViewWithMessages:messages scrollToBottom:NO];
 }
 
-- (void)reloadTableViewWithMessages:(NSMutableArray *)messages
-                     scrollToBottom:(BOOL)scrollToBottom {
+- (void)reloadTableViewWithMessages:(NSMutableArray *)messages scrollToBottom:(BOOL)scrollToBottom {
     [self.messagesDataSource updateWithMessages:messages];
     [self.tableView reloadData];
     if (scrollToBottom) {
@@ -207,9 +220,7 @@
 
 #pragma mark - InputToolbar Delegate
 
-- (void)didHeightChanged:(PPMessageInputToolbar *)inputToolbar
-                  height:(CGFloat)height
-              heightDiff:(CGFloat)heightDiff {
+- (void)didHeightChanged:(PPMessageInputToolbar *)inputToolbar height:(CGFloat)height heightDiff:(CGFloat)heightDiff {
     PPFastLog(@"**didHeightChanged:%f**", heightDiff);
     [self.keyboardDelegate didHeightChanged:inputToolbar height:height heightDiff:heightDiff];
 }
@@ -230,7 +241,7 @@
 }
 
 - (void)didFinishRecoingVoiceAction {
-    PPFastLog(@"didFinishRecoingVoice");
+    PPFastLog(@"didFinishRecodingVoice");
     if (self.isMaxTimeStop == NO) {
         [self finishRecorded];
     } else {
@@ -250,8 +261,20 @@
 
 - (void)openActionSheet {
 
-    PPImagePicker *imagePicker = [PPImagePicker new];
-    [imagePicker openActionSheetFromViewController:self];
+    if (!_imagePicker) {
+        self.imagePicker = [PPImagePicker new];
+        self.imagePicker.delegate = self;
+    }
+
+    [self.imagePicker openActionSheetFromViewController:self];
+}
+
+
+#pragma mark - PPImagePicker Delegate
+
+- (void) didFinishingPickingImage:(UIImage *)image {
+
+    [self sendImage:image];
 }
 
 #pragma mark - TextView Delegate
@@ -265,36 +288,42 @@
     return YES;
 }
 
+
+#pragma mark - send message
+
 // =========================
 // Send Message
 // =========================
 
 - (void)sendText:(NSString*)text {
     __weak typeof(self) wself = self;
-    [[PPMessageSendManager getInstance] sendText:text
-                                withConversation:self.conversationUUID
-                                      completion:^(PPMessage *message, id obj, PPMessageSendState state) {
-        [wself handleMessage:message sendState:state extraObj:obj];
+    [self.messageSender sendText:text
+                withConversation:self.conversationUUID
+                      completion:^(PPMessage *message, id obj, PPMessageSendState state) {
+
+                          [wself handleMessage:message sendState:state extraObj:obj];
     }];
 }
 
 - (void)sendImage:(UIImage *)image {
     __weak typeof(self) wself = self;
-    [[PPMessageSendManager getInstance] sendImage:image
-                                withConversation:self.conversationUUID
-                                      completion:^(PPMessage *message, id obj, PPMessageSendState state) {
-        [wself handleMessage:message sendState:state extraObj:obj];
+    [self.messageSender sendImage:image
+                 withConversation:self.conversationUUID
+                       completion:^(PPMessage *message, id obj, PPMessageSendState state) {
+
+                           [wself handleMessage:message sendState:state extraObj:obj];
     }];
 }
 
 
 - (void)sendAudioWithFilePath:(NSString*)audioFilePath withAudioDuration:(NSTimeInterval)duration {
     __weak typeof(self) wself = self;
-    [[PPMessageSendManager getInstance] sendAudio:audioFilePath
-                                    audioDuration:duration
-                                     conversation:self.conversationUUID
-                                       completion:^(PPMessage *message, id obj, PPMessageSendState state) {
-        [wself handleMessage:message sendState:state extraObj:obj];
+    [self.messageSender sendAudio:audioFilePath
+                    audioDuration:duration
+                     conversation:self.conversationUUID
+                       completion:^(PPMessage *message, id obj, PPMessageSendState state) {
+
+                           [wself handleMessage:message sendState:state extraObj:obj];
     }];
 }
 
@@ -318,6 +347,9 @@
     }
 }
 
+
+#pragma mark - getters & setters
+
 // ===========================
 // Getter - Setter
 // ===========================
@@ -325,27 +357,6 @@
 - (void)setConversationTitle:(NSString *)conversationTitle {
     _conversationTitle = conversationTitle;
     self.navigationItem.title = conversationTitle;
-}
-
-- (UIImage*)imagePlaceholder {
-    if (!_imagePlaceholder) {
-        _imagePlaceholder = [UIImage pp_defaultAvatarImage];
-    }
-    return _imagePlaceholder;
-}
-
-- (PPConversationViewControllerKeyboardDelegate *)keyboardDelegate {
-    if (!_keyboardDelegate) {
-        _keyboardDelegate = [[PPConversationViewControllerKeyboardDelegate alloc] initWithTableView:self.tableView inputToolbar:self.conversationView.inputToolbar];
-    }
-    return _keyboardDelegate;
-}
-
-- (PPMessagesStore*)messagesStore {
-    if (!_messagesStore) {
-        _messagesStore = [PPStoreManager instanceWithClient:[PPSDK sharedSDK]].messagesStore;
-    }
-    return _messagesStore;
 }
 
 - (PPVoiceRecordHelper*)voiceRecordHelper {
@@ -372,12 +383,8 @@
     return _voiceRecordHelper;
 }
 
-- (PPVoiceRecord*)voiceRecordHUD {
-    if (!_voiceRecordHUD) {
-        _voiceRecordHUD = [[PPVoiceRecord alloc] initWithFrame:CGRectMake(0, 0, 140, 140)];
-    }
-    return _voiceRecordHUD;
-}
+
+#pragma mark - register cell
 
 // =========================================
 // UITableView - Register Cell Class
@@ -401,6 +408,9 @@
     [conversationViewMessages registerClass:[PPMessageItemRightVoiceView class] forCellReuseIdentifier:PPMessageItemRightVoiceViewIdentifier];
     [conversationViewMessages registerClass:[PPMessageItemRightUnknownView class] forCellReuseIdentifier:PPMessageItemRightUnknownViewIdentifier];
 }
+
+
+#pragma mark - observers
 
 // ==========================
 // Notification

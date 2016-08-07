@@ -15,7 +15,13 @@ typedef NS_ENUM(NSInteger, PPReceiverMessageType) {
     PPReceiverMessageTypeLogout
 };
 
+@class PPMessageReceiver, PPWSMessageAckReceiver, PPSysMessageReceiver;
+
 @interface PPReceiver : NSObject
+
+@property (nonatomic) PPMessageReceiver *messageHandler;
+@property (nonatomic) PPWSMessageAckReceiver *messageAckHandler;
+@property (nonatomic) PPSysMessageReceiver *sysMessageHandler;
 
 + (instancetype)sharedReceiver;
 

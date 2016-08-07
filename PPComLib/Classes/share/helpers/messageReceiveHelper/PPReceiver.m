@@ -25,10 +25,6 @@ NSString *const kPPReceiverMessageMsgSys = @"SYS";
 
 @interface PPReceiver ()
 
-@property (nonatomic) PPMessageReceiver *messageHandler;
-@property (nonatomic) PPWSMessageAckReceiver *messageAckHandler;
-@property (nonatomic) PPSysMessageReceiver *sysMessageHandler;
-
 @end
 
 @implementation PPReceiver

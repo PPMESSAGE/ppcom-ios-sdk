@@ -9,6 +9,7 @@
 #import "PPConversationsViewController.h"
 #import "PPConversationsViewControllerDataSource.h"
 
+#import "PPStoreManager.h"
 #import "PPConversationsStore.h"
 
 #import "PPConversationItem.h"
@@ -51,7 +52,7 @@
     if (self = [super init]) {
         self.sdk = [PPSDK sharedSDK];
         self.sdk.sdkDelegate = self;
-        self.store = [PPConversationsStore storeWithClient:self.sdk];
+        self.store = [PPStoreManager instanceWithClient:self.sdk].conversationsStore;
         self.dataSource = [PPConversationsViewControllerDataSource new];
     }
     return self;

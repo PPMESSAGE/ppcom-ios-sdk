@@ -41,7 +41,10 @@
 
 - (UIBarButtonItem*)groupButtonItem {
     if (!_groupButtonItem) {
-        _groupButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage pp_defaultGroupImage] style:UIBarButtonItemStylePlain target:self action:@selector(onGroupButtonItemClicked:)];
+        _groupButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage pp_defaultGroupImage]
+                                                            style:UIBarButtonItemStylePlain
+                                                           target:self
+                                                           action:@selector(onGroupButtonItemClicked:)];
     }
     return _groupButtonItem;
 }
