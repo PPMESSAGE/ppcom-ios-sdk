@@ -12,6 +12,7 @@
 
 #import "PPConversationItem.h"
 #import "PPMessage.h"
+#import "PPServiceUser.h"
 
 // =====================
 // Controllers

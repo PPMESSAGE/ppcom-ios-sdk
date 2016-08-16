@@ -277,6 +277,10 @@ static NSString *const kPPHeaderTypePPCom = @"PPCOM";
     [self basePPComRequest:@"/PP_GET_USER_UUID" with:params completionHandler:completionHandler];
 }
 
+- (void)updatePPComUser:(NSDictionary *)params completionHandler:(PPAPICompletedBlock)completionHandler {
+    [self basePPComRequest:@"/PP_UPDATE_USER" with:params completionHandler:completionHandler];
+}
+
 - (void)getPPComDeviceUser:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
     [self basePPComRequest:@"/PP_GET_USER_INFO" with:params completionHandler:completionHandler];
 }

@@ -71,6 +71,8 @@ typedef NS_ENUM(NSInteger, PPMessageCustomErrorCode) {
 
 - (void)getUserUuid:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
 
+- (void)updatePPComUser:(NSDictionary *)params completionHandler:(PPAPICompletedBlock)completionHandler ;
+
 - (void)getPPComDeviceUser:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
 
 - (void)createDevice:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
