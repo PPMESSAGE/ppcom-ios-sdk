@@ -19,4 +19,9 @@
 - (void)getUserUUIDWithEmail:(NSString*)userEmail
                    withBlock:(PPHttpModelCompletedBlock)aBlock;
 
+- (void)getUserUUIDWithEmail:(NSString*)userEmail
+                    withIcon:(NSString *)userIcon
+                withFullname:(NSString *)userFullName
+                   withBlock:(PPHttpModelCompletedBlock)aBlock;
+
 @end
