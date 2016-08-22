@@ -55,8 +55,8 @@
                    withBlock:(PPHttpModelCompletedBlock)aBlock {
     
     NSDictionary *params = @{ @"user_email":userEmail,
-                              @"user_icon":userIcon,
-                              @"user_fullname":userFullName,
+                              @"user_icon":userIcon?userIcon:@"",
+                              @"user_fullname":userFullName?userFullName:@"",
                               @"app_uuid":self.sdk.app.appUuid };
     [self.sdk.api getUserUuid:params completionHandler:^(NSDictionary *response, NSDictionary *error) {
         
