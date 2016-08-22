@@ -35,7 +35,7 @@
                  withBlock:(PPHttpModelCompletedBlock)aBlock {
     
     NSDictionary *params = @{ @"user_uuid":self.sdk.user.userUuid,
-                              @"user_icon":userIcon,
+                              @"user_icon":userIcon?userIcon:@"",
                               @"app_uuid":self.sdk.app.appUuid };
     [self.sdk.api updatePPComUser:params completionHandler:^(NSDictionary *response, NSDictionary *error) {
         NSString *userUUID = nil;
