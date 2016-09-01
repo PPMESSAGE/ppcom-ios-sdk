@@ -155,14 +155,17 @@
                 return;
             }
             NSString *userNewIcon = self.sdk.user.userIcon;
+            NSString *userNewName = self.sdk.user.userName;
             self.sdk.user = user;
             
             // update user icon
-            if (![self.sdk.user.userIcon isEqualToString:userNewIcon]) {
+            if (![self.sdk.user.userIcon isEqualToString:userNewIcon] ||
+                ![self.sdk.user.userName isEqualToString:userNewName]) {
                 self.sdk.user.userIcon = userNewIcon;
+                self.sdk.user.userName = userNewName;
                 
                 PPUpdateUserInfoHttpModel *updateUserInfoHttpModel = [[PPUpdateUserInfoHttpModel alloc] initWithSDK:self.sdk];
-                [updateUserInfoHttpModel updateUserWithUUID:userUUID withIcon:userNewIcon withBlock:nil];
+                [updateUserInfoHttpModel updateUserWithUUID:userUUID withIcon:userNewIcon withFullName:userNewName withBlock:nil];
             }
             if (block) block();
         }];

@@ -32,10 +32,12 @@
 
 - (void)updateUserWithUUID:(NSString *)userUUID
                   withIcon:(NSString *)userIcon
+              withFullName:(NSString *)fullName
                  withBlock:(PPHttpModelCompletedBlock)aBlock {
     
     NSDictionary *params = @{ @"user_uuid":self.sdk.user.userUuid,
                               @"user_icon":userIcon?userIcon:@"",
+                              @"user_fullname":fullName?fullName:@"",
                               @"app_uuid":self.sdk.app.appUuid };
     [self.sdk.api updatePPComUser:params completionHandler:^(NSDictionary *response, NSDictionary *error) {
         NSString *userUUID = nil;

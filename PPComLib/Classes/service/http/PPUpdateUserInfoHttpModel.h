@@ -18,6 +18,7 @@
 
 - (void)updateUserWithUUID:(NSString*)userUUID
                   withIcon:(NSString *)userIcon
+              withFullName:(NSString *)fullName
                  withBlock:(PPHttpModelCompletedBlock)aBlock;
 
 @end
