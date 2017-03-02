@@ -31,8 +31,12 @@
 
 - (void)createAnonymousUserWithTraceUUID:(NSString *)traceUUID
                                withBlock:(PPHttpModelCompletedBlock)aBlock {
-    NSDictionary *params = @{ @"app_uuid": self.sdk.configuration.appUUID,
-                              @"ppcom_trace_uuid": traceUUID };
+    NSDictionary *params = @{
+        @"app_uuid": self.sdk.configuration.appUUID,
+        @"is_app_user": @YES,
+        @"is_browser_user": @NO,
+        @"ppcom_trace_uuid": traceUUID
+    };
     
     [self.sdk.api createAnonymousUser:params completionHandler:^(NSDictionary *response, NSDictionary *error) {
         
