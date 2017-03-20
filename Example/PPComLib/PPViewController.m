@@ -28,11 +28,11 @@
 //     sdkConfiguration.appUUID = @"9c60acbd-44bb-11e6-94c0-acbc327f19e9";
 //     sdkConfiguration.email = @"test_user@gamil.com";
     
-    sdkConfiguration.hostUrl = @"http://192.168.0.52:8945";
-    sdkConfiguration.apiKey = @"YmIyMGM4ZThhNTZhMDVmOTZiOGMwYWY1YzQyOWNkZTViZDI1MjNlMg==";
-    sdkConfiguration.apiSecret = @"NzBkMWNiMmQ1OWFmMzYzYjJkNjVlMWRjMDNmNTg4ODNmYjk0OTUwZg==";
-    sdkConfiguration.appUUID = @"568bd914-53d1-11e6-b4f5-ac87a30c6610";
-    sdkConfiguration.email = @"ThreeKingdoms@gamil.com";
+    sdkConfiguration.hostUrl = @"https://ppmessage.cn";
+    sdkConfiguration.apiKey = @"";
+    sdkConfiguration.apiSecret = @"";
+    sdkConfiguration.appUUID = @"";
+    //sdkConfiguration.email = @"ThreeKingdoms@gamil.com";
     
     [[PPSDK sharedSDK] configure:sdkConfiguration];
     
