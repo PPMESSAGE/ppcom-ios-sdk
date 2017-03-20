@@ -28,10 +28,10 @@
     NSString *wsHost = [self.hostUrl stringByReplacingCharactersInRange:NSMakeRange(0,4) withString:@"ws"];
     
     self.webSockeUrl = [wsHost stringByAppendingString:@"/pcsocket/WS"];
-    self.downloadUrl = [self.hostUrl stringByAppendingString:@"/download/download/"];
-    self.uploadUrl = [self.hostUrl stringByAppendingString:@"/upload/upload/"];
+    self.downloadUrl = [self.hostUrl stringByAppendingString:@"/ppdownload/ppdownload/"];
+    self.uploadUrl = [self.hostUrl stringByAppendingString:@"/ppupload/ppupload/"];
     self.authUrl = [self.hostUrl stringByAppendingString:@"/ppauth"];
-    self.apiUrl = [self.hostUrl stringByAppendingString:@"/api"];
+    self.apiUrl = [self.hostUrl stringByAppendingString:@"/ppapi"];
     
     PPFileHost = self.downloadUrl;
     PPTxtUploadHost = self.uploadUrl;
