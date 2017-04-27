@@ -61,7 +61,9 @@ static NSString *const PPDownloaderDiskCacheFolder = @"PPFileCache";
                     aBlock(nil, fileUUID, fileURLString);
                 } else {
                     [wself storeFile:responseObject forFileUUID:fileUUID done:^{
-                        aBlock(responseObject, fileUUID, fileURLString);
+                        NSString *md5Key = [self MD5KeyForFileUUID:fileUUID];
+                        NSString *filePath = [self fileDiskPathWithMD5Key:md5Key];
+                        aBlock(responseObject, fileUUID, filePath);
                     }];
                 }
             }];
@@ -111,14 +113,15 @@ static NSString *const PPDownloaderDiskCacheFolder = @"PPFileCache";
         dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
         dispatch_async(queue, ^{
             @autoreleasepool {
-                NSData *data = PPReadDataFromFileAtURL([NSURL URLWithString:[self fileDiskPathWithMD5Key:md5Key]]);
+                NSString *fileDiskPath = [self fileDiskPathWithMD5Key:md5Key];
+                NSData *data = PPReadDataFromFileAtURL([NSURL URLWithString:fileDiskPath]);
                 if (data) {
                     PPFastLog(@"[PPDownloader] find file from disk with file uuid: %@", fileUUID);
                     [self.fileMemoryCache setObject:data forKey:md5Key];
                 }
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    aBlock(data, fileUUID, fileLocalPath);
+                    aBlock(data, fileUUID, fileDiskPath);
                 });
             }
         });

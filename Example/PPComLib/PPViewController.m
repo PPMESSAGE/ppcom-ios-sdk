@@ -36,6 +36,12 @@
     
     [[PPSDK sharedSDK] configure:sdkConfiguration];
     
+    // Customer user info
+    PPServiceUser *user = [[PPServiceUser alloc] init];
+    user.userName = @"JasonLi";
+    user.userIcon = @"https://avatars1.githubusercontent.com/u/7382247?v=3&u=dd690117b1933bea61be9eccd6feab806bf52c4d&s=140";
+    [PPSDK sharedSDK].user = user;
+    
     // Start PPSDK
     [[PPSDK sharedSDK] start];
     

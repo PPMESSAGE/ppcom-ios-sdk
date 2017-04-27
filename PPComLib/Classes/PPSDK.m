@@ -80,6 +80,9 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
         [_fetchUnackedMessagesTask cancel];
         _fetchUnackedMessagesTask = nil;
     }
+    if (_startUpHelper) {
+        _startUpHelper = nil;
+    }
 }
 
 - (BOOL)isStarted {

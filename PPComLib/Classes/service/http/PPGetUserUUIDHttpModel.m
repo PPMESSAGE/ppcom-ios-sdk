@@ -49,4 +49,29 @@
     }];
 }
 
+- (void)getUserUUIDWithEmail:(NSString *)userEmail
+                    withIcon:(NSString *)userIcon
+                withFullname:(NSString *)userFullName
+                   withBlock:(PPHttpModelCompletedBlock)aBlock {
+    
+    NSDictionary *params = @{ @"user_email":userEmail,
+                              @"user_icon":userIcon?userIcon:@"",
+                              @"user_fullname":userFullName?userFullName:@"",
+                              @"app_uuid":self.sdk.app.appUuid };
+    [self.sdk.api getUserUuid:params completionHandler:^(NSDictionary *response, NSDictionary *error) {
+        
+        NSString *userUUID = nil;
+        if (!error && !PPIsApiResponseError(response)) {
+            userUUID = [response objectForKey:@"user_uuid"];
+        }
+        
+        if (aBlock) {
+            aBlock(userUUID, response, [NSError errorWithDomain:PPErrorDomain
+                                                           code:PPErrorCodeAPIError
+                                                       userInfo:error]);
+        }
+        
+    }];
+}
+
 @end

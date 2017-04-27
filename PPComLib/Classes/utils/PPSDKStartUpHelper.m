@@ -13,6 +13,7 @@
 #import "PPCreateDeviceHttpModel.h"
 #import "PPUpdateDeviceHttpModel.h"
 #import "PPCreateAnonymousUserHttpModel.h"
+#import "PPUpdateUserInfoHttpModel.h"
 
 #import "PPNetworkHelper.h"
 #import "PPWebSocket.h"
@@ -141,7 +142,7 @@
 
 - (void)emailUser:(PPNoArgBlock)block {
     PPGetUserUUIDHttpModel *getUserUUIDHttpModel = [[PPGetUserUUIDHttpModel alloc] initWithSDK:self.sdk];
-    [getUserUUIDHttpModel getUserUUIDWithEmail:self.sdk.configuration.email withBlock:^(id userUUID, NSDictionary *response, NSError *error) {
+    [getUserUUIDHttpModel getUserUUIDWithEmail:self.sdk.configuration.email withIcon:self.sdk.user.userIcon withFullname:self.sdk.user.userName withBlock:^(id userUUID, NSDictionary *response, NSError *error) {
         if (!userUUID) {
             [self onStartFail:error];
             return;
@@ -153,7 +154,19 @@
                 [self onStartFail:error];
                 return;
             }
+            NSString *userNewIcon = self.sdk.user.userIcon;
+            NSString *userNewName = self.sdk.user.userName;
             self.sdk.user = user;
+            
+            // update user icon
+            if (![self.sdk.user.userIcon isEqualToString:userNewIcon] ||
+                ![self.sdk.user.userName isEqualToString:userNewName]) {
+                self.sdk.user.userIcon = userNewIcon;
+                self.sdk.user.userName = userNewName;
+                
+                PPUpdateUserInfoHttpModel *updateUserInfoHttpModel = [[PPUpdateUserInfoHttpModel alloc] initWithSDK:self.sdk];
+                [updateUserInfoHttpModel updateUserWithUUID:userUUID withIcon:userNewIcon withFullName:userNewName withBlock:nil];
+            }
             if (block) block();
         }];
     }];
