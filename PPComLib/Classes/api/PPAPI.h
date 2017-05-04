@@ -25,10 +25,6 @@ typedef NS_ENUM(NSInteger, PPMessageCustomErrorCode) {
 // API
 // ------------
 
-- (void)login:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
-
-- (void)logout:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
-
 - (void)getConversationList:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
 
 - (void)getServiceUserList:(NSDictionary*)params completionHandler:(void (^)(NSDictionary *response, NSDictionary *error))completionHandler;
@@ -75,19 +71,10 @@ typedef NS_ENUM(NSInteger, PPMessageCustomErrorCode) {
 
 - (void)createDevice:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
 
-- (void)updateDevice:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
 
 // =========================
 // Get access token
 // =========================
-
-/**
- * @param params {
- *     user_email = ''
- *     user_password = ''
- * }
- */
-- (void)getApiToken:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
 
 // Get ppcom api token
 - (void)getPPComApiTokenWithCompletionHandler:(PPAPICompletedBlock)completionHandler;

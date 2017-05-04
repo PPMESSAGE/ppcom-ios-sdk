@@ -54,6 +54,11 @@
     dictionary[@"message_body"] = self.messageBody;
     dictionary[@"app_uuid"] = self.appUUID;
     dictionary[@"device_uuid"] = self.deviceUUID;
+
+    dictionary[@"is_service_user"] = @NO;
+    dictionary[@"is_app_message"] = @YES;
+    dictionary[@"is_browser_message"] = @NO;
+    
     return dictionary;
 
 }

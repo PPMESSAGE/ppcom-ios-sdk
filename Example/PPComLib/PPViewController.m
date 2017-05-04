@@ -22,17 +22,7 @@
     
     // Configure PPSDK
     PPSDKConfiguration *sdkConfiguration = [[PPSDKConfiguration alloc] init];
-//     sdkConfiguration.hostUrl = @"http://192.168.0.204:8945";
-//     sdkConfiguration.apiKey = @"YjRlZTYyNWY3ZThjMDJlNDg3YjRkYjNkZDQzNTk0NjdmODk1ZTMzNg==";
-//     sdkConfiguration.apiSecret = @"MTU3ZWE3MWQ4MTc0NzgxNjRhNGViMTdhMWUyMDUxZTRlYzAzNjg2YQ==";
-//     sdkConfiguration.appUUID = @"9c60acbd-44bb-11e6-94c0-acbc327f19e9";
-//     sdkConfiguration.email = @"test_user@gamil.com";
-    
-    sdkConfiguration.hostUrl = @"https://ppmessage.cn";
-    sdkConfiguration.apiKey = @"";
-    sdkConfiguration.apiSecret = @"";
-    sdkConfiguration.appUUID = @"";
-    //sdkConfiguration.email = @"ThreeKingdoms@gamil.com";
+    [sdkConfiguration setHostUrl:@"https://ppmessage.cn" appUUID:@"XXXX-XXXXX-XXXXXXX" registrationId:@"xxxxxxxxxxxxxxxxxxxxxxxxxx"];
     
     [[PPSDK sharedSDK] configure:sdkConfiguration];
     

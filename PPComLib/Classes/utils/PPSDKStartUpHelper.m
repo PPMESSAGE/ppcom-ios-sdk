@@ -11,7 +11,6 @@
 #import "PPGetUserUUIDHttpModel.h"
 #import "PPGetUserDetailInfoHttpModel.h"
 #import "PPCreateDeviceHttpModel.h"
-#import "PPUpdateDeviceHttpModel.h"
 #import "PPCreateAnonymousUserHttpModel.h"
 
 #import "PPNetworkHelper.h"
@@ -168,16 +167,7 @@
         }
         
         // Update user's deviceUUID
-        self.sdk.user.mobileDeviceUuid = deviceUUID;
-        
-        PPUpdateDeviceHttpModel *updateDeviceHttpModel = [[PPUpdateDeviceHttpModel alloc] initWithSDK:self.sdk];
-        [updateDeviceHttpModel updateDeviceWithDeviceUUID:deviceUUID withOnline:YES withBlock:^(id success, NSDictionary *response, NSError *error) {
-            if (!success) {
-                [self onStartFail:error];
-                return;
-            }
-            if (block) block();
-        }];
+        self.sdk.user.mobileDeviceUuid = deviceUUID;        
     }];
 }
 

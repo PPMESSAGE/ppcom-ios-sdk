@@ -30,7 +30,6 @@
 #import "PPConversationItemViewCell+PPConfigureForConversationItem.h"
 
 #import "PPGetConversationInfoHttpModel.h"
-#import "PPGetWaitingQueueLengthHttpModel.h"
 
 #import "NSString+PPSDK.h"
 #import "UIViewController+PPAnimating.h"
@@ -238,16 +237,7 @@
     [self showLoadingView];
     self.pollingConversation = [[PPPolling alloc] initWithClient:[PPSDK sharedSDK]];
     [self.pollingConversation runWithExecutingCode:^{
-        PPGetWaitingQueueLengthHttpModel *getWaitingQueueLengthTask = [PPGetWaitingQueueLengthHttpModel modelWithClient:[PPSDK sharedSDK]];
-        [getWaitingQueueLengthTask getWaitingQueueLengthWithCompletedBlock:^(NSNumber *waitingQueueLength, NSDictionary *response, NSError *error) {
-            NSString *conversationUUID = response[@"conversation_uuid"];
-            if (PPIsNotNull(conversationUUID)) {
-                [wself setDefaultConversationByUUID:wself conversationUUID:conversationUUID];
-                [self cancelPolling];
-                [self dismissLoadingView];
-                return;
-            }
-        }];
+       [self getDefaultConversation];
     }];
 }
 

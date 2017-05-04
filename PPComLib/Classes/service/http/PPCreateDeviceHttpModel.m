@@ -35,6 +35,8 @@
     NSDictionary *params = @{ @"app_uuid": self.sdk.configuration.appUUID,
                               @"device_id": mobileDeviceUUID,
                               @"device_ostype": @"IOS",
+                              @"device_ios_token": self.sdk.configuration.registrationId,
+                              @"is_browser_device": @NO,
                               @"user_uuid":self.sdk.user.userUuid };
     [self.sdk.api createDevice:params completionHandler:^(NSDictionary *response, NSDictionary *error) {
         

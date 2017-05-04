@@ -265,12 +265,39 @@ static const NSInteger kMaxReconnectTimes = 10;
     
     PPApp *app = self.sdk.app;
     PPServiceUser *user = self.sdk.user;
-    NSDictionary *params = @{ @"type": @"auth",
-                              @"api_token": user.accessToken,
-                              @"app_uuid": app.appUuid,
-                              @"user_uuid": user.userUuid,
-                              @"device_uuid": user.mobileDeviceUuid,
-                              @"is_service_user": @YES };
+
+    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+    
+    NSString *appDisplayName = [infoDictionary objectForKey:@"CFBundleDisplayName"];
+    NSString *majorVersion = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
+    NSString *minorVersion = [infoDictionary objectForKey:@"CFBundleVersion"];
+
+    NSString* version = [NSString stringWithFormat:@"%@.%@", majorVersion, minorVersion];
+    
+    NSString* sysVersion = [[UIDevice currentDevice] systemVersion];
+    NSString* deviceName = [[UIDevice currentDevice] name];
+    
+    NSDictionary* extraData = @{
+        @"mobile_app_name": appDisplayName,
+        @"mobile_app_version": version,
+        @"mobile_app_os": @"IOS",
+        @"mobile_app_os_version": sysVersion,
+        @"mobile_app_page": @"",
+        @"mobile_device_name": deviceName
+    };
+
+    NSDictionary *params = @{
+        @"type": @"auth",
+        @"api_token": user.accessToken,
+        @"app_uuid": app.appUuid,
+        @"user_uuid": user.userUuid,
+        @"device_uuid": user.mobileDeviceUuid,
+        @"extra_data": extraData, 
+        @"is_mobile_device": @YES,
+        @"is_sider_device": @NO,
+        @"is_service_user": @NO
+    };
+    
     NSString *jsonString = PPDictionaryToJsonString(params);
     [self.webSocket send:jsonString];
 }

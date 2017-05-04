@@ -12,27 +12,25 @@
 
 @interface PPSDKConfiguration ()
 
-@property (nonatomic, readwrite) NSString *apiUrl;
-@property (nonatomic, readwrite) NSString *webSockeUrl;
-@property (nonatomic, readwrite) NSString *downloadUrl;
-@property (nonatomic, readwrite) NSString *uploadUrl;
-@property (nonatomic, readwrite) NSString *authUrl;
-
 @end
 
 @implementation PPSDKConfiguration
 
-- (void)setHostUrl:(NSString *)hostUrl {
-    _hostUrl = hostUrl;
+- (void)setHostUrl:(NSString *)hostUrl appUUID:(NSString*)appUUID registraionId:(NSString*)registrationId {
     
     NSString *wsHost = [self.hostUrl stringByReplacingCharactersInRange:NSMakeRange(0,4) withString:@"ws"];
-    
+
+    self.hostUrl = hostUrl;
+    self.appUUID = appUUID;
+    self.registrationId = registrationId;
+
     self.webSockeUrl = [wsHost stringByAppendingString:@"/pcsocket/WS"];
     self.downloadUrl = [self.hostUrl stringByAppendingString:@"/ppdownload/ppdownload/"];
     self.uploadUrl = [self.hostUrl stringByAppendingString:@"/ppupload/ppupload/"];
     self.authUrl = [self.hostUrl stringByAppendingString:@"/ppauth"];
     self.apiUrl = [self.hostUrl stringByAppendingString:@"/ppapi"];
-    
+
+    // extend to utils
     PPFileHost = self.downloadUrl;
     PPTxtUploadHost = self.uploadUrl;
 }

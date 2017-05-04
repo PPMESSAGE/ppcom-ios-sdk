@@ -73,23 +73,35 @@ static NSString *const kPPHeaderTypePPCom = @"PPCOM";
         params = @{};
     }
     
+    
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
     manager.responseSerializer = [AFJSONResponseSerializer serializer];
+
+    AFJSONRequestSerializer* requestSerializer = [AFJSONRequestSerializer serializer];
+    [requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+
+    NSString* requestUrl = [self getApiUrl:url params:params];
+    NSDictionary* requestParams = [self getApiParams:params url:url];
+    NSMutableURLRequest *request = [requestSerializer requestWithMethod:@"POST"
+                                                              URLString:requestUrl
+                                                             parameters:requestParams
+                                                                  error:nil];
     
-    NSMutableURLRequest *request = [[AFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:[self getApiUrl:url] parameters:params error:nil];
     [self addHeaders:request type:headerType];
     
     if (PPAPI_DEBUG_ENABLE) {
-        PPFastLog(@"http request: url: %@, params: %@.", [self getApiUrl:url], params);
+        PPFastLog(@"http request: url: %@, params: %@.", requestUrl, requestParams);
     }
+
     NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         
         if (!error) {
             if (PPAPI_DEBUG_ENABLE) {
-                PPFastLog(@"http response: url: %@, response: %@.", [self getApiUrl:url], responseObject);
+                PPFastLog(@"http response: url: %@, params: %@, response: %@.", requestUrl, requestParams, responseObject);
             }
-            
+
             NSDictionary *result = (NSDictionary *)responseObject;
             if (result && result[@"error_code"] && [result[@"error_code"] integerValue] != 0) {
                 PPFastWarn(@"[PPAPI] api request error: %@", result);
@@ -98,7 +110,7 @@ static NSString *const kPPHeaderTypePPCom = @"PPCOM";
             
         } else {
             if (PPAPI_DEBUG_ENABLE) {
-                PPFastLog(@"http response: url: %@, error: %@.", [self getApiUrl:url], error.description);
+                PPFastLog(@"http response: url: %@, params: %@ error: %@.", requestUrl, requestParams, error.description);
             }
             
             if (completionHandler) {
@@ -134,20 +146,26 @@ static NSString *const kPPHeaderTypePPCom = @"PPCOM";
     return @{@"error_string": PPLocalizedString(@"Network Not Avaliable"), @"error_code": [NSNumber numberWithInteger:PPMessageCustomErrorCodeHttpUnavaliable]};
 }
 
-- (NSString*)getApiUrl:(NSString*)urlSegment {
-    return [self.sdk.configuration.apiUrl stringByAppendingString:urlSegment];
+
+- (NSString*)getApiUrl:(NSString*)urlSegment params:(NSDictionary*)params {
+    if ([params objectForKey:@"api_url"]) {
+        return urlSegment;
+    }
+    NSString* url = [NSString stringWithFormat: @"%@/ppquery/PP_QUERY", self.serverUrl];
+    return url;
+}
+
+- (NSDictionary*)getApiParams:(NSDictionary*)params url:(NSString*)url {
+    if ([params objectForKey:@"api_url"]) {
+        return params;
+    }
+    return @{@"api_url":url, @"api_data":params};
 }
 
 - (NSString*)getApiTokenUrl {
     return [NSString stringWithFormat:@"%@/token", self.sdk.configuration.authUrl];
 }
 
-- (NSString*)getApiTokenDataWithUserEmail:(NSString*)userEmail
-                         withUserPassword:(NSString*)userPassword {
-    // TODO this should be ppkefu api key
-    NSString *clientID = self.sdk.configuration.apiKey;
-    return [NSString stringWithFormat:@"grant_type=password&user_email=%@&user_password=%@&client_id=%@", userEmail, userPassword, clientID];
-}
 
 - (void)addHeaders:(NSMutableURLRequest *)request type:(NSString *)headerType {
     if ([headerType isEqualToString:kPPHeaderTypePPEmpty]) {
@@ -189,13 +207,6 @@ static NSString *const kPPHeaderTypePPCom = @"PPCOM";
 
 #pragma mark - API
 
-- (void)login:(NSDictionary *)params completionHandler:(void (^)(NSDictionary *, NSDictionary *))completionHandler {
-    [self baseRequest:@"/PPKEFU_LOGIN" with:params configuration:nil completionHandler:completionHandler];
-}
-
-- (void)logout:(NSDictionary *)params completionHandler:(void (^)(NSDictionary *, NSDictionary *))completionHandler {
-    [self baseRequest:@"/PPKEFU_LOGOUT" with:params configuration:nil completionHandler:completionHandler];
-}
 
 - (void)getConversationList:(NSDictionary *)params completionHandler:(void (^)(NSDictionary *, NSDictionary *))completionHandler {
     [self baseRequest:@"/PP_PAGE_USER_CONVERSATION" with:params configuration:nil completionHandler:completionHandler];
@@ -245,10 +256,6 @@ static NSString *const kPPHeaderTypePPCom = @"PPCOM";
     [self basePPComRequest:@"/PP_GET_USER_CONVERSATION_LIST" with:params completionHandler:completionHandler];
 }
 
-- (void)getWaitingQueueLength:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
-    [self basePPComRequest:@"/PP_GET_AMD_QUEUE_LENGTH" with:params completionHandler:completionHandler];
-}
-
 - (void)getPPComDefaultConversation:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
     [self basePPComRequest:@"/PPCOM_GET_DEFAULT_CONVERSATION" with:params completionHandler:completionHandler];
 }
@@ -270,11 +277,11 @@ static NSString *const kPPHeaderTypePPCom = @"PPCOM";
 }
 
 - (void)createAnonymousUser:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
-    [self basePPComRequest:@"/PP_CREATE_ANONYMOUS" with:params completionHandler:completionHandler];
+    [self basePPComRequest:@"/PPCOM_CREATE_ANONYMOUS" with:params completionHandler:completionHandler];
 }
 
 - (void)getUserUuid:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
-    [self basePPComRequest:@"/PP_GET_USER_UUID" with:params completionHandler:completionHandler];
+    [self basePPComRequest:@"/PPCOM_GET_USER_UUID" with:params completionHandler:completionHandler];
 }
 
 - (void)getPPComDeviceUser:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
@@ -282,11 +289,7 @@ static NSString *const kPPHeaderTypePPCom = @"PPCOM";
 }
 
 - (void)createDevice:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
-    [self basePPComRequest:@"/PP_CREATE_DEVICE" with:params completionHandler:completionHandler];
-}
-
-- (void)updateDevice:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
-    [self basePPComRequest:@"/PP_UPDATE_DEVICE" with:params completionHandler:completionHandler];
+    [self basePPComRequest:@"/PPCOM_CREATE_DEVICE" with:params completionHandler:completionHandler];
 }
 
 // =========================
@@ -312,10 +315,6 @@ static NSString *const kPPHeaderTypePPCom = @"PPCOM";
     [dataTask resume];
 }
 
-- (void)getApiToken:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
-    NSString *tokenData = [self getApiTokenDataWithUserEmail:params[@"user_email"] withUserPassword:params[@"user_password"]];
-    [self baseApiTokenRequest:tokenData completionHandler:completionHandler];
-}
 
 - (void)getPPComApiTokenWithCompletionHandler:(PPAPICompletedBlock)completionHandler {
     NSString *tokenData = [NSString stringWithFormat:@"client_id=%@&client_secret=%@&grant_type=client_credentials", self.sdk.configuration.apiKey, self.sdk.configuration.apiSecret];
