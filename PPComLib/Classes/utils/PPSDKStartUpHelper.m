@@ -84,7 +84,7 @@
 }
 
 - (BOOL)isEmailUser {
-    return self.sdk.configuration.email != nil;
+    return NO;
 }
 
 - (void)onStartBegin {
@@ -139,7 +139,9 @@
 }
 
 - (void)emailUser:(PPNoArgBlock)block {
-    PPGetUserUUIDHttpModel *getUserUUIDHttpModel = [[PPGetUserUUIDHttpModel alloc] initWithSDK:self.sdk];
+    /*
+     PPGetUserUUIDHttpModel *getUserUUIDHttpModel = [[PPGetUserUUIDHttpModel alloc] initWithSDK:self.sdk];
+    
     [getUserUUIDHttpModel getUserUUIDWithEmail:self.sdk.configuration.email withBlock:^(id userUUID, NSDictionary *response, NSError *error) {
         if (!userUUID) {
             [self onStartFail:error];
@@ -156,6 +158,7 @@
             if (block) block();
         }];
     }];
+     */
 }
 
 - (void)device:(PPNoArgBlock)block {

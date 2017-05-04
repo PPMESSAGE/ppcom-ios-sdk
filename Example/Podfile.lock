@@ -14,15 +14,15 @@ PODS:
   - AFNetworking/Serialization (3.1.0)
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
-  - PPComLib (0.1.7):
+  - PPComLib (0.1.13):
     - AFNetworking (~> 3.0)
     - PPJTSImageViewController
     - SDWebImage (~> 3.8.1)
     - SocketRocket
   - PPJTSImageViewController (1.5.2)
-  - SDWebImage (3.8.1):
-    - SDWebImage/Core (= 3.8.1)
-  - SDWebImage/Core (3.8.1)
+  - SDWebImage (3.8.2):
+    - SDWebImage/Core (= 3.8.2)
+  - SDWebImage/Core (3.8.2)
   - SocketRocket (0.5.1)
 
 DEPENDENCIES:
@@ -34,11 +34,11 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
-  PPComLib: b6a06aaf0eb95386135b293ecd0097228130b9c9
+  PPComLib: 1da24e22e63076c096b38163f54285644d300def
   PPJTSImageViewController: a5427285638e8e4c9c6840c0ecf75a981e2ec1a1
-  SDWebImage: 35f9627a3e44b4f292a8a8ce6a531fa488239b91
+  SDWebImage: 098e97e6176540799c27e804c96653ee0833d13c
   SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
 
 PODFILE CHECKSUM: 1339e3f12eed989c3272897348356fda105deff5
 
-COCOAPODS: 1.0.1
+COCOAPODS: 1.2.1
