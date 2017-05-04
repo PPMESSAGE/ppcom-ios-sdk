@@ -11,16 +11,15 @@
 @class PPMessage;
 
 typedef NS_ENUM(NSInteger, PPMessageSendState) {
-    PPMessageSendStateErrorNoConversationId, /** 没有conversationUUID **/
-    PPMessageSendStateBeforeSend, /** 发送之前 **/
-    PPMessageSendStateSendOut, /** 刚刚发送出去，不一定成功 **/
-    PPMessageSendStateError /** 发送失败 **/
+    PPMessageSendStateErrorNoConversationId,
+    PPMessageSendStateBeforeSend,
+    PPMessageSendStateSendOut,
+    PPMessageSendStateError 
 };
 
-/** 发送回调接口 **/
+
 typedef void(^PPMessageSendStateBlock)(PPMessage *message, id obj, PPMessageSendState state);
 
-/** 发送消息的入口 **/
 @interface PPMessageSendManager : NSObject
 
 + (instancetype)getInstance;

@@ -51,8 +51,6 @@ typedef NS_ENUM(NSInteger, PPMessageCustomErrorCode) {
 
 - (void)getPPComConversationList:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
 
-- (void)getWaitingQueueLength:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
-
 - (void)getPPComDefaultConversation:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;
 
 - (void)createPPComConversation:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler;

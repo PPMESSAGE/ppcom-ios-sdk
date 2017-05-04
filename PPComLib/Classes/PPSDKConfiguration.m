@@ -30,6 +30,9 @@
     self.authUrl = [self.hostUrl stringByAppendingString:@"/ppauth"];
     self.apiUrl = [self.hostUrl stringByAppendingString:@"/ppapi"];
 
+    self.apiSecret = @"ZThmMTM1ZDM4ZmI2NjE1YWE0NWEwMGM3OGNkMzY5MzVjOTQ2MGU0NQ==";
+    self.apiKey = @"M2E2OTRjZTQ5Mzk4ZWUxYzRjM2FlZDM2NmE4MjA4MzkzZjFjYWQyOA==";
+
     // extend to utils
     PPFileHost = self.downloadUrl;
     PPTxtUploadHost = self.uploadUrl;

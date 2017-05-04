@@ -20,8 +20,8 @@
 @property (nonatomic, readwrite) NSString *uploadUrl;
 @property (nonatomic, readwrite) NSString *authUrl;
 
-@property (nonatomic) NSString *apiSecret = @"ZThmMTM1ZDM4ZmI2NjE1YWE0NWEwMGM3OGNkMzY5MzVjOTQ2MGU0NQ==";
-@property (nonatomic) NSString *apiKey = @"M2E2OTRjZTQ5Mzk4ZWUxYzRjM2FlZDM2NmE4MjA4MzkzZjFjYWQyOA==";
+@property (nonatomic, readwrite) NSString *apiSecret;
+@property (nonatomic, readwrite) NSString *apiKey;
 
 /** 
  * Set configuration of PPCOM SDK
@@ -29,7 +29,7 @@
  *
  * @param hostUrl https://ppmessage.cn or https://ppmessage.com, depends on your account which registered in.
  * @param appUUID your team app uuid, get it from PPMESSAGE backend
- * @param regisgrationId iOS app push id, if no, can not send push from PPMESSAGE 
+ * @param registrationId iOS app push id, if no, can not send push from PPMESSAGE 
  */
 - (void)setHostUrl:(NSString *)hostUrl appUUID:(NSString*)appUUID registrationId:(NSString*)registrationId;
 

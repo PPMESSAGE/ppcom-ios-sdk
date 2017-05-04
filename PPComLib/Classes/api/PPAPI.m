@@ -42,8 +42,10 @@ static NSString *const kPPHeaderTypePPCom = @"PPCOM";
                 with:(NSDictionary*)params
                 configuration:(NSDictionary*)configure
                 completionHandler:(void (^)(NSDictionary *response, NSDictionary *error))completionHandler;
-- (NSString*)getApiUrl:(NSString*)urlSegment;
 
+- (NSString*)getApiUrl:(NSString*)urlSegment params:(NSDictionary*)params;
+- (NSDictionary*)getApiParams:(NSDictionary*)params url:(NSString*)url;
+    
 - (void)addHeaders:(NSMutableURLRequest *)request type:(NSString *)headerType;
 - (NSString*)generateRequestUUID;
 - (NSString*)signatureWith:(NSString *)requestUUID appSecret:(NSString *)appSecret;
@@ -151,7 +153,7 @@ static NSString *const kPPHeaderTypePPCom = @"PPCOM";
     if ([params objectForKey:@"api_url"]) {
         return urlSegment;
     }
-    NSString* url = [NSString stringWithFormat: @"%@/ppquery/PP_QUERY", self.serverUrl];
+    NSString* url = [NSString stringWithFormat: @"%@/ppquery/PP_QUERY", self.sdk.configuration.hostUrl];
     return url;
 }
 
