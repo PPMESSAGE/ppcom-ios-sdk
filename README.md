@@ -27,6 +27,20 @@ it, simply add the following line to your Podfile:
 pod "PPComLib"
 ```
 
+
+## Init
+
+```objective-c
+
+    PPSDKConfiguration *sdkConfiguration = [[PPSDKConfiguration alloc] init];
+    [sdkConfiguration setHostUrl:@"https://ppmessage.cn" appUUID:@"XXXX-XXXXX-XXXXXXX" registrationId:@"xxxxxxxxxxxxxxxxxxxxxxxxxx"];
+    [[PPSDK sharedSDK] configure:sdkConfiguration];
+    [[PPSDK sharedSDK] start];
+    
+```
+
+
+
 ## Author
 
 kun.zhao@ppmessage.com, jin.he@ppmessage.com
