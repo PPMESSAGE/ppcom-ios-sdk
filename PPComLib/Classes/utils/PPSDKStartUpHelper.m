@@ -83,7 +83,7 @@
     [self.sdk.networkHelper startNotifier];
 }
 
-- (BOOL)isEmailUser {
+- (BOOL)isEntUser {
     return NO;
 }
 
@@ -119,8 +119,8 @@
 
 
 - (void)user:(PPNoArgBlock)block {
-    if ([self isEmailUser]) {
-        [self emailUser:block];
+    if ([self isEntUser]) {
+        [self entUser:block];
     } else {
         [self anonymousUser:block];
     }
@@ -138,7 +138,7 @@
     }];
 }
 
-- (void)emailUser:(PPNoArgBlock)block {
+- (void)entUser:(PPNoArgBlock)block {
     /*
      PPGetUserUUIDHttpModel *getUserUUIDHttpModel = [[PPGetUserUUIDHttpModel alloc] initWithSDK:self.sdk];
     
@@ -168,9 +168,11 @@
             [self onStartFail:error];
             return;
         }
-        
+
         // Update user's deviceUUID
-        self.sdk.user.mobileDeviceUuid = deviceUUID;        
+        self.sdk.user.mobileDeviceUuid = deviceUUID;
+
+        if (block) block();
     }];
 }
 

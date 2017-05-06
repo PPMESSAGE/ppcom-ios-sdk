@@ -28,9 +28,9 @@
  * @author Guijin Ding
  *
  * @param hostUrl https://ppmessage.cn or https://ppmessage.com, depends on your account which registered in.
- * @param appUUID your team app uuid, get it from PPMESSAGE backend
+ * @param appUuid your team app uuid, get it from PPMESSAGE backend
  * @param registrationId iOS app push id, if no, can not send push from PPMESSAGE 
  */
-- (void)setHostUrl:(NSString *)hostUrl appUUID:(NSString*)appUUID registrationId:(NSString*)registrationId;
+- (void)setHostUrl:(NSString *)hostUrl appUuid:(NSString*)appUuid registrationId:(NSString*)registrationId;
 
 @end

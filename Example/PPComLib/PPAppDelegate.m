@@ -6,21 +6,29 @@
 //  Copyright (c) 2016 PPMessage. All rights reserved.
 //
 
+#import <UIKit/UIKit.h>
+#import <UserNotifications/UserNotifications.h>
+
 #import "PPAppDelegate.h"
 
 #import "PPViewController.h"
+
+
 
 @implementation PPAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
-    
+
+
+
     PPViewController *viewController = [[PPViewController alloc] init];
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
     navController.view.backgroundColor = [UIColor whiteColor];
     self.window.rootViewController = navController;
-    
+
+    [self pp_registerPushNotifications: application];
     return YES;
 }
 
@@ -52,5 +60,62 @@
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+- (void)pp_registerPushNotifications:(UIApplication *)application {
+
+    //iOS 10 later
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    center.delegate = (id)self;
+    [center requestAuthorizationWithOptions:(UNAuthorizationOptionBadge | UNAuthorizationOptionSound | UNAuthorizationOptionAlert) completionHandler:^(BOOL granted, NSError * _Nullable error) {
+        if (!error && granted) {
+            NSLog(@"User agree");
+        }else{
+            NSLog(@"User not agree");
+        }
+    }];
+
+    [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+        // try to get notification permission, so you can request again
+        NSLog(@"========%@",settings);
+    }];
+
+    [application registerForRemoteNotifications];
+}
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+
+    NSString *token = [[[[deviceToken description] stringByReplacingOccurrencesOfString:@"<"withString:@""]
+                        stringByReplacingOccurrencesOfString:@">" withString:@""]
+                       stringByReplacingOccurrencesOfString: @" " withString: @""];
+    NSLog(@"deviceToken:%@", token);
+
+    // Configure PPSDK
+    PPSDKConfiguration *sdkConfiguration = [[PPSDKConfiguration alloc] init];
+    [sdkConfiguration setHostUrl:@"https://ppmessage.cn" appUuid:@"a600998e-efff-11e5-9d9f-02287b8c0ebf" registrationId:token];
+
+    [[PPSDK sharedSDK] configure:sdkConfiguration];
+
+    // Start PPSDK
+    [[PPSDK sharedSDK] start];
+
+}
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+    NSLog(@"didFailToRegisterForRemoteNotificationsWithError:%@", error);
+    // Configure PPSDK
+    PPSDKConfiguration *sdkConfiguration = [[PPSDKConfiguration alloc] init];
+    [sdkConfiguration setHostUrl:@"https://ppmessage.cn" appUuid:@"a600998e-efff-11e5-9d9f-02287b8c0ebf" registrationId:@"YOU-GOT-A-FAKE-IOS-TOKEN-IN-EMULATOR"];
+
+    [[PPSDK sharedSDK] configure:sdkConfiguration];
+
+    // Start PPSDK
+    [[PPSDK sharedSDK] start];
+
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    NSLog(@"didReceiveRemoteNotification:%@", userInfo);
+}
+
 
 @end

@@ -16,14 +16,15 @@
 
 @implementation PPSDKConfiguration
 
-- (void)setHostUrl:(NSString *)hostUrl appUUID:(NSString*)appUUID registraionId:(NSString*)registrationId {
+- (void)setHostUrl:(NSString *)hostUrl appUuid:(NSString *)appUuid registrationId:(NSString *)registrationId {
     
-    NSString *wsHost = [self.hostUrl stringByReplacingCharactersInRange:NSMakeRange(0,4) withString:@"ws"];
+
 
     self.hostUrl = hostUrl;
-    self.appUUID = appUUID;
+    self.appUUID = appUuid;
     self.registrationId = registrationId;
 
+    NSString *wsHost = [hostUrl stringByReplacingCharactersInRange:NSMakeRange(0,4) withString:@"ws"];
     self.webSockeUrl = [wsHost stringByAppendingString:@"/pcsocket/WS"];
     self.downloadUrl = [self.hostUrl stringByAppendingString:@"/ppdownload/ppdownload/"];
     self.uploadUrl = [self.hostUrl stringByAppendingString:@"/ppupload/ppupload/"];

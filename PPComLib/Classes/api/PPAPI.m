@@ -17,7 +17,7 @@
 
 #import "PPSDKConfiguration.h"
 
-#define PPAPI_DEBUG_ENABLE 0
+#define PPAPI_DEBUG_ENABLE 1
 
 static NSString *const kPPHeaderTypePPKefu = @"PPKEFU";
 static NSString *const kPPHeaderTypePPToken = @"PPTOKEN";
@@ -150,17 +150,11 @@ static NSString *const kPPHeaderTypePPCom = @"PPCOM";
 
 
 - (NSString*)getApiUrl:(NSString*)urlSegment params:(NSDictionary*)params {
-    if ([params objectForKey:@"api_url"]) {
-        return urlSegment;
-    }
     NSString* url = [NSString stringWithFormat: @"%@/ppquery/PP_QUERY", self.sdk.configuration.hostUrl];
     return url;
 }
 
 - (NSDictionary*)getApiParams:(NSDictionary*)params url:(NSString*)url {
-    if ([params objectForKey:@"api_url"]) {
-        return params;
-    }
     return @{@"api_url":url, @"api_data":params};
 }
 

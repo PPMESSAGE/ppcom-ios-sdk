@@ -45,7 +45,7 @@
         // return error_code: 26 when the device is exist. we consider this case is a right
         // case
         if (!error) {
-            deviceUUID = response[@"device_uuid"];
+            deviceUUID = response[@"uuid"];
         }
         
         if (aBlock) {
