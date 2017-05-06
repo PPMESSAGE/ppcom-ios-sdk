@@ -238,7 +238,7 @@ static const NSInteger kMaxReconnectTimes = 10;
         return;
     }
     
-    [self handleNornalMessage:message];
+    [self handleNormalMessage:message];
 }
 
 #pragma mark - webSocket message helpers
@@ -250,7 +250,7 @@ static const NSInteger kMaxReconnectTimes = 10;
     }
 }
 
-- (void) handleNornalMessage:(id)message {
+- (void) handleNormalMessage:(id)message {
     
     if ([self.delegate respondsToSelector:@selector(didMessageArrived:message:)]) {
         [self.delegate didMessageArrived:self message:message];

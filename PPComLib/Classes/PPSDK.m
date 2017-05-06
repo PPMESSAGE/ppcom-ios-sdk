@@ -38,7 +38,8 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 
 @property (nonatomic) PPStoreManager *storeManager;
 @property (nonatomic) PPMessagesStore *messagesStore;
-@property (nonatomic) PPFetchUnackedMessagesTask *fetchUnackedMessagesTask;
+
+
 
 @end
 
@@ -76,11 +77,7 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
     if (_app) {
         _app = nil;
     }
-    if (_fetchUnackedMessagesTask) {
-        [_fetchUnackedMessagesTask cancel];
-        _fetchUnackedMessagesTask = nil;
-    }
-}
+   }
 
 - (BOOL)isStarted {
     return [self.startUpHelper started];
@@ -139,12 +136,6 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
     return _messagesStore;
 }
 
-- (PPFetchUnackedMessagesTask*)fetchUnackedMessagesTask {
-    if (!_fetchUnackedMessagesTask) {
-        _fetchUnackedMessagesTask = [[PPFetchUnackedMessagesTask alloc] initWithSDK:self];
-    }
-    return _fetchUnackedMessagesTask;
-}
 
 - (id<PPMessageSendProtocol>)messageSender {
     if (!_messageSender) {
@@ -198,7 +189,10 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 }
 
 - (void)didSocketAuthed:(PPWebSocket*)webSocket {
-    [self.fetchUnackedMessagesTask run];
+
+    PPComCreateDefaultConversationHttpModel *model = [[PPComCreateDefaultConversationHttpModel alloc] initWithSDK:self];
+    [model createWithUserUuid:self._user.userUuid appUuid: self._app.appUuid];
+
 }
 
 - (void)didPPMessageArrived:(id)obj {
