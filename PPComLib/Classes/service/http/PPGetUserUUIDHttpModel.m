@@ -12,6 +12,9 @@
 #import "PPAPI.h"
 #import "PPApp.h"
 
+#import "PPUser.h"
+#import "PPServiceUser.h"
+
 #import "PPSDKUtils.h"
 
 @interface PPGetUserUUIDHttpModel ()
@@ -29,19 +32,23 @@
     return self;
 }
 
-- (void)getUserUUIDWithEmail:(NSString *)userEmail
+- (void)getUserUUIDWithEntUser:(NSDictionary *)entUser
                    withBlock:(PPHttpModelCompletedBlock)aBlock {
-    NSDictionary *params = @{ @"user_email":userEmail,
-                              @"app_uuid":self.sdk.app.appUuid };
+    NSDictionary *params = @{@"app_uuid":self.sdk.app.appUuid,
+                             @"ent_user_id": entUser[@"ent_user_id"],
+                             @"ent_user_name": entUser[@"ent_user_name"],
+                             @"ent_user_icon": entUser[@"ent_user_icon"],
+                             @"ent_user_create_time": entUser[@"ent_user_create_time"]};
     [self.sdk.api getUserUuid:params completionHandler:^(NSDictionary *response, NSDictionary *error) {
-        
-        NSString *userUUID = nil;
+
+
+        PPUser *user = nil;
         if (!error && !PPIsApiResponseError(response)) {
-            userUUID = [response objectForKey:@"user_uuid"];
+            user = [PPServiceUser userWithDictionary:response];
         }
-        
+
         if (aBlock) {
-            aBlock(userUUID, response, [NSError errorWithDomain:PPErrorDomain
+            aBlock(user, response, [NSError errorWithDomain:PPErrorDomain
                                                            code:PPErrorCodeAPIError
                                                        userInfo:error]);
         }

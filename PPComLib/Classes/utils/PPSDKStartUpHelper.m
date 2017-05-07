@@ -84,6 +84,11 @@
 }
 
 - (BOOL)isEntUser {
+    if (self.sdk.configuration.entUser) {
+        if ([self.sdk.configuration.entUser objectForKey:@"ent_user_id"]) {
+            return YES;
+        }
+    }
     return NO;
 }
 
@@ -139,26 +144,18 @@
 }
 
 - (void)entUser:(PPNoArgBlock)block {
-    /*
-     PPGetUserUUIDHttpModel *getUserUUIDHttpModel = [[PPGetUserUUIDHttpModel alloc] initWithSDK:self.sdk];
+
+    PPGetUserUUIDHttpModel *getUserUUIDHttpModel = [[PPGetUserUUIDHttpModel alloc] initWithSDK:self.sdk];
     
-    [getUserUUIDHttpModel getUserUUIDWithEmail:self.sdk.configuration.email withBlock:^(id userUUID, NSDictionary *response, NSError *error) {
-        if (!userUUID) {
+    [getUserUUIDHttpModel getUserUUIDWithEntUser:self.sdk.configuration.entUser withBlock:^(id user, NSDictionary *response, NSError *error) {
+        if (!user) {
             [self onStartFail:error];
             return;
         }
-        
-        PPGetUserDetailInfoHttpModel *getUserDetailInfoModel = [[PPGetUserDetailInfoHttpModel alloc] initWithSDK:self.sdk];
-        [getUserDetailInfoModel getUserDetailInfoWithUUID:userUUID withBlock:^(id user, NSDictionary *response, NSError *error) {
-            if (!user) {
-                [self onStartFail:error];
-                return;
-            }
-            self.sdk.user = user;
-            if (block) block();
-        }];
+        self.sdk.user = user;
+        if (block) block();
     }];
-     */
+
 }
 
 - (void)device:(PPNoArgBlock)block {

@@ -16,7 +16,7 @@
 
 - (instancetype)initWithSDK:(PPSDK*)sdk;
 
-- (void)getUserUUIDWithEmail:(NSString*)userEmail
+- (void)getUserUUIDWithEntUser:(NSDictionary*)entUser
                    withBlock:(PPHttpModelCompletedBlock)aBlock;
 
 @end

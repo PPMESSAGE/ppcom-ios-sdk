@@ -16,10 +16,10 @@
 
 @implementation PPSDKConfiguration
 
-- (void)setHostUrl:(NSString *)hostUrl appUuid:(NSString *)appUuid registrationId:(NSString *)registrationId {
+- (void)setHostUrl:(NSString *)hostUrl appUuid:(NSString *)appUuid registrationId:(NSString *)registrationId entUser:(NSDictionary*)entUser {
     
 
-
+    self.entUser = entUser;
     self.hostUrl = hostUrl;
     self.appUUID = appUuid;
     self.registrationId = registrationId;
@@ -37,6 +37,11 @@
     // extend to utils
     PPFileHost = self.downloadUrl;
     PPTxtUploadHost = self.uploadUrl;
+}
+
+
+- (void)setHostUrl:(NSString *)hostUrl appUuid:(NSString *)appUuid registrationId:(NSString *)registrationId {
+    [self setHostUrl:hostUrl appUuid:appUuid registrationId:registrationId entUser: nil];
 }
 
 @end
