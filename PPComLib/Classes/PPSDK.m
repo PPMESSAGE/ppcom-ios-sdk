@@ -19,6 +19,7 @@
 #import "PPMessagesStore.h"
 
 #import "PPFetchUnackedMessagesTask.h"
+#import "PPComCreateDefaultConversationHttpModel.h"
 
 #import "PPLog.h"
 
@@ -190,8 +191,6 @@ NSString *const PPSDKMessageSendFailed = @"PPSDKMessageSendFailed";
 
 - (void)didSocketAuthed:(PPWebSocket*)webSocket {
 
-    PPComCreateDefaultConversationHttpModel *model = [[PPComCreateDefaultConversationHttpModel alloc] initWithSDK:self];
-    [model createWithUserUuid:self._user.userUuid appUuid: self._app.appUuid];
 
 }
 

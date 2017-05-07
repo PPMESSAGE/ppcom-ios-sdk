@@ -17,7 +17,7 @@
 
 #import "PPUser.h"
 
-CGFloat const PPMessageItemLeftViewDefaultBubbleCornerRadius = 17.0f;
+CGFloat const PPMessageItemLeftViewDefaultBubbleCornerRadius = 7.0f;
 
 @interface PPMessageItemLeftView ()
 

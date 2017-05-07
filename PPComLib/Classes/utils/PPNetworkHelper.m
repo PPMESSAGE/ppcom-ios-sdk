@@ -35,6 +35,10 @@
     [self setNetworkStatus:self.netStatus];
 }
 
+- (void) stopNotifier {
+    
+}
+
 - (void)reachabilityChanged:(NSNotification *)note {
     PPReachability* curReach = [note object];
     NSParameterAssert([curReach isKindOfClass:[PPReachability class]]);

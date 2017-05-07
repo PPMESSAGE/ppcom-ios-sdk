@@ -18,7 +18,7 @@
 #import "PPUser.h"
 
 static CGFloat const kPPMessageItemRightViewStatusViewWidth = 18;
-CGFloat const PPMessageItemRightViewDefaultBubbleCornerRadius = 17.0f;
+CGFloat const PPMessageItemRightViewDefaultBubbleCornerRadius = 7.0f;
 
 @interface PPMessageItemRightView ()
 
@@ -62,19 +62,11 @@ CGFloat const PPMessageItemRightViewDefaultBubbleCornerRadius = 17.0f;
     _msgTimestampView = [self messageTimestampView];
     _msgTimestampView.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_msgTimestampView];
-    
-    _avatarImageView = [PPSquareImageView new];
-    _avatarImageView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:_avatarImageView];
-    
+
     _rightColumnView = [UIView new];
     _rightColumnView.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_rightColumnView];
-    
-    _nameLabel = [UILabel new];
-    _nameLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    [_rightColumnView addSubview:_nameLabel];
-    
+
     _msgContentView = [self messageContentView];
     _msgContentView.translatesAutoresizingMaskIntoConstraints = NO;
     _msgContentView.backgroundColor = _bubbleColor;
@@ -95,9 +87,7 @@ CGFloat const PPMessageItemRightViewDefaultBubbleCornerRadius = 17.0f;
     [self addSubview:self.leftView];
     
     [self configureMessageTimestampLayoutConstraints];
-    [self configureAvatarImageViewLayoutConstraints];
     [self configureRightColumnViewLayoutConstraints];
-    [self configureNameLabelLayoutConstraints];
     [self configureMessageContentLayoutConstraints];
     [self pp_configureMessageStatusViewLayoutConstraints];
     [self configureLeftViewLayoutConstraints];
@@ -117,14 +107,7 @@ CGFloat const PPMessageItemRightViewDefaultBubbleCornerRadius = 17.0f;
     }
     
     [self setNeedsUpdateConstraints];
-    
-    // Load user info
-    NSString *userName = message.fromUser.userName;
-    NSURL *userUrl = [NSURL URLWithString:message.fromUser.userIcon];
-    
-    [self.avatarImageView loadWithUrl:userUrl placeHolderImage:[UIImage pp_defaultAvatarImage] completionHandler:nil];
-    self.nameLabel.text = userName;
-    
+
     [self pp_presentMessage:message forStatus:message.status];
     
 }
@@ -232,25 +215,15 @@ CGFloat const PPMessageItemRightViewDefaultBubbleCornerRadius = 17.0f;
     
 }
 
-- (void)configureAvatarImageViewLayoutConstraints {
-    
-    // width & height
-    [_avatarImageView squareTo:self width:PPMessageItemViewAvatarWidth];
-    
-    // trailling 8.0
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:_avatarImageView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-8.0]];
-    
-    // top
-    _avatarConstraintMarginTopWithMsgTimestamp = [NSLayoutConstraint constraintWithItem:_avatarImageView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_msgTimestampView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:8.0];
-    
-    [self addConstraint:_avatarConstraintMarginTopWithMsgTimestamp];
-    
-}
+
 
 - (void)configureRightColumnViewLayoutConstraints {
     // Trailing
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:_rightColumnView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:_avatarImageView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-8.0]];
-    
+    // [self addConstraint:[NSLayoutConstraint constraintWithItem:_rightColumnView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:_avatarImageView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-8.0]];
+
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:_rightColumnView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-8.0]];
+
+
     // top
     _rightColumnConstraintMarginTopWithMsgTimestamp = [NSLayoutConstraint constraintWithItem:_rightColumnView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_msgTimestampView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:8.0];
     
@@ -260,19 +233,6 @@ CGFloat const PPMessageItemRightViewDefaultBubbleCornerRadius = 17.0f;
     [self addConstraint:[NSLayoutConstraint constraintWithItem:_rightColumnView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeading multiplier:1.0 constant:8.0]];
 }
 
-- (void)configureNameLabelLayoutConstraints {
-    // ----------
-    // |   ++++++| (nameLabel)
-    // |         |
-    // -----------
-    
-    // trailing & top
-    PPPadding(_nameLabel, _rightColumnView, 1.0, PPPaddingMaskTop | PPPaddingMaskTrailing);
-    
-    // height
-    [_rightColumnView addConstraint:[NSLayoutConstraint constraintWithItem:_nameLabel attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:PPMessageItemViewNameLabelHeight]];
-    
-}
 
 - (void)configureMessageContentLayoutConstraints {
     // ----------
@@ -280,9 +240,9 @@ CGFloat const PPMessageItemRightViewDefaultBubbleCornerRadius = 17.0f;
     // |    ****| (contentView)
     // |    ****|
     // ----------
-    
-    // top
-    [_rightColumnView addConstraint:[NSLayoutConstraint constraintWithItem:_msgContentView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_nameLabel attribute:NSLayoutAttributeBottom multiplier:1.0 constant:8.0]];
+
+    PPPadding(_msgContentView, _rightColumnView, 1.0, PPPaddingMaskTop | PPPaddingMaskTrailing);
+
     
     // trailing & bottom
     PPPadding(_msgContentView, _rightColumnView, .0, PPPaddingMaskBottom | PPPaddingMaskTrailing);

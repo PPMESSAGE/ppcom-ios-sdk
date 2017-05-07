@@ -10,6 +10,7 @@
 
 #import "PPMessage.h"
 #import "PPUser.h"
+#import "PPServiceUser.h"
 
 #import "PPSDK.h"
 #import "PPLog.h"
@@ -30,45 +31,42 @@ NSString *const PPConversationItemTypeS2P = @"P2S";
     
     NSDictionary *conversationDataDict = dictionary[@"conversation_data"];
 
+    conversationItem.conversationIcon = nil;
+
     if (conversationDataDict) {
-        conversationItem.conversationIcon = PPFileURL(conversationDataDict[@"conversation_icon"]);
         conversationItem.conversationStatus = conversationDataDict[@"conversation_status"];
         conversationItem.uuid = conversationDataDict[@"conversation_uuid"];
         conversationItem.updateTimestamp = PPRetrieveTimestampFromString(conversationDataDict[@"updatetime"]);
         conversationItem.conversationName = conversationDataDict[@"conversation_name"];
         conversationItem.conversationUserUUID = conversationDataDict[@"user_uuid"];
-    } else {
-        conversationItem.uuid = dictionary[@"uuid"];
-        conversationItem.conversationIcon = PPFileURL(dictionary[@"conversation_icon"]);
-        conversationItem.conversationName = dictionary[@"conversation_name"];
-        conversationItem.conversationStatus = dictionary[@"status"];
-        conversationItem.conversationUserUUID = dictionary[@"user_uuid"];
-        conversationItem.updateTimestamp = PPRetrieveTimestampFromString(dictionary[@"updatetime"]);
+        conversationItem.conversationType = conversationDataDict[@"conversation_type"];
     }
 
-    conversationItem.conversationType = dictionary[@"conversation_type"];
-    if (PPIsNotNull(conversationItem.conversationType) &&
-        [conversationItem.conversationType isEqualToString:PPConversationItemTypeS2S]) {
-        conversationItem.conversationS2SUserUUID = conversationItem.conversationUserUUID;
-    }
-    
     PPMessage *latestMessage = nil;
     NSDictionary *latestMessageDict = dictionary[@"latest_message"];
-    if (latestMessageDict && PPIsNotNull(latestMessageDict[@"message_body"])) {
+    if (PPIsNotNull((NSString*)latestMessageDict) && PPIsNotNull([latestMessageDict objectForKey:@"message_body"])) {
         latestMessage = [PPMessage messageWithDictionary:PPJSONStringToDictionary(latestMessageDict[@"message_body"])];
     }
+    conversationItem.latestMessage = latestMessage;
+
 
     // `from_user` is not the latest message's user
     // instead of, is the creater of this conversation
-    if (PPIsNull(conversationItem.conversationName)) {
-        NSDictionary *fromUserDict = dictionary[@"from_user"];
-        if (!PPIsObjectNull(fromUserDict)) {
-            PPUser *conversationCreater = [PPUser userWithDictionary:fromUserDict];
-            conversationItem.conversationName = conversationCreater.userName;
-        }
+    if (PPIsNull(conversationItem.conversationIcon)) {
+        NSMutableArray *array = dictionary[@"conversation_users"];
+
+        [array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSDictionary *user = (NSDictionary*)obj;
+            if ([[user objectForKey:@"uuid"] isEqualToString:[PPSDK sharedSDK].user.userUuid]) {
+            } else {
+                if (conversationItem.conversationIcon == nil) {
+                    conversationItem.conversationIcon = PPFileURL([user objectForKey:@"user_icon"]);
+                }
+            }
+        }];
     }
     
-    conversationItem.latestMessage = latestMessage;
+
     
     return conversationItem;
 }

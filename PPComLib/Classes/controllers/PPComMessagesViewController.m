@@ -74,7 +74,11 @@
 // ========================
 - (void)onPagePullToRefreshAction {
     [super onPagePullToRefreshAction];
-    
+
+    if (self.conversationUUID == nil) {
+        return;
+    }
+
     __weak PPComMessagesViewController *wself = self;
     [self showLoadingView];
     [self pp_loadMessageHistory:^{

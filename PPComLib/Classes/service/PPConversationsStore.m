@@ -132,7 +132,7 @@
 - (PPConversationItem *)findSingleConversationWithUserUUID:(NSString *)userUUID {
     __block PPConversationItem *target = nil;
     [self.conversationItems enumerateObjectsUsingBlock:^(PPConversationItem *conversation, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ((conversation.members && conversation.members.count == 2) &&
+        if ((conversation.members && conversation.members.count == 1) &&
             [self isUserUUID:userUUID inConversation:conversation]) {
             target = conversation;
             *stop = YES;

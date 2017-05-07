@@ -18,8 +18,12 @@
     PPSDK *sdk = [PPSDK sharedSDK];
     NSMutableArray *messages = [self pp_localMessages];
     PPGetMessageHistoryHttpModel *getMessageHistoryHttpModel = [PPGetMessageHistoryHttpModel modelWithClient:sdk];
-    
-    if (!messages || messages.count == 0) {
+
+    if (self.conversationUUID == nil) {
+        return;
+    }
+
+    if (messages == nil || messages.count == 0) {
         [getMessageHistoryHttpModel requestWithConversationUUID:self.conversationUUID pageOffset:0 completed:^(id obj, NSDictionary *response, NSError *error) {
             [self pp_loadMessageHistory:obj withBlock:block];
         }];

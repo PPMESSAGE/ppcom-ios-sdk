@@ -39,9 +39,10 @@
 
 - (void)requestWithBlock:(PPHttpModelCompletedBlock)completed {
     
-    NSDictionary *params = @{ @"app_uuid": self.client.app.appUuid,
-                              @"user_uuid": self.client.user.userUuid,
-                              @"device_uuid": self.client.user.mobileDeviceUuid };
+    NSDictionary *params = @{@"is_app_user": @YES, @"app_uuid": self.client.app.appUuid,
+                             @"user_uuid": self.client.user.userUuid,
+                             @"device_uuid": self.client.user.mobileDeviceUuid
+                             };
     
     [self.client.api getPPComDefaultConversation:params completionHandler:^(NSDictionary *response, NSDictionary *error) {
         

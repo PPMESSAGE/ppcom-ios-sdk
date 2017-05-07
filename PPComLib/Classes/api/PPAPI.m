@@ -224,10 +224,6 @@ static NSString *const kPPHeaderTypePPCom = @"PPCOM";
     [self baseRequest:@"/PP_GET_CONVERSATION_INFO" with:params configuration:nil completionHandler:completionHandler];
 }
 
-- (void)pageUnackedMessage:(NSDictionary *)params completionHandler:(PPAPICompletedBlock)completionHandler {
-    [self baseRequest:@"/PP_PAGE_UNACKED_MESSAGE" with:params configuration:nil completionHandler:completionHandler];
-}
-
 - (void)createConversation:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
     [self baseRequest:@"/PP_CREATE_CONVERSATION" with:params configuration:nil completionHandler:completionHandler];
 }
@@ -254,6 +250,10 @@ static NSString *const kPPHeaderTypePPCom = @"PPCOM";
 
 - (void)getPPComDefaultConversation:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
     [self basePPComRequest:@"/PPCOM_GET_DEFAULT_CONVERSATION" with:params completionHandler:completionHandler];
+}
+
+- (void)createPPComDefaultConversation:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {
+    [self basePPComRequest:@"/PPCOM_CREATE_DEFAULT_CONVERSATION" with:params completionHandler:completionHandler];
 }
 
 - (void)createPPComConversation:(NSDictionary*)params completionHandler:(PPAPICompletedBlock)completionHandler {

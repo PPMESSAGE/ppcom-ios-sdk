@@ -11,6 +11,7 @@
 #import "PPAPI.h"
 #import "PPSDK.h"
 #import "PPMessage.h"
+#import "PPServiceUser.h"
 
 #import "PPSDKUtils.h"
 #import "PPLog.h"
@@ -46,7 +47,8 @@ static NSInteger const DEFAULT_MESSAGE_PAGESIZE = 20;
 - (void)requestWithConversationUUID:(NSString *)conversationUUID
                          maxUUID:(NSString *)maxUUID
                           completed:(PPHttpModelCompletedBlock)completedBlock {
-    NSDictionary *params = @{
+    NSDictionary *params = @{@"app_uuid":self.client.app.appUuid,
+                             @"user_uuid":self.client.user.userUuid,
                              @"conversation_uuid": conversationUUID,
                              @"max_uuid": PPSafeString(maxUUID),
                              @"page_size": [NSNumber numberWithInteger:DEFAULT_MESSAGE_PAGESIZE]
@@ -59,7 +61,8 @@ static NSInteger const DEFAULT_MESSAGE_PAGESIZE = 20;
                            pageSize:(NSInteger)pageSize
                           completed:(PPHttpModelCompletedBlock)completedBlock {
     
-    NSDictionary *params = @{
+    NSDictionary *params = @{@"app_uuid":self.client.app.appUuid,
+                             @"user_uuid":self.client.user.userUuid,
                              @"conversation_uuid":conversationUUID,
                              @"page_offset":[NSNumber numberWithInteger:pageOffset],
                              @"page_size":[NSNumber numberWithInteger:pageSize]

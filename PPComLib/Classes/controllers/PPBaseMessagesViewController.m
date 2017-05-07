@@ -352,7 +352,7 @@
         typeof(self) __weak weakSelf = self;
         _voiceRecordHelper = [PPVoiceRecordHelper new];
         _voiceRecordHelper.maxTimeStopRecorderCompletion = ^{
-            PPFastLog(@"已经达到最大限制时间了，进入下一步的提示");
+            PPFastLog(@"reach limit");
             
             // Unselect and unhilight the hold down button, and set isMaxTimeStop to YES.
             UIButton *holdDown = weakSelf.chattingView.inputToolbar.holdToTalkButton;

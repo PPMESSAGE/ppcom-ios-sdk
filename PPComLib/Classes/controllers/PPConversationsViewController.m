@@ -31,6 +31,8 @@
 
 #import "PPGetConversationInfoHttpModel.h"
 
+#import "PPComCreateDefaultConversationHttpModel.h"
+
 #import "NSString+PPSDK.h"
 #import "UIViewController+PPAnimating.h"
 
@@ -180,6 +182,10 @@
 // PPSDK Delegate
 // ===========================
 - (void)didPPSDKStartUpSucceded:(PPSDK*)sdk {
+
+    PPComCreateDefaultConversationHttpModel *model = [PPComCreateDefaultConversationHttpModel modelWithSdk:sdk];
+    [model request];
+
     [self getDefaultConversation];
 }
 
@@ -234,6 +240,10 @@
 }
 
 - (void)onFailedGetDefaultConversation:(__weak PPConversationsViewController *)wself {
+    if (self.pollingConversation) {
+        return;
+    }
+    
     [self showLoadingView];
     self.pollingConversation = [[PPPolling alloc] initWithClient:[PPSDK sharedSDK]];
     [self.pollingConversation runWithExecutingCode:^{

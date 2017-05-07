@@ -96,6 +96,9 @@ BOOL PPIsNull(NSString* str) {
 }
 
 BOOL PPIsNotNull(NSString *str) {
+    if ((NSNull*)str == [NSNull null]) {
+        return NO;
+    }
     return !PPIsNull(str);
 }
 

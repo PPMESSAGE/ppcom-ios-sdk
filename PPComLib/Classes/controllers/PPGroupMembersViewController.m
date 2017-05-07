@@ -81,9 +81,17 @@ typedef void(^findConversationBlock)(PPConversationItem *conversation, BOOL succ
     [self pp_startAnimating];
     [self.groupMembersStore groupMembersInConversation:self.conversationUUID findCompleted:^(NSMutableArray *members, BOOL success) {
         if (success) {
-            [self updateTitleWithGroupMembersCount:members.count];
-            [self.groupMemberDataSource updateGroupMembers:members];
-            [self.conversationsStore setMembers:members withConversationUUID:self.conversationUUID];
+            NSMutableArray* excludeMe = [NSMutableArray arrayWithCapacity:1];
+            [members enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                PPUser* user = (PPUser*)obj;
+                if ([user.userUuid isEqualToString:self.sdk.user.userUuid]) {
+                } else {
+                    [excludeMe addObject:user];
+                }
+            }];
+            [self updateTitleWithGroupMembersCount:excludeMe.count];
+            [self.groupMemberDataSource updateGroupMembers:excludeMe];
+            [self.conversationsStore setMembers:excludeMe withConversationUUID:self.conversationUUID];
             [self.collectionView reloadData];
         }
         [self pp_stopAnimating];
@@ -103,6 +111,7 @@ typedef void(^findConversationBlock)(PPConversationItem *conversation, BOOL succ
     PPUser *user = [self.groupMemberDataSource itemAtIndexPath:indexPath];
     
     if (!user.userUuid) return; // user.uuid not exist
+
     if ([user.userUuid isEqualToString:self.sdk.user.userUuid]) return; // self
     
     findConversationBlock block = ^(PPConversationItem *conversationItem, BOOL success) {
@@ -115,6 +124,7 @@ typedef void(^findConversationBlock)(PPConversationItem *conversation, BOOL succ
     };
 
     [self pp_startAnimating];
+
     NSMutableArray *members = [self.groupMembersStore groupMembersInConversation:self.conversationUUID];
     if (members.count == 2) {
         PPConversationItem *conversation = [self.conversationsStore findConversationWithConversationUUID:self.conversationUUID];

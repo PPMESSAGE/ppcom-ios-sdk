@@ -31,7 +31,7 @@
 }
 
 - (void)pageUnackeMessageWithBlock:(PPHttpModelCompletedBlock)aBlock {
-
+/*
     NSDictionary *params = @{ @"page_offset": @0,
                               @"page_size": @30,
                               @"app_uuid": self.sdk.app.appUuid,
@@ -48,6 +48,7 @@
                                                                 userInfo:error]);
         }
     }];
+ */
 }
 
 // =============

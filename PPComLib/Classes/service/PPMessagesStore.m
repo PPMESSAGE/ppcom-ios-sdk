@@ -30,7 +30,7 @@
 - (instancetype)initWithClient:(PPSDK*)client {
     if (self = [super init]) {
         self.messageUUIDArray = [NSMutableSet set];
-        self.messages = [NSMutableDictionary dictionary];
+        self.messages = [NSMutableDictionary dictionaryWithCapacity:20];
         self.sdk = client;
     }
     return self;
@@ -42,10 +42,13 @@
 }
 
 - (NSMutableArray*)messagesInCovnersation:(NSString *)conversationUUID autoCreate:(BOOL)autoCreate {
+    if (conversationUUID == nil)
+        return nil;
+    
     NSMutableArray *messages = self.messages[conversationUUID];
-    if (!messages && autoCreate) {
+    if (messages == nil && autoCreate) {
         messages = [NSMutableArray new];
-        self.messages[conversationUUID] = messages;
+        [self.messages setObject:messages forKey: conversationUUID];
     }
     PPAddTimestampToMessages(messages, PPCurrentTimestamp());
     return messages;
@@ -56,7 +59,7 @@
 }
 
 - (BOOL)updateWithNewMessage:(PPMessage*)message {
-    if (!message || !message.conversationUUID) {
+    if (message == nil || message.conversationUUID == nil) {
         return NO;
     }
     
@@ -77,7 +80,7 @@
 }
 
 - (void)insertAtHeadWithMessages:(NSMutableArray*)messages {
-    if (!messages || messages.count == 0) return;
+    if (messages == nil || messages.count == 0) return;
     
     //Remove duplicate messages
     NSMutableArray *filterMessageArray = [[NSMutableArray alloc] init];
@@ -90,6 +93,10 @@
     
     //Add messages at head
     NSString *conversationUUID = ((PPMessage*)messages[0]).conversationUUID;
+    if (conversationUUID == nil) {
+        return;
+    }
+    
     NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, filterMessageArray.count)];
     NSMutableArray *localMessages = [self messagesInCovnersation:conversationUUID autoCreate:YES];
     [localMessages insertObjects:filterMessageArray atIndexes:indexes];

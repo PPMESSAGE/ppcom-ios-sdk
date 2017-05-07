@@ -163,7 +163,6 @@ static NSInteger const kPPSocketRocketDelayBetweenEachReconnect = 10; // after 1
 
 - (void)webSocketDidOpen:(SRWebSocket *)webSocket {
     PPFastLog(@"webSocketDidOpen");
-    [self authWithWebSocket:webSocket];
     
     if (self.webSocketPoolDelegate && [self.webSocketPoolDelegate respondsToSelector:@selector(didSocketOpened:)]) {
         [self.webSocketPoolDelegate didSocketOpened:self];
@@ -181,21 +180,6 @@ static NSInteger const kPPSocketRocketDelayBetweenEachReconnect = 10; // after 1
     [self tryReconnectWhenLossConnection];
 }
 
-- (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message {
-    PPFastLog(@"webSocket didReceiveMessage:%@", message);
-    
-    if ([message isKindOfClass:[NSString class]]) {
-        if ([self handleAuthMessage:message]) {
-            if (self.webSocketPoolDelegate && [self.webSocketPoolDelegate respondsToSelector:@selector(didSocketAuthed:)]) {
-                [self.webSocketPoolDelegate didSocketAuthed:self];
-            }
-        } else {
-            if (self.webSocketPoolDelegate) {
-                [self.webSocketPoolDelegate didMessageArrived:self message:message];
-            }
-        }
-    }
-}
 
 - (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error {
     PPFastLog(@"webSocket didFailWithError:%@", error);
@@ -219,36 +203,6 @@ static NSInteger const kPPSocketRocketDelayBetweenEachReconnect = 10; // after 1
 
 #pragma mark - helpers
 
-- (void)authWithWebSocket:(SRWebSocket*)webSocket {
-    PPServiceUser *user = self.sdk.user;
-    PPApp *app = self.sdk.app;
-    if (!user || !user.accessToken || !user.userUuid || !user.mobileDeviceUuid) {
-        PPFastLog(@"authWithWebSocket illegal user:%@", user);
-        [self onSocketClosed:webSocket];
-        return;
-    }
-    if (!app || !app.appUuid) {
-        PPFastLog(@"authWithWebSocket illegal app:%@", app);
-        [self onSocketClosed:webSocket];
-        return;
-    }
-    NSDictionary *params = @{ @"type": @"auth",
-                              @"api_token": user.accessToken,
-                              @"app_uuid": app.appUuid,
-                              @"user_uuid": user.userUuid,
-                              @"device_uuid": user.mobileDeviceUuid,
-                              @"is_service_user": @YES };
-    NSString *jsonString = PPDictionaryToJsonString(params);
-    [webSocket send:jsonString];
-}
-
-- (BOOL)handleAuthMessage:(NSString*)message {
-    NSDictionary *messageBody = PPJSONStringToDictionary(message);
-    if (messageBody[@"what"] && [messageBody[@"what"] isEqualToString:@"AUTH"]) {
-        return YES;
-    }
-    return NO;
-}
 
 - (void)onSocketClosed:(SRWebSocket*)webSocket {
     if (self.activeWebSocket == webSocket) {

@@ -13,8 +13,8 @@ extern CGFloat const PPMessageItemRightViewDefaultBubbleCornerRadius;
 
 @interface PPMessageItemRightView : PPMessageItemBaseView
 
-@property (nonatomic) PPSquareImageView *avatarImageView;
-@property (nonatomic) UILabel *nameLabel;
+//@property (nonatomic) PPSquareImageView *avatarImageView;
+//@property (nonatomic) UILabel *nameLabel;
 
 @property (nonatomic) UIColor *bubbleColor;
 @property (nonatomic) CGFloat bubbleCornerRadius;
