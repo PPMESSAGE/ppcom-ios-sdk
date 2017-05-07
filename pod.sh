@@ -12,9 +12,10 @@ git push
 
 git push --tags
 
-pod spec lint PPComLib.podspec
+pod spec lint PPComLib.podspec  --allow-warnings
 
-pod trunk push PPComLib.podspec
 
 #pod trunk register guijin.ding@ppmessage.com 'Guijin Ding' --description='macbook pro 17inch'
+
 #pod trunk add-owner PPComLib guijin.ding@ppmessage.com
+pod trunk push PPComLib.podspec  --allow-warnings
