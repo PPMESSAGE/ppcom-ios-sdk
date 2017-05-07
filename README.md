@@ -59,7 +59,7 @@ pod "PPComLib"
 
 ## Author
 
-kun.zhao@ppmessage.com, jin.he@ppmessage.com
+kun.zhao@ppmessage.com, jin.he@ppmessage.com, guijin.ding@ppmessage.com
 
 ## License
 
